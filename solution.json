@@ -21,29 +21,24 @@
   },
   "artifacts": [
     {
-      "kind": "github_repo",
-      "label": "GitHub Repo",
-      "uri": "https://github.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221"
-    },
-    {
       "kind": "paper_pdf",
       "label": "Paper PDF",
-      "uri": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/paper/main.pdf"
+      "uri": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/paper/main.pdf"
     },
     {
       "kind": "paper_thumbnail",
       "label": "Paper Thumbnail",
-      "uri": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/paper/thumbnail.png"
+      "uri": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/paper/thumbnail.png"
     },
     {
       "kind": "latex_sources",
       "label": "LaTeX Sources",
-      "uri": "https://github.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/blob/main/paper/main.tex"
+      "uri": "https://github.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/blob/paper-v1/paper/main.tex"
     },
     {
       "kind": "sources",
       "label": "Sources",
-      "uri": "https://github.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/blob/main/sources/sources.json"
+      "uri": "https://github.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/blob/paper-v1/sources/sources.json"
     }
   ],
   "artifacts_summary": "Manuscript package includes paper/main.tex, paper/references.bib (44 entries), paper/main.pdf (15 pages), paper/main.aux marker evidence, paper/EQUATION_USAGE_MAP.md, and synchronized trace at phase_outputs/research_trace.json.",
@@ -187,126 +182,126 @@
         "path": "packages/ccgo-rl/dist/omegaxiv_ccgo_rl-0.1.0-py3-none-any.whl",
         "sha256": "c1552d7b0ae815d418edd715d7aec3ee03dfdbdbb00d758b76802a66dd24503a",
         "size_bytes": 11194,
-        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/dist/omegaxiv_ccgo_rl-0.1.0-py3-none-any.whl"
+        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/dist/omegaxiv_ccgo_rl-0.1.0-py3-none-any.whl"
       },
       {
         "kind": "sdist",
         "path": "packages/ccgo-rl/dist/omegaxiv_ccgo_rl-0.1.0.tar.gz",
         "sha256": "e1421a70b6829a81514ce6f18b2e06d8c2cca27a5648034ee4842f5528627f16",
         "size_bytes": 10712,
-        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/dist/omegaxiv_ccgo_rl-0.1.0.tar.gz"
+        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/dist/omegaxiv_ccgo_rl-0.1.0.tar.gz"
       },
       {
         "kind": "other",
         "path": "packages/ccgo-rl/packaging_manifest.json",
         "sha256": "7c2f7058121336c3b0d0af504f6addee397359b8a7f6616380e158e117f20d6d",
         "size_bytes": 2636,
-        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/packaging_manifest.json"
+        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/packaging_manifest.json"
       },
       {
         "kind": "other",
         "path": "packages/ccgo-rl/README.md",
         "sha256": "6646d17039a4612815df88c4f5d4ff68d74f4783e389ecb502253529cb8cbe26",
         "size_bytes": 2671,
-        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/README.md"
+        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/README.md"
       },
       {
         "kind": "other",
         "path": "packages/ccgo-rl/requirements.txt",
         "sha256": "dea8b851815ed75b0fa5533f2d422d39e0d86e17c684d6d6015dbadefff851f9",
         "size_bytes": 24,
-        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/requirements.txt"
+        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/requirements.txt"
       },
       {
         "kind": "other",
         "path": "packages/ccgo-rl/dependency_graph.json",
         "sha256": "b09a43417f4ba55efab1a873700f1a4183436900cf8de930b727b47136a0f179",
         "size_bytes": 965,
-        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/dependency_graph.json"
+        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/dependency_graph.json"
       },
       {
         "kind": "other",
         "path": "packages/ccgo-rl/src/ccgo_rl/__init__.py",
         "sha256": "d945ca2e19fb66e0ce6a261a3d1ed7f2b84f8e082ae8d13bf0e4b79560e9012d",
         "size_bytes": 621,
-        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/src/ccgo_rl/__init__.py"
+        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/src/ccgo_rl/__init__.py"
       },
       {
         "kind": "other",
         "path": "packages/ccgo-rl/src/ccgo_rl/simulator.py",
         "sha256": "9963c1d26081548832649fa5d8114481571bae05c42c4626f1960c967dbda145",
         "size_bytes": 10281,
-        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/src/ccgo_rl/simulator.py"
+        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/src/ccgo_rl/simulator.py"
       },
       {
         "kind": "other",
         "path": "packages/ccgo-rl/src/ccgo_rl/symbolic.py",
         "sha256": "4424bc0e1284f9be1e0adfdd077983882dd6085fb4d4925789fee1eb096586bd",
         "size_bytes": 5485,
-        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/src/ccgo_rl/symbolic.py"
+        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/src/ccgo_rl/symbolic.py"
       },
       {
         "kind": "other",
         "path": "packages/ccgo-rl/src/ccgo_rl/service.py",
         "sha256": "a7d8a27d30949c43a8065e27b704e4d1baa57a9f2f29a4492a0f4febd0da7361",
         "size_bytes": 2260,
-        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/src/ccgo_rl/service.py"
+        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/src/ccgo_rl/service.py"
       },
       {
         "kind": "other",
         "path": "packages/ccgo-rl/src/ccgo_rl/mcp_adapter.py",
         "sha256": "3d371d35f41ffad60cd911bbc209e1368952bf1b723c2d022f5c31218b5f6a0d",
         "size_bytes": 3854,
-        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/src/ccgo_rl/mcp_adapter.py"
+        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/src/ccgo_rl/mcp_adapter.py"
       },
       {
         "kind": "other",
         "path": "packages/ccgo-rl/src/ccgo_rl/mcp_server.py",
         "sha256": "8e101750ee1c23f210c85358bac2e1022a809fb9f98649b5b976cafc31bef782",
         "size_bytes": 3782,
-        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/src/ccgo_rl/mcp_server.py"
+        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/src/ccgo_rl/mcp_server.py"
       },
       {
         "kind": "other",
         "path": "packages/ccgo-rl/tests/test_core.py",
         "sha256": "94636b3f186f721219194f11af5f19acc1a3e11b37287da3baa2bfbb86b54f17",
         "size_bytes": 1742,
-        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/tests/test_core.py"
+        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/tests/test_core.py"
       },
       {
         "kind": "other",
         "path": "packages/ccgo-rl/examples/basic_usage.py",
         "sha256": "e16f1bf3235403ab0b39fb6f80309fac903180a635fedb0f62b8a388ffaf9868",
         "size_bytes": 628,
-        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/examples/basic_usage.py"
+        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/examples/basic_usage.py"
       },
       {
         "kind": "other",
         "path": "packages/ccgo-rl/mcp_config.example.json",
         "sha256": "6174b6044b6c460d4aa2c49fb4928d7f47a50f3317165b1420ace71ad54471ba",
         "size_bytes": 227,
-        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/mcp_config.example.json"
+        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/mcp_config.example.json"
       },
       {
         "kind": "other",
         "path": "packages/ccgo-rl/registry_record.json",
         "sha256": "289ba67463fcf22293758f499df992fa2132f16ac8c583b51af37d216f3223b3",
         "size_bytes": 447,
-        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/registry_record.json"
+        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/registry_record.json"
       },
       {
         "kind": "other",
         "path": "packages/registry_index.json",
         "sha256": "d9ef7575b880099709143ebfda162942bb94e18eea136e3a37a70a61d4fe6fe5",
         "size_bytes": 200,
-        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/registry_index.json"
+        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/registry_index.json"
       },
       {
         "kind": "other",
         "path": "packages/ccgo-rl/pyproject.toml",
         "sha256": null,
         "size_bytes": 584,
-        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/pyproject.toml"
+        "url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/pyproject.toml"
       }
     ],
     "dependencies": [
@@ -340,7 +335,7 @@
     ],
     "dependency_graph_mermaid": "graph TD\n  O[\"omegaxiv-ccgo-rl\"] -->|\">=1.26\"| N[\"numpy\"]\n  O -->|\">=1.12\"| S[\"sympy\"]\n  S -->|\"<1.4,>=1.1.0\"| M[\"mpmath\"]",
     "dependency_graph_path": "packages/ccgo-rl/dependency_graph.json",
-    "dependency_graph_url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/dependency_graph.json",
+    "dependency_graph_url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/dependency_graph.json",
     "distribution_name": "omegaxiv-ccgo-rl",
     "handle": "ccgo-rl",
     "handle_alternatives": [
@@ -351,14 +346,18 @@
     "handle_confirmed": true,
     "import_name": "ccgo_rl",
     "install_command": "pip install omegaxiv && ox install ccgo-rl==0.1.0",
+    "install_ready": true,
     "install_target": "packages/ccgo-rl/dist/omegaxiv_ccgo_rl-0.1.0-py3-none-any.whl",
     "manager_install_command": "pip install omegaxiv",
     "manifest_path": "packages/ccgo-rl/packaging_manifest.json",
     "package_type": "library",
     "readme_path": "packages/ccgo-rl/README.md",
-    "readme_url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/README.md",
+    "readme_url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/README.md",
+    "registry_index_url": "https://raw.githubusercontent.com/alphaomega-labs/registry/main/packages/index.json",
+    "registry_record_url": "https://raw.githubusercontent.com/alphaomega-labs/registry/main/handles/ccgo-rl.json",
+    "registry_status": "synced",
     "requirements_path": "packages/ccgo-rl/requirements.txt",
-    "requirements_url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/packages/ccgo-rl/requirements.txt",
+    "requirements_url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/paper-v1/packages/ccgo-rl/requirements.txt",
     "version": "0.1.0"
   },
   "paper_pdf_url": "https://raw.githubusercontent.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221/main/paper/main.pdf",
@@ -375,11 +374,14 @@
     "Maximum-entropy RL",
     "Hierarchical RL for exploration"
   ],
+  "repo_commit_sha": "21aad9517642e9804d671b92976bf3234f804f60",
+  "repo_ref": "paper-v1",
   "repo_url": "https://github.com/alphaomega-labs/run-c234fb70-5d16-40aa-bf00-111fb4862221",
   "request_text": "Title: Curiosity-Conditioned Goal-Optimal Reinforcement Learning (CCGO-RL)\nAbstract: We propose a reinforcement learning methodology that combines intrinsic novelty-driven exploration with explicit goal conditioning and extrinsic reward optimization. The core motivation is to avoid myopic exploitation while preserving path optimality for objective goals. The approach uses a dual-value design: one stream for task-optimal return and one for curiosity, with adaptive weighting that decays as goal confidence improves. We expect this to improve sample efficiency, robustness, and discovery of better trajectories in sparse- and deceptive-reward settings. The impact is a practical framework for agents that remain purpose-driven while retaining productive curiosity.\nFull Description: This project develops a new RL algorithmic framework where intrinsic motivation is not a standalone objective but a controlled exploration mechanism inside a goal-conditioned optimal control loop. The method will encode goals explicitly (e.g., goal vectors or target-conditioned policies), estimate novelty through state-action visitation uncertainty or prediction error, and combine intrinsic and extrinsic signals through an adaptive scheduler. The scheduler must prioritize curiosity during uncertainty and shift toward strict extrinsic optimization as confidence and performance stabilize.\n\nScope includes single-agent continuous and discrete control, sparse-reward navigation/manipulation-style environments, and deceptive local-optima tasks where exploration quality is decisive. Key constraints are preserving asymptotic task optimality, avoiding intrinsic-reward hacking, and preventing instability from non-stationary reward mixing. The design must remain compatible with standard off-policy or actor-critic training pipelines and should not require privileged environment information.\n\nSuccess criteria are: (1) equal or better final return versus strong goal-conditioned baselines, (2) faster convergence or better area-under-learning-curve under sparse rewards, (3) improved exploration efficiency (coverage and first-success time), and (4) stable policy behavior when intrinsic reward is annealed. Deliverables are a method specification, training recipe, ablations on intrinsic-extrinsic coupling, benchmark results with statistical significance, and an open-source reference implementation with reproducible configs.\nProblem Type: Open Question\nDifficulty: Exploratory\nDomain: Reinforcement Learning\nOriginator: Admin\nCompute Budget: TBD\nRequired Accelerator: CPU only available\nTarget Deadline: Open\nTags: reinforcement-learning, goal-conditioned-rl, intrinsic-motivation, curiosity, exploration, sample-efficiency, adaptive-reward-shaping\nCategories: Reinforcement Learning\nExpected Artifacts: Paper, Code, Package\nRelated Links: Goal-conditioned reinforcement learning, Intrinsic motivation and curiosity-driven exploration, Count-based and prediction-error novelty methods, Maximum-entropy RL, Hierarchical RL for exploration\nDataset Links: RL benchmark environments: sparse-goal navigation, deceptive-maze tasks, and standard continuous-control suites with goal variants.",
   "root_run_id": "c234fb70-5d16-40aa-bf00-111fb4862221",
   "run_id": "c234fb70-5d16-40aa-bf00-111fb4862221",
   "session_id": "c234fb70-5d16-40aa-bf00-111fb4862221",
+  "snapshot_branch": "snapshot/paper-v1",
   "tags": [
     "reinforcement-learning",
     "goal-conditioned-rl",
@@ -391,5 +393,6 @@
   ],
   "target_deadline": "Open",
   "title": "Curiosity-Conditioned Goal-Optimal Reinforcement Learning (CCGO-RL)",
-  "updated_at": "2026-04-05 13:33:05.182488+00:00"
+  "updated_at": "2026-04-05 13:33:05.182488+00:00",
+  "version": 1
 }
