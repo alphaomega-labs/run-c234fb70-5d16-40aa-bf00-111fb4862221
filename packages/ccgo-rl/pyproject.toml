@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "omegaxiv-ccgo-rl"
+version = "0.1.0"
+description = "Reusable CCGO-RL simulation and symbolic validation toolkit."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.26",
+  "sympy>=1.12",
+]
+
+[project.urls]
+Homepage = "https://omegaxiv.com"
+Repository = "https://omegaxiv.com/packages/ccgo-rl"
+
+[project.scripts]
+ccgo-rl-mcp = "ccgo_rl.mcp_server:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

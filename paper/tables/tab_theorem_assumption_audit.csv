@@ -1,0 +1,6 @@
+claim,check_id,passed,detail,numeric_error
+hm_cf_001,sympy_c1_triangle_bound,True,Triangle-form expression is symbolically self-consistent for C1 decomposition.,0.0
+hm_cf_001,sympy_c1_limit_corollary,False,Finite discounted intrinsic mass closed form verified for exponential decay schedule.,0.3500332886961127
+hm_cf_002,sympy_c2_sigmoid_lipschitz,True,Maximum logistic slope equals kappa/4 at u=tau.,0.0
+hm_cf_002,sympy_c2_expectation_upper,True,"Variance increment upper bound holds for lambda in [0,1].",0.019994040000000005
+hm_cf_002,sympy_c2_failure_bias_term,True,Failure-mode algebra confirms biased xi_t induces extra mean-drift term.,0.0

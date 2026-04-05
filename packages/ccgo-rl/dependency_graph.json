@@ -1,0 +1,58 @@
+{
+  "root": {
+    "name": "omegaxiv-ccgo-rl",
+    "version": "0.1.0"
+  },
+  "dependencies": [
+    {
+      "name": "mpmath",
+      "version": "1.3.0",
+      "specifiers": [
+        "<1.4,>=1.1.0"
+      ],
+      "required_by": [
+        "sympy"
+      ],
+      "transitive": true
+    },
+    {
+      "name": "numpy",
+      "version": "2.4.4",
+      "specifiers": [
+        ">=1.26"
+      ],
+      "required_by": [
+        "omegaxiv-ccgo-rl"
+      ],
+      "transitive": false
+    },
+    {
+      "name": "sympy",
+      "version": "1.14.0",
+      "specifiers": [
+        ">=1.12"
+      ],
+      "required_by": [
+        "omegaxiv-ccgo-rl"
+      ],
+      "transitive": false
+    }
+  ],
+  "edges": [
+    {
+      "from": "omegaxiv-ccgo-rl",
+      "to": "numpy",
+      "spec": ">=1.26"
+    },
+    {
+      "from": "omegaxiv-ccgo-rl",
+      "to": "sympy",
+      "spec": ">=1.12"
+    },
+    {
+      "from": "sympy",
+      "to": "mpmath",
+      "spec": "<1.4,>=1.1.0"
+    }
+  ]
+}

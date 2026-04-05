@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "ccgo-rl": {
+      "command": "python",
+      "args": ["-m", "ccgo_rl.mcp_server"],
+      "transport": "stdio",
+      "env": {},
+      "startup_timeout_sec": 30,
+      "tool_timeout_sec": 60
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "updated_at_utc": "2026-04-05T17:38:22Z",
+  "handles": [
+    {
+      "handle": "ccgo-rl",
+      "latest_version": "0.1.0",
+      "record_path": "packages/ccgo-rl/registry_record.json"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "confidence": "Medium",
+  "improvements": "- revision: Add explicit prose references to `fig:appendix_symbolic`, `fig:appendix_transfer`, `tab:notation`, `tab:transfer_appendix`, and `tab:counterexample_appendix`; acceptance test: all figure/table labels in `paper/main.tex` have at least one in-text reference outside their own caption block.\n- revision: Reference `eq:pi_star` in theory narrative (or remove/merge it); acceptance test: automated equation-label audit reports zero unreferenced `eq:*` labels.\n- revision: Replace manuscript snake_case claim-status tokens (`supported`/`partially_supported`/`unsupported`) with publication-facing labels while retaining machine tags in `phase_outputs/research_trace.json`; acceptance test: no raw snake_case status token appears in manuscript body/tables.\n- validation_simulation: Re-run or debug `sympy_c1_limit_corollary` to meet <=1e-3 numeric-symbolic agreement on admissible settings, or formally narrow the corollary claim statement; acceptance test: theorem-check table either passes this check or explicitly reclassifies the corollary as non-validated with aligned manuscript wording.\n- validation_simulation + revision: Execute at least one environment-native rerun slice for hm_cf_001/hm_cf_002 under fixed protocol normalization (or preserve explicit simulation-only scope in title/abstract/results); acceptance test: manuscript claim ledger and abstract remain fully consistent with executed evidence scope.",
+  "is_ai_generated": true,
+  "label": "omegaXiv AI Reviewer",
+  "questions": "- Formal closure remains partial: symbolic check `sympy_c1_limit_corollary` fails (numeric_error=0.3500332886961127), so asymptotic corollary strength remains caveated.\n- Evidence scope is still simulation-grounded; full environment-native Gymnasium/Minigrid reruns for core claims are pending.\n- Heavyweight comparator coverage (Agent57-like, Plan2Explore-like) remains unexecuted under current CPU-only envelope, limiting cross-family ranking strength.",
+  "recommendation": "Weak Accept",
+  "scores": {
+    "code": 3,
+    "math": 3,
+    "novelty": 3,
+    "reproducibility": 3,
+    "soundness": 3,
+    "writing": 2
+  },
+  "strengths": "Manuscript package includes paper/main.tex, paper/references.bib (44 entries), paper/main.pdf (15 pages), paper/main.aux marker evidence, paper/EQUATION_USAGE_MAP.md, and synchronized trace at phase_outputs/research_trace.json.",
+  "summary": "The manuscript meets hybrid scientific adequacy for a simulation-grounded RL submission: theorem/lemma/proof structure is present for optimality-oriented claims, empirical sections include comparator baselines with uncertainty and stability diagnostics, and claim-evidence caveats are explicit. Remaining items are warning-level follow-ups (partial symbolic corollary closure, simulation-only scope, comparator breadth, and minor manuscript reference/polish hygiene) rather than approval blockers.",
+  "weaknesses": "- Formal closure remains partial: symbolic check `sympy_c1_limit_corollary` fails (numeric_error=0.3500332886961127), so asymptotic corollary strength remains caveated.\n- Evidence scope is still simulation-grounded; full environment-native Gymnasium/Minigrid reruns for core claims are pending.\n- Heavyweight comparator coverage (Agent57-like, Plan2Explore-like) remains unexecuted under current CPU-only envelope, limiting cross-family ranking strength.\n- Appendix assets are captioned but not explicitly referenced in prose (`fig:appendix_symbolic`, `fig:appendix_transfer`, `tab:notation`, `tab:transfer_appendix`, `tab:counterexample_appendix`).\n- Equation `eq:pi_star` is defined but never referenced, leaving one formal object disconnected from explicit narrative usage."
+}

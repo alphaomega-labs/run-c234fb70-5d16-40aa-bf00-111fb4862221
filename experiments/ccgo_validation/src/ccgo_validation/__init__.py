@@ -1,0 +1,1 @@
+"""CCGO validation package."""

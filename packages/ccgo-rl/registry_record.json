@@ -1,0 +1,18 @@
+{
+  "handle": "ccgo-rl",
+  "distribution_name": "omegaxiv-ccgo-rl",
+  "version": "0.1.0",
+  "import_name": "ccgo_rl",
+  "install_target": "packages/ccgo-rl/dist/omegaxiv_ccgo_rl-0.1.0-py3-none-any.whl",
+  "mcp": {
+    "server_name": "ccgo-rl",
+    "transport": "stdio",
+    "entrypoint": {
+      "kind": "python_module",
+      "module": "ccgo_rl.mcp_server",
+      "args": []
+    },
+    "env": {}
+  },
+  "updated_at_utc": "2026-04-05T17:38:22Z"
+}

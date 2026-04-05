@@ -1,0 +1,7532 @@
+Count-Based Exploration with Neural Density Models
+
+Georg Ostrovski 1 Marc G. Bellemare 1 Aäron van den Oord 1 Rémi Munos 1
+
+arXiv:1703.01310v2 [cs.AI] 14 Jun 2017
+
+Abstract
+Bellemare et al. (2016) introduced the notion of
+a pseudo-count, derived from a density model,
+to generalize count-based exploration to nontabular reinforcement learning. This pseudocount was used to generate an exploration bonus
+for a DQN agent and combined with a mixed
+Monte Carlo update was sufficient to achieve
+state of the art on the Atari 2600 game Montezuma’s Revenge. We consider two questions
+left open by their work: First, how important is
+the quality of the density model for exploration?
+Second, what role does the Monte Carlo update
+play in exploration? We answer the first question
+by demonstrating the use of PixelCNN, an advanced neural density model for images, to supply a pseudo-count. In particular, we examine the
+intrinsic difficulties in adapting Bellemare et al.’s
+approach when assumptions about the model are
+violated. The result is a more practical and general algorithm requiring no special apparatus. We
+combine PixelCNN pseudo-counts with different
+agent architectures to dramatically improve the
+state of the art on several hard Atari games. One
+surprising finding is that the mixed Monte Carlo
+update is a powerful facilitator of exploration in
+the sparsest of settings, including Montezuma’s
+Revenge.
+
+1. Introduction
+Exploration is the process by which an agent learns about
+its environment. In the reinforcement learning framework,
+this involves reducing the agent’s uncertainty about the
+environment’s transition dynamics and attainable rewards.
+From a theoretical perspective, exploration is now wellunderstood (e.g. Strehl & Littman, 2008; Jaksch et al.,
+2010; Osband et al., 2016), and Bayesian methods have
+1
+DeepMind, London, UK. Correspondence to: Georg Ostrovski <ostrovski@google.com>.
+
+Proceedings of the 34 th International Conference on Machine
+Learning, Sydney, Australia, PMLR 70, 2017. Copyright 2017
+by the author(s).
+
+been successfully demonstrated in a number of settings
+(Deisenroth & Rasmussen, 2011; Guez et al., 2012). On the
+other hand, practical algorithms for the general case remain
+scarce; fully Bayesian approaches are usually intractable in
+large state spaces, and the count-based method typical of
+theoretical results is not applicable in the presence of value
+function approximation.
+Recently, Bellemare et al. (2016) proposed the notion of
+pseudo-count as a reasonable generalization of the tabular setting considered in the theory literature. The pseudocount is defined in terms of a density model ρ trained on
+the sequence of states experienced by an agent:
+N̂(x) = ρ(x)n̂(x),
+where n̂(x) can be thought of as a total pseudo-count computed from the model’s recoding probability ρ0 (x), the
+probability of x computed immediately after training on
+x. As a practical application the authors used the pseudocounts derived from the simple CTS density model (Bellemare et al., 2014) to incentivize exploration in Atari 2600
+agents. One of the main outcomes of their work was substantial empirical progress on the infamously hard game
+M ONTEZUMA’ S R EVENGE.
+Their method critically hinged on several assumptions
+regarding the density model: 1) the model should be
+learning-positive, i.e. the probability assigned to a state x
+should increase with training; 2) it should be trained online, using each sample exactly once; and 3) the effective
+model step-size should decay at a rate of n−1 . Part of their
+empirical success also relied on a mixed Monte Carlo/QLearning update rule, which permitted fast propagation of
+the exploration bonuses.
+In this paper, we set out to answer several research questions related to these modelling choices and assumptions:
+1. To what extent does a better density model give rise to
+better exploration?
+2. Can the above modelling assumptions be relaxed
+without sacrificing exploration performance?
+3. What role does the mixed Monte Carlo update play in
+successfully incentivizing exploration?
+
+Count-Based Exploration with Neural Density Models
+
+In particular, we explore the use of PixelCNN (van den
+Oord et al., 2016b;a), a state-of-the-art neural density
+model. We examine the challenges posed by this approach:
+Model choice. Performing two evaluations and one model
+update at each agent step (to compute ρ(x) and ρ0 (x)) can
+be prohibitively expensive. This requires the design of a
+simplified – yet sufficiently expressive and accurate – PixelCNN architecture.
+Model training. A CTS model can naturally be trained
+from sequentially presented, correlated data samples.
+Training a neural model in this online fashion requires
+more careful attention to the optimization procedure to prevent overfitting and catastrophic forgetting (French, 1999).
+Model use. The theory of pseudo-counts requires the density model’s rate of learning to decay over time. Optimization of a neural model, however, imposes constraints on the
+step-size regime which cannot be violated without deteriorating effectiveness and stability of training.
+The concept of intrinsic motivation has made a recent resurgence in reinforcement learning research, in great part
+due to a dissatisfaction with -greedy and Boltzmann policies. Of note, Tang et al. (2016) maintain an approximate
+count by means of hash tables over features, which in the
+pseudo-count framework corresponds to a hash-based density model. Houthooft et al. (2016) used a second-order
+Taylor approximation of the prediction gain to drive exploration in continuous control. As research moves towards
+ever more complex environments, we expect the trend towards more intrinsically motivated solutions to continue.
+
+2. Background
+2.1. Pseudo-Count and Prediction Gain
+Here we briefly introduce notation and results, referring the
+reader to (Bellemare et al., 2016) for technical details.
+Let ρ be a density model on a finite space X , and ρn (x) the
+probability assigned by the model to x after being trained
+on a sequence of states x1 , . . . , xn . Assume ρn (x) > 0
+for all x, n. The recoding probability ρ0n (x) is then the
+probability the model would assign to x if it were trained on
+that same x one more time. We call ρ learning-positive if
+ρ0n (x) ≥ ρn (x) for all x1 , . . . , xn , x ∈ X . The prediction
+gain (PG) of ρ is
+PGn (x) = log ρ0n (x) − log ρn (x).
+
+(1)
+
+A learning-positive ρ implies PGn (x) ≥ 0 for all x ∈ X .
+For learning-positive ρ, we define the pseudo-count as
+N̂n (x) =
+
+ρn (x)(1 − ρ0n (x))
+,
+ρ0n (x) − ρn (x)
+
+derived from postulating that a single observation of x ∈ X
+
+should lead to a unit increase in pseudo-count:
+ρn (x) =
+
+N̂n (x)
+,
+n̂
+
+ρ0n (x) =
+
+N̂n (x) + 1
+,
+n̂ + 1
+
+where n̂ is the pseudo-count total. The pseudo-count generalizes the usual state visitation count function Nn (x).
+Under certain assumptions on ρn , pseudo-counts grow
+approximately linearly with real counts. Crucially, the
+pseudo-count can be approximated using the prediction
+gain of the density model:
+
+−1
+N̂n (x) ≈ ePGn (x) − 1
+.
+Its main use is to define an exploration bonus. We consider
+a reinforcement learning (RL) agent interacting with an environment that provides observations and extrinsic rewards
+(see Sutton & Barto, 1998, for a thorough exposition of the
+RL framework). To the reward at step n we add the bonus
+r+ (x) := (N̂n (x))−1/2 ,
+which incentivizes the agent to try to re-experience surprising situations. Quantities related to prediction gain
+have been used for similar purposes in the intrinsic motivation literature (Lopes et al., 2012), where they measure
+an agent’s learning progress (Oudeyer et al., 2007). Although the pseudo-count bonus is close to the prediction
+gain, it is asymptotically more conservative and supported
+by stronger theoretical guarantees.
+2.2. Density Models for Images
+The CTS density model (Bellemare et al., 2014) is based
+on the namesake algorithm, Context Tree Switching (Veness et al., 2012), a Bayesian variable-order Markov model.
+In its simplest form, the model takes as input a 2D image
+and assigns to it a probability according to the product of
+location-dependent L-shaped filters, where the prediction
+of each filter is given by a CTS algorithm trained on past
+images. In Bellemare et al. (2016), this model was applied to 3-bit greyscale, 42 × 42 downsampled Atari 2600
+frames (Fig. 1). The CTS model presents advantages in
+terms of simplicity and performance but is limited in expressiveness, scalability, and data efficiency.
+In recent years, neural generative models for images have
+achieved impressive successes in their ability to generate
+diverse images in various domains (Kingma & Welling,
+2013; Rezende et al., 2014; Gregor et al., 2015; Goodfellow et al., 2014). In particular, van den Oord et al.
+(2016b;a) introduced PixelCNN, a fully convolutional neural network composed of residual blocks with multiplicative gating units, which models pixel probabilities conditional on previous pixels (in the usual top-left to bottomright raster-scan order) by using masked convolution fil-
+
+Count-Based Exploration with Neural Density Models
+
+pling ratios c1 , c2 , . . . to replace δ with the error term
+!
+∞
+t
+X
+Y
+δR ETRACE (x, a) :=
+γt
+cs δ(xt , at ),
+t=0
+
+Original Frame (160x210)
+
+3-bit Greyscale (42x42)
+
+Figure 1. Atari frame preprocessing (Bellemare et al., 2016).
+
+ters. This model achieved state-of-the-art modelling performance on standard datasets, paired with the computational
+efficiency of a convolutional feed-forward network.
+
+s=1
+
+effectively mixing in TD-errors from all future time steps.
+Munos et al. showed that Retrace(λ) is safe (does not diverge when trained on data from an arbitrary behaviour policy), and efficient (makes the most of multi-step returns).
+
+3. Using PixelCNN for Exploration
+As mentioned in the Introduction, the theory of using density models for exploration makes several assumptions that
+translate into concrete requirements for an implementation:
+
+2.3. Multi-Step RL Methods
+A distinguishing feature of reinforcement learning is that
+the agent “learns on the basis of interim estimates” (Sutton,
+1996). For example, the Q-Learning update rule is
+Q(x, a) ← Q(x, a)
++ α [r(x, a) + γ maxa0 Q(x0 , a0 ) − Q(x, a)],
+{z
+}
+|
+δ(x,a)
+
+linking the reward r and next-state value function Q(x0 , a0 )
+to the current state value function Q(x, a). This particular
+form is the stochastic update rule with step-size α and involves the TD-error δ. In the approximate reinforcement
+learning setting, such as when Q(x, a) is represented by a
+neural network, this update is converted into a loss to be
+minimized, most commonly the squared loss δ 2 (x, a).
+It is well known that better performance, both in terms of
+learning efficiency and approximation error, is attained by
+multi-step methods (Sutton, 1996; Tsitsiklis & van Roy,
+1997). These methods interpolate between one-step methods (Q-Learning) and the Monte-Carlo update
+"∞
+#
+X
+t
+Q(x, a) ← Q(x, a) + α
+γ r(xt , at ) − Q(x, a) ,
+
+(a) The density model should be trained completely online, i.e. exactly once on each state experienced by the
+agent, in the given sequential order.
+(b) The prediction gain (PG) should decay at a rate n−1
+to ensure that pseudo-counts grow approximately linearly with real counts.
+(c) The density model should be learning-positive.
+Simultaneously, a partly competing set of requirements
+are posed by the practicalities of training a neural density
+model and using it as part of an RL agent:
+(d) For stability, efficiency, and to avoid catastrophic forgetting in the context of a drifting data distribution,
+it is advantageous to train a neural model in minibatches, drawn randomly from a diverse dataset.
+(e) For effective training, a certain optimization regime
+(e.g. a fixed learning rate schedule) has to be followed.
+(f) The density model must be computationally
+lightweight, to allow computing the PG (two
+model evaluations and one update) as part of every
+training step of an RL agent.
+
+t=0
+
+|
+
+{z
+
+δMC (x,a)
+
+}
+
+where x0 , a0 , x1 , a1 , . . . is a sample path through the environment beginning in (x, a). To achieve their success on
+the hardest Atari 2600 games, Bellemare et al. (2016) used
+the mixed Monte-Carlo update (MMC)
+Q(x, a) ← Q(x, a) + α [(1 − β)δ(x, a) + βδMC (x, a)] ,
+with β ∈ [0, 1]. This choice was made for “computational and implementational simplicity”, and is a particularly coarse multi-step method. A better multi-step method
+is the recent Retrace(λ) algorithm (Munos et al., 2016).
+Retrace(λ) uses a product of truncated importance sam-
+
+We investigate how to best resolve these tensions in the
+context of the Arcade Learning Environment (Bellemare
+et al., 2013), a suite of benchmark Atari 2600 games.
+3.1. Designing a Suitable Density Model
+Driven by (f) and aiming for an agent with computational
+performance comparable to DQN, we design a slim variant of the PixelCNN network. Its core is a stack of 2 gated
+residual blocks with 16 feature maps (compared to 15 residual blocks with 128 feature maps in vanilla PixelCNN). As
+was done with the CTS model, images are downsampled to
+42 × 42 and quantized to 3-bit greyscale. See Appendix A
+for technical details.
+
+Count-Based Exploration with Neural Density Models
+
+Freeway
+
+online
+random permutation
+random samples
+
+150
+100
+2000
+
+4000
+
+6000
+
+8000
+
+Model Updates
+
+Montezuma's Revenge
+
+3500
+
+LR: 0. 001, PG: 0. 1 · n −1/2 · PGn
+LR: 0. 001, PG: 0. 01 · PGn
+
+3000
+
+200
+
+0
+
+Pong
+
+10 4
+
+10000 12000
+
+Average Score
+
+250
+
+PixelCNN Log Loss
+
+PixelCNN Log Loss
+
+300
+
+10 3
+
+10 2
+
+LR: 0. 1 · n −1/2 , PG: 0. 1 · n −1/2 · PGn
+LR: 0. 1 · n −1/2 , PG: 0. 01 · PGn
+
+2500
+2000
+1500
+1000
+500
+
+10 1
+0
+
+1000
+
+2000
+
+3000
+
+Frames
+
+4000
+
+5000
+
+0
+
+6000
+
+0
+
+20
+
+40
+
+60
+
+80
+
+Million Frames
+
+Average Log Loss
+
+Figure 2. Left: PixelCNN log loss on F REEWAY, when trained online, on a random permutation (single use of each frame) or on
+randomly drawn samples (with replacement, potentially using same frame multiple times) from the state sequence. To simulate the
+effect of non-stationarity, the agent’s policy changes every 4K updates. All training methods show qualitatively similar learning progress
+and stability. Middle: PixelCNN log loss over first 6K training frames on P ONG. Vertical dashed lines indicate episode ends. The
+coinciding loss spikes are the density model’s ‘surprise’ upon observing the distinctive green frame that sometimes occurs at the episode
+start. Right: DQN-PixelCNN training performance on M ONTEZUMA’ S R EVENGE as we vary learning rate and PG decay schedules.
+
+10 4
+
+Freeway
+
+Montezuma's Revenge
+
+10 4
+
+10 3
+
+10 3
+
+10 2
+
+10 2
+
+c · n −1
+c · n −1/2
+c
+
+10 1 -5 -4 -3 -2 -1 0 10 1 -5 -4 -3 -2 -1 0
+10 10 10 10 10 10
+10 10 10 10 10 10
+
+Initial Learning Rate c
+
+Initial Learning Rate c
+
+Figure 3. Model loss averaged over 10K frames, after 1M training
+frames, for constant, n−1 , and n−1/2 learning rate schedules. The
+smallest loss is achieved by a constant learning rate of 10−3 .
+
+3.2. Training the Density Model
+Instead of using randomized mini-batches, we train the
+density model completely online on the sequence of experienced states. Empirically we found that with minor tuning
+of optimization hyper-parameters we could train the model
+as robustly on a temporally correlated sequence of states as
+on a sequence with randomized order (Fig. 2(left)).
+
+acteristics (e.g. different gradient magnitudes), invalidating
+the assumptions underlying the optimization algorithm and
+leading to slower or unstable training.
+To determine a suitable online learning rate schedule, we
+train the model on a sequence of 1M frames of experience
+of a random-policy agent. We compare the loss achieved by
+training procedures following constant or decaying learning rate schedules, see Fig. 3. The lowest final training loss
+is achieved by a constant learning rate of 0.001 or a decaying learning rate of 0.1 · n−1/2 . We settled our choice
+on the constant learning rate schedule as it showed greater
+robustness with respect to the choice of initial learning rate.
+PixelCNN rapidly learns a sensible distribution over state
+space. Fig. 2(left) shows the model’s loss decaying as
+it learns to exploit image regularities. Spikes in its loss
+function quickly start to correspond to visually meaningful events, such as the starts of episodes (Fig. 2(middle)).
+A video of early density model training is provided in
+http://youtu.be/T6iaa8Z4eyE.
+Temp 1.0
+
+0
+
+Besides satisfying the theoretical requirement (a), completely online training of the density model has the advantage that ρ0n = ρn+1 , so that the model update performed
+for computing the PG need not be reverted1 .
+Another more subtle reason for avoiding mini-batch updates of the density model (despite (d)) is a practical optimization issue. The (necessarily online) computation of
+the PG involves a model update and hence the use of an
+optimizer. Advanced optimizers used with deep neural networks, like the RMSProp optimizer (Tieleman & Hinton,
+2012) used in this work, are stateful, tracking running averages of e.g. mean and variance of the model parameters.
+If the model is additionally trained from mini-batches, the
+two streams of updates may show different statistical char1
+The CTS model allows querying the PG cheaply, without incurring an actual update of model parameters.
+
+10
+
+10
+
+20
+
+20
+
+30
+
+30
+
+40
+
+0
+
+10
+
+20
+
+Temp 1.0
+
+0
+
+30
+
+40
+
+40
+
+0
+
+10
+
+20
+
+30
+
+40
+
+Figure 4. Samples after 25K steps. Left: CTS, right: PixelCNN.
+
+3.3. Computing the Pseudo-Count
+From the previous section we obtain a particular learning
+rate schedule that cannot be arbitrarily modified without
+deteriorating the model’s training performance or stability.
+To achieve the required PG decay (b), we instead replace
+PGn by cn · PGn with a suitably decaying sequence cn .
+
+Count-Based Exploration with Neural Density Models
+
+Regarding (c), it is hard to ensure learning-positiveness for
+a deep neural model, and a negative PG can occur whenever the optimizer ‘overshoots’ a local loss minimum. As
+a workaround, we threshold the PG value at 0. To summarize, the computed pseudo-count is
+
+
+
+−1
+N̂n (x) = exp c · n−1/2 · (PGn (x))+ − 1
+.
+
+Montezuma's Revenge
+
+Average Score
+
+3500
+
+2500
+
+14000
+12000
+10000
+
+2000
+
+8000
+
+1500
+
+6000
+
+DQN
+DQN-CTS
+DQN-PixelCNN
+
+4000
+
+1000
+
+2000
+
+500
+
+1300
+1200
+1100
+1000
+900
+800
+700
+600
+500
+400
+
+Private Eye
+
+16000
+
+DQN
+DQN-CTS
+DQN-PixelCNN
+
+3000
+
+0
+
+Average Score
+
+In experiments comparing actual agent performance we
+empirically determined that in fact the constant learning
+rate 0.001, paired with a PG decay cn = c · n−1/2 , obtains
+the best exploration results on hard exploration games like
+M ONTEZUMA’ S R EVENGE, see Fig. 2(right). We find the
+model to be robust across 1-2 orders of magnitude for the
+value of c, and informally determine c = 0.1 to be a sensible configuration for achieving good results on a broad
+range of Atari 2600 games (see also Section 7).
+
+0
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+Asteroids
+
+2000
+
+0
+
+20
+
+40
+
+DQN
+DQN-CTS
+DQN-PixelCNN
+
+The DQN-CTS agent we compare against is derived from
+the one in (Bellemare et al., 2016). For better comparability, it is trained in the same online fashion as DQNPixelCNN, i.e. the PG is computed whenever we train the
+density model. By contrast, the original DQN-CTS queried
+the PG at the end of each episode.
+Unless stated otherwise, we always use the mixed Monte
+Carlo update (MMC) for the intrinsically motivated
+agents3 , but regular Q-Learning for the baseline DQN.
+Fig. 5 shows training curves of DQN compared to DQN2
+
+Unlike Bellemare et al. we use regular Q-Learning instead of
+Double Q-Learning (van Hasselt et al., 2016), as our early experiments showed no significant advantage of DoubleDQN with the
+PixelCNN-based exploration reward.
+3
+The use of MMC in a replay-based agent poses a minor complication, as the MC return is not available for replay until the end
+of an episode. For simplicity, in our implementation we disregard
+this detail and set the MC return to 0 for transitions from the most
+recent episode.
+
+100
+
+80
+
+100
+
+450
+400
+350
+
+DQN
+DQN-CTS
+DQN-PixelCNN
+
+250
+200
+150
+0
+
+20
+
+40
+
+60
+
+Million Frames
+
+80
+
+100
+
+100
+
+0
+
+20
+
+40
+
+60
+
+Million Frames
+
+Figure 5. DQN, DQN-CTS and DQN-PixelCNN on hard exploration games (top) and easier ones (bottom).
+
+6
+
+Having described our pseudo-count friendly adaptation of
+PixelCNN, we now study its performance on Atari games.
+To this end we augment the environment reward with a
+pseudo-count exploration bonus, yielding the combined reward r(x, a) + (N̂n (x))−1/2 . As usual for neural networkbased agents, we ensure the total reward lies in [−1, 1] by
+clipping larger values.
+
+Our first set of experiments provides the PixelCNN exploration bonus to a DQN agent (Mnih et al., 2015)2 . At each
+agent step, the density model receives a single frame, with
+which it simultaneously updates its parameters and outputs
+the PG. We refer to this agent as DQN-PixelCNN.
+
+80
+
+300
+
+4. Exploration in Atari 2600 Games
+
+4.1. DQN with PixelCNN Exploration Bonus
+
+60
+
+Berzerk
+
+500
+
+11
+
+3
+14
+
+Figure 6. Improvements (in % of AUC) of DQN-PixelCNN and
+DQN-CTS over DQN in 57 Atari games. Annotations indicate
+the number of hard exploration games with positive (right) and
+negative (left) improvement, respectively.
+
+CTS and DQN-PixelCNN. On the famous M ONTEZUMA’ S
+R EVENGE, both intrinsically motivated agents vastly outperform the baseline DQN. On other hard exploration
+games (P RIVATE E YE; or V ENTURE, appendix Fig. 15),
+DQN-PixelCNN achieves state of the art results, substantially outperforming DQN and DQN-CTS. The other two
+games shown (A STEROIDS, B ERZERK) pose easier exploration problems, where the reward bonus should not provide large improvements and may have a negative effect by
+skewing the reward landscape. Here, DQN-PixelCNN behaves more gracefully and still outperforms DQN-CTS. We
+hypothesize this is due to a qualitative difference between
+the models, see Section 5.
+Overall PixelCNN provides the DQN agent with a larger
+advantage than CTS, and often accelerates or stabilizes
+training even when not affecting peak performance. Out of
+
+Count-Based Exploration with Neural Density Models
+
+57 Atari games, DQN-PixelCNN outperforms DQN-CTS
+in 52 games by maximum achieved score, and 51 by AUC
+(methodology in Appendix B). See Fig. 6 for a high level
+comparison (appendix Fig. 15 for full training graphs). The
+greatest gains from using either exploration bonus are observed in games categorized as hard exploration games in
+the ‘taxonomy of exploration’ in (Bellemare et al., 2016,
+reproduced in Appendix D), specifically in the most challenging sparse reward games (e.g. M ONTEZUMA’ S R E VENGE, P RIVATE E YE, V ENTURE ).
+4.2. A Multi-Step RL Agent with PixelCNN
+Empirical practitioners know that techniques beneficial for
+one agent architecture often can be detrimental for a different algorithm. To demonstrate the wide applicability
+of the PixelCNN exploration bonus, we also evaluate it
+with the more recent Reactor agent4 (Gruslys et al., 2017).
+This replay-based actor-critic agent represents its policy
+and value function by a recurrent neural network and, crucially, uses the multi-step Retrace(λ) algorithm for policy
+evaluation, replacing the MMC we use in DQN-PixelCNN.
+To reduce impact on computational efficiency of this agent,
+we sub-sample intrinsic rewards: we perform updates of
+the PixelCNN model and compute the reward bonus on
+(randomly chosen) 25% of all steps, leaving the agent’s reward unchanged on other steps. We use the same PG decay
+schedule of 0.1n−1/2 , with n the number of model updates.
+Gravitar
+
+Average Score
+
+2000
+1500
+1000
+
+DQN
+DQN-PixelCNN
+Reactor
+Reactor-PixelCNN
+
+30000
+25000
+20000
+15000
+10000
+
+500
+
+% Improvement Reactor-PixelCNN over Reactor (by AUC)
+Easy exploration (40)
+Hard exploration, dense reward (10)
+Hard exploration, sparse reward (7)
+
+250%
+200%
+150%
+100%
+50%
+0%
+
+Figure 8. Improvements (in % of AUC) of Reactor-PixelCNN
+over Reactor in 57 Atari games.
+
+However, on hard exploration games with sparse rewards,
+Reactor seems unable to make full use of the exploration
+bonus. We believe this is because, in very sparse settings,
+the propagation of reward information across long horizons becomes crucial. The MMC takes one extreme of
+this view, directly learning from the observed returns. The
+Retrace(λ) algorithm, on the other hand, has an effective
+horizon which depends on λ and, critically, the truncated
+importance sampling ratio. This ratio results in the discarding of trajectories which are off-policy, i.e. unlikely under
+the current policy. We hypothesize that the very goal of the
+Retrace(λ) algorithm to learn cautiously is what prevents it
+from taking full advantage of the exploration bonus!
+
+5000
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Road Runner
+
+60000
+
+Average Score
+
+H.E.R.O.
+
+35000
+
+DQN
+DQN-PixelCNN
+Reactor
+Reactor-PixelCNN
+
+lar, Reactor-PixelCNN enjoys better sample efficiency (in
+terms of area under the curve, AUC) than vanilla Reactor.
+We hypothesize that, like other policy gradient algorithms,
+Reactor generally suffers from weaker exploration than its
+value-based counterpart DQN. This aspect is much helped
+by the exploration bonus, boosting the agent’s sample efficiency in many environments.
+
+40000
+30000
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+5. Quality of the Density Model
+
+Time Pilot
+
+DQN
+DQN-PixelCNN
+Reactor
+Reactor-PixelCNN
+
+20000
+15000
+10000
+
+20000
+
+5000
+
+10000
+0
+
+0
+
+25000
+
+DQN
+DQN-PixelCNN
+Reactor
+Reactor-PixelCNN
+
+50000
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+Million Frames
+
+120
+
+140
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+Million Frames
+
+120
+
+140
+
+Figure 7. Reactor/Reactor-PixelCNN and DQN/DQN-PixelCNN
+training performance (averaged over 3 seeds).
+
+Training curves for the Reactor/Reactor-PixelCNN agent
+compared to DQN/DQN-PixelCNN are shown in Fig. 7.
+The baseline Reactor agent is superior to the DQN agent,
+obtaining higher scores and learning faster in about 50 out
+of 57 games. It is further improved on a large fraction of
+games by the PixelCNN exploration reward, see Fig. 8 (full
+training graphs in appendix Fig. 16).
+The effect of the exploration bonus is rather uniform, yielding improvements on a broad range of games. In particu4
+
+The exact agent variant is referred to as ‘β-LOO’ with β = 1.
+
+PixelCNN can be expected to be more expressive and accurate than the less advanced CTS model, and indeed, samples generated after training are somewhat higher quality
+(Fig. 4). However, we are not using the generative function
+of the models when computing an exploration bonus, and
+a better generative model does not necessarily give rise to
+better probability estimates (Theis et al., 2016).
+
+CTS
+
+CTS
+
+PixelCNN
+
+PixelCNN
+
+Figure 9. PG on M ONTEZUMA’ S R EVENGE (log scale).
+
+Count-Based Exploration with Neural Density Models
+
+Another distinguishing feature of PixelCNN is its nondecaying step-size. The per-step PG never completely vanishes, as the model tracks the most recent data. This provides an unexpected benefit: the agent remains mildly surprised by significant state changes, e.g. switching rooms in
+M ONTEZUMA’ S R EVENGE. These persistent rewards act
+as milestones that the agent learns to return to. This is illustrated in Fig. 10, depicting the intrinsic reward over the
+course of an episode. The agent routinely revisits the righthand side of the torch room, not because it leads to reward
+but just to “take in the sights”. A video of the episode is
+provided at http://youtu.be/232tOUPKPoQ.5
+
+Bank Heist
+
+Average Score
+
+500
+
+Ms. Pacman
+
+2500
+
+400
+
+2000
+
+300
+
+1500
+
+200
+
+1000
+
+DQN (w/o MC)
+DQN (with MC)
+DQN-PixelCNN (w/o MC)
+DQN-PixelCNN (with MC)
+
+100
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+20000
+15000
+10000
+
+DQN (w/o MC)
+DQN (with MC)
+DQN-PixelCNN (w/o MC)
+DQN-PixelCNN (with MC)
+
+5000
+0
+
+0
+
+20
+
+40
+
+60
+
+Million Frames
+
+80
+
+DQN (w/o MC)
+DQN (with MC)
+DQN-PixelCNN (w/o MC)
+DQN-PixelCNN (with MC)
+
+500
+
+H.E.R.O
+
+25000
+
+Average Score
+
+In Fig. 9 we compare the PG produced by the two models throughout 5K training steps. PixelCNN consistently
+produces PGs lower than CTS. More importantly, its PGs
+are smoother, exhibiting less variance between successive states, while showing more pronounced peaks at certain infrequent events. This yields a reward bonus that is
+less harmful in easy exploration games, while providing a
+strong signal in the case of novel or rare events.
+
+100
+
+0
+
+0
+
+16000
+14000
+12000
+10000
+8000
+6000
+4000
+2000
+0
+2000
+
+20
+
+40
+
+60
+
+80
+
+100
+
+Private Eye
+DQN (w/o MC)
+DQN (with MC)
+DQN-PixelCNN (w/o MC)
+DQN-PixelCNN (with MC)
+
+0
+
+20
+
+40
+
+60
+
+Million Frames
+
+80
+
+100
+
+Figure 11. Top: games where MMC completely explains the improved/decreased performance of DQN-PixelCNN compared to
+DQN. Bottom-left: MMC and PixelCNN show additive benefits.
+Bottom-right: hard exploration, sparse reward game – only combining MMC and PixelCNN bonus achieves training progress.
+
+important to note that the Monte Carlo return’s on-policy
+nature increases variance in the learning algorithm, and can
+prevent the algorithm’s convergence to the optimal policy
+when training off-policy. It can therefore be expected to
+adversely affect training performance in some games.
+
+Intrinsic Reward
+
+To distill the effect of the MMC on performance, we compare all four combinations of DQN with/without PixelCNN
+exploration bonus and with/without MMC. Fig. 11 shows
+the performance of these four agent variants (graphs for all
+games are shown in Fig. 17). These games were picked to
+illustrate several commonly occurring cases:
+
+Time Steps
+
+Figure 10. Intrinsic reward in M ONTEZUMA’ S R EVENGE.
+
+Lastly, PixelCNN’s convolutional nature is expected to be
+beneficial for its sample efficiency. In Appendix C we compare to a convolutional CTS and confirm that this explains
+part, but not all of PixelCNN’s advantage over vanilla CTS.
+
+6. Importance of the Monte Carlo Return
+Like for DQN-CTS, the success of DQN-PixelCNN hinges
+on the use of the mixed Monte Carlo update. The transient
+and vanishing nature of the exploration rewards requires
+the learning algorithm to latch on to these rapidly. The
+MMC serves this end as a simple multi-step method, helping to propagate reward information faster. An additional
+benefit lies in the fact that the Monte Carlo return helps
+bridging long horizons in environments where rewards are
+far apart and encountered rarely. On the other hand, it is
+5
+Another agent video on the game P RIVATE E YE can be found
+at http://youtu.be/kNyFygeUa2E.
+
+• MMC speeds up training and improves final performance significantly (examples: BANK H EIST, T IME
+P ILOT). In these games, MMC alone explains most or
+all of the improvement of DQN-PixelCNN over DQN.
+• MMC hurts performance (examples: M S . PAC -M AN,
+B REAKOUT). Here too, MMC alone explains most of
+the difference between DQN-PixelCNN and DQN.
+• MMC and PixelCNN reward bonus have a compounding effect (example: H.E.R.O.).
+Most importantly, the situation is rather different when we
+restrict our attention to the hardest exploration games with
+sparse rewards. Here the baseline DQN agent fails to make
+any training progress, and neither Monte Carlo return nor
+the exploration bonus alone provide any significant benefit.
+Their combination however grants the agent rapid training
+progress and allows it to achieve high performance.
+One effect of the exploration bonus in these games is to
+provide a denser reward landscape, enabling the agent to
+learn meaningful policies. Due to the transient nature of
+the exploration bonus, the agent needs to be able to learn
+from this reward signal faster than regular one-step methods allow, and MMC proves to be an effective solution.
+
+Count-Based Exploration with Neural Density Models
+
+Montezuma's Revenge
+
+4000
+3000
+2000
+1000
+0
+
+25000
+
+50
+
+100
+
+Million Frames
+
+150
+
+200
+
+20000
+15000
+10000
+
+0
+
+c = 0. 1
+c = 1. 0
+c = 10. 0
+
+1200
+1000
+
+5000
+0
+
+Venture
+
+1400
+
+c = 0. 1
+c = 1. 0
+c = 10. 0
+
+30000
+
+Average Score
+
+Average Score
+
+5000
+
+Private Eye
+
+35000
+
+c = 0. 1
+c = 1. 0
+c = 10. 0
+
+6000
+
+Average Score
+
+7000
+
+800
+600
+400
+200
+
+0
+
+50
+
+100
+
+150
+
+Million Frames
+
+0
+
+200
+
+0
+
+50
+
+100
+
+150
+
+Million Frames
+
+200
+
+Figure 12. DQN-PixelCNN, hard exploration games, different PG scales c · n−1/2 · PGn (c = 0.1, 1, 10) (5 seeds each).
+
+7. Pushing the Limits of Intrinsic Motivation
+
+Fig. 12 shows DQN-PixelCNN performance on the hardest
+exploration games when the PG scale is increased by 12 orders of magnitude. The algorithm seems fairly robust
+across a wide range of scales: the main effect of increasing
+this parameter is to trade off exploration (seeking maximal
+reward) with exploitation (optimizing the current policy).
+As expected, a higher PG scale translates to stronger exploration: several runs obtain record peak scores (900 in
+G RAVITAR, 6,600 in M ONTEZUMA’ S R EVENGE, 39,000
+in P RIVATE E YE, 1,500 in V ENTURE) surpassing the state
+of the art by a substantial margin (for previously published
+results, see Appendix D). Aggressive scaling speeds up the
+agent’s exploration and achieves peak performance rapidly,
+but can also deteriorate its stability and long-term performance. Note that in practice, because of the non-decaying
+step-size the PG does not vanish. After reward clipping,
+an overly inflated exploration bonus can therefore become
+essentially constant, no longer providing a useful intrinsic
+motivation signal to the agent.
+Another way of creating an entirely curiosity-driven agent
+is to ignore the environment reward altogether and train
+based on the exploration reward only, see Fig. 13. Remarkably, the curiosity signal alone is sufficient to train a highperforming agent (measured by environment reward!).
+It is worth noting that agents with exploration bonus seem
+to ‘never stop exploring’: for different seeds, the agents
+make learning progress at very different times during training, a qualitative difference to vanilla DQN.
+
+8. Conclusion
+We demonstrated the use of PixelCNN for exploration and
+showed that its greater accuracy and expressiveness translate into a more useful exploration bonus than that obtained
+from previous models. While the current theory of pseudo-
+
+c = 1. 0
+c = 5. 0
+c = 10. 0
+c = 50. 0
+
+Average Score
+
+2000
+1500
+1000
+500
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+Million Frames
+
+120
+
+140
+
+160
+
+120
+
+140
+
+160
+
+Private Eye
+
+20000
+
+Average Score
+
+In this section we explore the idea of a ‘maximally curious’
+agent, whose reward function is dominated by the exploration bonus. For that we increase the PG scale, previously
+chosen conservatively to avoid adverse effects on easy exploration games.
+
+Montezuma's Revenge
+
+2500
+
+c = 1. 0
+c = 5. 0
+c = 10. 0
+c = 50. 0
+
+15000
+
+10000
+
+5000
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+Million Frames
+
+Figure 13. DQN-PixelCNN trained from intrinsic reward only
+(3 seeds for each configuration).
+
+counts puts stringent requirements on the density model,
+we have shown that PixelCNN can be used in a simpler and
+more general setup, and can be trained completely online.
+It also proves to be widely compatible with both valuefunction and policy-based RL algorithms.
+In addition to pushing the state of the art on the hardest
+exploration problems among the Atari 2600 games, PixelCNN improves speed of learning and stability of baseline
+RL agents across a wide range of games. The quality of its
+reward bonus is evidenced by the fact that on sparse reward
+games, this signal alone suffices to learn to achieve significant scores, creating a truly intrinsically motivated agent.
+Our analysis also reveals the importance of the Monte
+Carlo return for effective exploration. The comparison with
+more sophisticated but fixed-horizon multi-step methods
+shows that its significance lies both in faster learning in the
+context of a useful but transient reward function, as well as
+bridging reward gaps in environments where extrinsic and
+intrinsic rewards are, or quickly become, extremely sparse.
+
+Count-Based Exploration with Neural Density Models
+
+Acknowledgements
+The authors thank Tom Schaul, Olivier Pietquin, Ian Osband, Sriram Srinivasan, Tejas Kulkarni, Alex Graves,
+Charles Blundell, and Shimon Whiteson for invaluable
+feedback on the ideas presented here, and Audrunas
+Gruslys especially for providing the Reactor agent.
+
+References
+Bellemare, Marc, Veness, Joel, and Talvitie, Erik. Skip
+context tree switching. Proceedings of the International
+Conference on Machine Learning, 2014.
+Bellemare, Marc G., Naddaf, Yavar, Veness, Joel, and
+Bowling, Michael. The arcade learning environment:
+An evaluation platform for general agents. Journal of
+Artificial Intelligence Research, 47:253–279, 2013.
+Bellemare, Marc G., Srinivasan, Sriram, Ostrovski, Georg,
+Schaul, Tom, Saxton, David, and Munos, Rémi. Unifying count-based exploration and intrinsic motivation.
+Advances in Neural Information Processing Systems,
+2016.
+Deisenroth, Marc P. and Rasmussen, Carl E. PILCO:
+A model-based and data-efficient approach to policy
+search. In Proceedings of the International Conference
+on Machine Learning, 2011.
+French, Robert M. Catastrophic forgetting in connectionist
+networks. Trends in cognitive sciences, 3(4):128–135,
+1999.
+Goodfellow, Ian, Pouget-Abadie, Jean, Mirza, Mehdi, Xu,
+Bing, Warde-Farley, David, Ozair, Sherjil, Courville,
+Aaron, and Bengio, Yoshua. Generative adversarial nets.
+In Advances in Neural Information Processing Systems,
+2014.
+Gregor, Karol, Danihelka, Ivo, Graves, Alex, Rezende,
+Danilo, and Wierstra, Daan. Draw: A recurrent neural
+network for image generation. In Proceedings of the International Conference on Machine Learning, 2015.
+Gruslys, Audrunas, Azar, Mohammad Gheshlaghi, Bellemare, Marc G., and Munos, Rémi. The Reactor: A
+sample-efficient actor-critic architecture. arXiv preprint
+arXiv:1704.04651, 2017.
+Guez, Arthur, Silver, David, and Dayan, Peter. Efficient
+bayes-adaptive reinforcement learning using samplebased search. In Advances in Neural Information Processing Systems, 2012.
+Houthooft, Rein, Chen, Xi, Duan, Yan, Schulman, John,
+De Turck, Filip, and Abbeel, Pieter. Variational information maximizing exploration. In Advances in Neural
+Information Processing Systems (NIPS), 2016.
+
+Jaksch, Thomas, Ortner, Ronald, and Auer, Peter. Nearoptimal regret bounds for reinforcement learning. Journal of Machine Learning Research, 11:1563–1600,
+2010.
+Kingma, Diederik P. and Welling, Max. Auto-encoding
+variational bayes. In Proceedings of the International
+Conference on Learning Representations, 2013.
+Lopes, Manuel, Lang, Tobias, Toussaint, Marc, and
+Oudeyer, Pierre-Yves. Exploration in model-based reinforcement learning by empirically estimating learning
+progress. In Advances in Neural Information Processing
+Systems, 2012.
+Mnih, Volodymyr, Kavukcuoglu, Koray, Silver, David,
+Rusu, Andrei A, Veness, Joel, Bellemare, Marc G.,
+Graves, Alex, Riedmiller, Martin, Fidjeland, Andreas K.,
+Ostrovski, Georg, et al. Human-level control through
+deep reinforcement learning. Nature, 518(7540):529–
+533, 2015.
+Munos, Rémi, Stepleton, Tom, Harutyunyan, Anna, and
+Bellemare, Marc G. Safe and efficient off-policy reinforcement learning. In Advances in Neural Information
+Processing Systems, 2016.
+Osband, Ian, van Roy, Benjamin, and Wen, Zheng. Generalization and exploration via randomized value functions. In Proceedings of the International Conference on
+Machine Learning, 2016.
+Oudeyer, Pierre-Yves, Kaplan, Frédéric, and Hafner, Verena V. Intrinsic motivation systems for autonomous
+mental development. IEEE Transactions on Evolutionary Computation, 11(2):265–286, 2007.
+Rezende, Danilo Jimenez, Mohamed, Shakir, and Wierstra, Daan. Stochastic backpropagation and approximate
+inference in deep generative models. In Proceedings
+of The International Conference on Machine Learning,
+2014.
+Strehl, Alexander L. and Littman, Michael L. An analysis
+of model-based interval estimation for Markov decision
+processes. Journal of Computer and System Sciences, 74
+(8):1309 – 1331, 2008.
+Sutton, Richard S. Generalization in reinforcement learning: Successful examples using sparse coarse coding.
+In Advances in Neural Information Processing Systems,
+1996.
+Sutton, Richard S. and Barto, Andrew G. Reinforcement
+learning: An introduction. MIT Press, 1998.
+Tang, Haoran, Houthooft, Rein, Foote, Davis, Stooke,
+Adam, Chen, Xi, Duan, Yan, Schulman, John, De Turck,
+
+Count-Based Exploration with Neural Density Models
+
+Filip, and Abbeel, Pieter. #Exploration: A study of
+count-based exploration for deep reinforcement learning. arXiv preprint arXiv:1611.04717, 2016.
+Theis, Lucas, van den Oord, Aäron, and Bethge, Matthias.
+A note on the evaluation of generative models. In Proceedings of the International Conference on Learning
+Representations, 2016.
+Tieleman, Tijmen and Hinton, Geoffrey. RMSProp: divide
+the gradient by a running average of its recent magnitude. COURSERA. Lecture 6.5 of Neural Networks for
+Machine Learning, 2012.
+Tsitsiklis, John N. and van Roy, Benjamin. An analysis of
+temporal-difference learning with function approximation. IEEE Transactions on Automatic Control, 42(5):
+674–690, 1997.
+van den Oord, Aaron, Kalchbrenner, Nal, Espeholt, Lasse,
+Vinyals, Oriol, Graves, Alex, et al. Conditional image
+generation with PixelCNN decoders. In Advances in
+Neural Information Processing Systems, 2016a.
+van den Oord, Aaron, Kalchbrenner, Nal, and
+Kavukcuoglu, Koray.
+Pixel recurrent neural networks. In Proceedings of the International Conference
+on Machine Learning, 2016b.
+van Hasselt, Hado, Guez, Arthur, and Silver, David. Deep
+reinforcement learning with Double Q-learning. In Proceedings of the AAAI Conference on Artificial Intelligence, 2016.
+Veness, Joel, Ng, Kee Siong, Hutter, Marcus, and Bowling,
+Michael H. Context tree switching. In Proceedings of
+the Data Compression Conference, 2012.
+Wang, Ziyu, Schaul, Tom, Hessel, Matteo, van Hasselt,
+Hado, Lanctot, Marc, and de Freitas, Nando. Dueling
+network architectures for deep reinforcement learning.
+In Proceedings of The 33rd International Conference on
+Machine Learning, pp. 1995–2003, 2016.
+
+Count-Based Exploration with Neural Density Models
+
+A. PixelCNN Hyper-parameters
+The PixelCNN model used in this paper is a lightweight
+variant of the Gated PixelCNN introduced in (van den Oord
+et al., 2016a). It consists of a 7 × 7 masked convolution,
+followed by two residual blocks with 1×1 masked convolutions with 16 feature planes, and another 1×1 masked convolution producing 64 features planes, which are mapped
+by a final masked convolution to the output logits. Inputs
+are 42 × 42 greyscale images, with pixel values quantized
+to 8 bins.
+The model is trained completely online, from the stream of
+Atari frames experienced by an agent. Optimization is performed with the (uncentered) RMSProp optimizer (Tieleman & Hinton, 2012) with momentum 0.9, decay 0.95 and
+epsilon 10−4 .
+
+B. Methodology
+Unless otherwise stated, all agent performance graphs in
+this paper show the agent’s training performance, measured
+as the undiscounted per-episode return, averaged over 1M
+environment frames per data point.
+The algorithm-comparison graphs Fig. 6 and Fig. 8 show
+the relative improvement of one algorithm over another
+in terms of area-under-the-curve (AUC). A comparison by
+maximum achieved score would yield similar overall results, but underestimate the advantage in terms of learning
+speed (sample efficiency) and stability that the intrinsically
+motivated and MMC-based agents show over the baselines.
+
+C. Convolutional CTS
+In Section 4 we have seen that DQN-PixelCNN outperforms DQN-CTS in most of the 57 Atari games, by providing a more impactful exploration bonus in hard exploration
+games, as well as a more graceful (less harmful) one in
+games where the learning algorithm does not benefit from
+the additional curiosity signal. One may wonder whether
+this improvement is due to the generally more expressive
+and accurate density model PixelCNN, or simply its convolutional nature, which gives it an advantage in generalization and sample efficiency over a model that represents
+pixel probabilities in a completely location-dependent way.
+To answer this question, we developed a convolutional variant of the CTS model. This model has a single set of parameters conditioning a pixel’s value on its predecessors
+shared across all pixel locations, instead of the locationdependent parameters in the regular CTS. In Fig. 14 we
+contrast the performance of DQN, DQN-MC, DQN-CTS,
+DQN-ConvCTS and DQN-PixelCNN on 6 example games.
+We first consider dense reward games like Q*B ERT and
+
+Z AXXON, where most improvement comes from the use
+of the MMC, and the exploration bonus hurts performance.
+We find that in fact convolutional CTS behaves fairly similarly to PixelCNN, leaving agent performance unaffected,
+whereas regular CTS causes the agent to train more slowly
+or reach an earlier performance plateau. On the sparse reward games (G RAVITAR, P RIVATE E YE, V ENTURE) however, convolutional CTS shows to be as inferior to PixelCNN as the vanilla CTS variant, failing to achieve the significant improvements over the baseline agents presented
+in this paper.
+We conclude that while the convolutional aspect plays a
+role in the ’softer’ nature of the PixelCNN model compared to its CTS counterpart, it alone is insufficient to
+explain the massive exploration boost that the PixelCNNderived reward provides to the DQN agent. The more advanced model’s accuracy advantage translates into a more
+targeted and useful curiosity signal for the agent, which
+distinguishes novel from well-explored states more clearly
+and allows for more effective exploration.
+
+D. The Hardest Exploration Games
+Table 1 reproduces Bellemare et al. (2016)’s taxonomy of
+games available through the ALE according to their exploration difficulty. “Human-Optimal” refers to games where
+DQN-like agents achieve human-level or higher performance; “Score Exploit” refers to games where agents find
+ways to achieve superhuman scores, without necessarily
+playing the game as a human would. “Sparse” and “Dense”
+rewards are qualitative descriptors of the game’s reward
+structure. See the original source for additional details.
+Table 2 compares previously published results on the 7 hard
+exploration, sparse reward Atari 2600 games with results
+obtained by DQN-CTS and DQN-PixelCNN.
+
+Count-Based Exploration with Neural Density Models
+
+300
+
+100
+
+2500
+2000
+
+14000
+
+1500
+1000
+500
+
+0
+
+20
+
+40
+
+60
+
+80
+
+Million Frames
+
+100
+
+120
+
+0
+
+140
+
+Q*Bert
+
+8000
+
+DQN
+DQN-MC
+DQN-CTS
+DQN-ConvCTS
+DQN-PixelCNN
+
+4000
+3000
+2000
+1000
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+Million Frames
+
+100
+
+120
+
+140
+
+Average Score
+
+5000
+
+20
+
+40
+
+60
+
+800
+600
+
+80
+
+Million Frames
+
+100
+
+120
+
+8000
+6000
+4000
+2000
+
+20
+
+40
+
+60
+
+80
+
+Million Frames
+
+100
+
+120
+
+140
+
+20
+
+40
+
+60
+
+6000
+
+80
+
+Million Frames
+
+100
+
+120
+
+140
+
+100
+
+120
+
+140
+
+Zaxxon
+
+DQN
+DQN-MC
+DQN-CTS
+DQN-ConvCTS
+DQN-PixelCNN
+
+8000
+
+200
+0
+
+0
+
+10000
+
+400
+
+0
+
+DQN
+DQN-MC
+DQN-CTS
+DQN-ConvCTS
+DQN-PixelCNN
+
+10000
+
+2000
+
+140
+
+Venture
+
+DQN
+DQN-MC
+DQN-CTS
+DQN-ConvCTS
+DQN-PixelCNN
+
+1000
+
+6000
+
+12000
+
+0
+0
+
+1200
+
+7000
+
+Average Score
+
+3000
+
+Private Eye
+
+16000
+
+DQN
+DQN-MC
+DQN-CTS
+DQN-ConvCTS
+DQN-PixelCNN
+
+3500
+
+200
+
+0
+
+Montezuma's Revenge
+
+4000
+
+Average Score
+
+Average Score
+
+400
+
+Gravitar
+
+Average Score
+
+DQN
+DQN-MC
+DQN-CTS
+DQN-ConvCTS
+DQN-PixelCNN
+
+500
+
+Average Score
+
+600
+
+4000
+2000
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+Million Frames
+
+Figure 14. Comparison of DQN, DQN-CTS, DQN-ConvCTS and DQN-PixelCNN training performance.
+
+Easy Exploration
+Human-Optimal
+A SSAULT
+A STEROIDS
+BATTLE Z ONE
+B OWLING
+B REAKOUT
+C HOPPER C MD
+D EFENDER
+D OUBLE D UNK
+F ISHING D ERBY
+I CE H OCKEY
+NAME THIS G AME
+P ONG
+ROBOTANK
+S PACE I NVADERS
+
+A STERIX
+ATLANTIS
+B ERZERK
+B OXING
+C ENTIPEDE
+C RAZY C LIMBER
+D EMON ATTACK
+E NDURO
+G OPHER
+JAMES B OND
+P HOENIX
+R IVER R AID
+S KIING
+S TARGUNNER
+
+Hard Exploration
+Score Exploit
+
+Dense Reward
+
+Sparse Reward
+
+B EAM R IDER
+K ANGAROO
+K RULL
+K UNG - FU M ASTER
+ROAD RUNNER
+S EAQUEST
+U P N D OWN
+T UTANKHAM
+
+A LIEN
+A MIDAR
+BANK H EIST
+F ROSTBITE
+H.E.R.O.
+M S . PAC -M AN
+Q*B ERT
+S URROUND
+W IZARD OF W OR
+Z AXXON
+
+F REEWAY
+G RAVITAR
+M ONTEZUMA’ S R EVENGE
+P ITFALL !
+P RIVATE E YE
+S OLARIS
+V ENTURE
+
+Table 1. A rough taxonomy of Atari 2600 games according to their exploration difficulty.
+
+F REEWAY
+G RAVITAR
+M ONTEZUMA’ S R EVENGE
+P ITFALL !
+P RIVATE E YE
+S OLARIS
+V ENTURE
+
+DQN
+30.8
+473.0
+0.0
+-286.1
+146.7
+3,482.8
+163.0
+
+A3C-CTS
+30.48
+238.68
+273.70
+-259.09
+99.32
+2270.15
+0.00
+
+Prior. Duel
+33.0
+238.0
+0.0
+0.0
+206.0
+133.4
+48.0
+
+DQN-CTS
+31.7
+498.3
+3705.5
+0.0
+8358.7
+2863.6
+82.2
+
+DQN-PixelCNN
+31.7
+859.1
+2514.3
+0.0
+15806.5
+5501.5
+1356.25
+
+Table 2. Comparison with previously published results on hard exploration, sparse reward games. The compared agents are DQN (Mnih
+et al., 2015), A3C-CTS (“A3C+” in (Bellemare et al., 2016)), Prioritized Dueling DQN (Wang et al., 2016), and the basic versions of
+DQN-CTS and DQN-PixelCNN from Section 4. For our agents we report the maximum scores achieved over 150M frames of training,
+averaged over 3 seeds.
+
+Count-Based Exploration with Neural Density Models
+Alien
+
+1800
+
+Amidar
+
+1000
+
+1200
+
+1000
+
+600
+
+1000
+400
+
+600
+
+200
+
+200
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Bank Heist
+
+500
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Battle Zone
+
+18000
+
+10000
+
+4000
+
+8000
+
+3000
+
+6000
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Breakout
+
+250
+
+150
+100
+50
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Double Dunk
+
+8
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Centipede
+
+3500
+
+200
+
+0
+
+0
+
+100
+
+120
+
+140
+
+Beam Rider
+
+2500
+
+2500
+
+2000
+
+2000
+
+1500
+
+1500
+
+1000
+
+1000
+
+500
+
+500
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Enduro
+
+300
+
+16
+
+200
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Gravitar
+
+600
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Chopper Command
+
+100
+
+120
+
+140
+
+H.E.R.O.
+
+25000
+
+500
+
+80
+
+15000
+
+300
+10000
+
+200
+
+5000
+
+100
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Kung Fu Master
+
+16000
+
+0
+
+3500
+
+12000
+
+3000
+
+10000
+
+2500
+
+8000
+
+2000
+
+6000
+
+1500
+
+4000
+
+1000
+
+2000
+
+500
+
+0
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+20
+
+120
+
+140
+
+Pong
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Montezuma's Revenge
+
+4000
+
+14000
+
+20
+
+0
+
+100
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Fishing Derby
+
+100
+
+120
+
+140
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Ice Hockey
+
+0
+
+500
+400
+
+10
+
+300
+
+12
+
+200
+
+14
+
+100
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Ms. Pacman
+
+0
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Skiing
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Q*Bert
+
+18000
+19000
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Tennis
+
+5
+
+22000
+
+0
+
+20
+
+40
+
+6000
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Time Pilot
+
+7000
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Solaris
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Frostbite
+
+2500
+
+5000
+4000
+
+15
+
+3000
+2000
+
+25
+
+1000
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Wizard of Wor
+
+3500
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+16000
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Jamesbond
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Kangaroo
+
+9000
+8000
+
+12000
+10000
+
+5000
+
+1500
+
+8000
+
+4000
+
+1000
+
+6000
+
+500
+
+4000
+
+0
+
+2000
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+40
+
+60
+
+6000
+
+3000
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Name this Game
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Phoenix
+
+7000
+
+2000
+
+100
+
+120
+
+140
+
+0
+
+120
+
+140
+
+80
+
+100
+
+120
+
+140
+
+Riverraid
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+100
+
+120
+
+140
+
+100
+
+120
+
+140
+
+100
+
+120
+
+140
+
+120
+
+140
+
+Pitfall!
+
+600
+700
+
+1000
+60
+
+0
+
+800
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Road Runner
+
+25000
+
+900
+
+0
+
+20
+
+40
+
+20000
+
+40
+
+15000
+
+30
+
+10000
+
+20
+
+5000
+
+60
+
+80
+
+Robotank
+
+50
+
+1000
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Space Invaders
+
+0
+
+10
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Star Gunner
+
+25000
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Tutankham
+
+100
+
+0
+
+20
+
+40
+
+60
+
+80
+
+Surround
+
+9.0
+
+20000
+
+9.2
+
+15000
+
+9.4
+10000
+
+9.6
+
+5000
+
+9.8
+
+200
+0
+
+0
+8.8
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Up'n'down
+
+6000
+
+0
+
+0
+
+20
+
+40
+
+1000
+
+4000
+
+800
+
+3000
+
+600
+
+2000
+
+400
+
+1000
+
+200
+
+0
+
+0
+
+80
+
+100
+
+120
+
+140
+
+Venture
+
+1200
+
+5000
+
+60
+
+10.0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+Video Pinball
+
+80000
+70000
+60000
+50000
+40000
+30000
+20000
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+10000
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+0
+
+0
+
+20
+
+40
+
+60
+
+Zaxxon
+
+DQN
+DQN-CTS
+DQN-PixelCNN
+
+1000
+80
+
+100
+
+300
+500
+
+40
+
+80
+
+Krull
+
+200
+
+2000
+
+20
+
+60
+
+0
+
+5000
+
+0
+
+40
+
+100
+
+6000
+
+0
+
+20
+
+3000
+
+1000
+20
+
+0
+
+2000
+
+60
+
+140
+
+4000
+
+2000
+
+300
+
+3000
+
+40
+
+120
+
+5000
+
+4000
+
+400
+
+6000
+
+20
+
+100
+
+6000
+
+5000
+
+0
+
+0
+
+7000
+
+0
+
+80
+
+Gopher
+
+8000
+
+14000
+
+20
+
+20
+
+7000
+
+7000
+
+700
+
+9000
+
+2000
+
+0
+
+0
+
+8000
+
+400
+
+500
+
+2500
+
+140
+
+1000
+0
+
+3000
+
+600
+
+3000
+
+120
+
+2000
+
+500
+
+800
+
+200
+
+Yar's Revenge
+
+100
+
+3000
+
+900
+
+100
+
+0
+
+0
+
+3500
+
+2000
+
+0
+
+80
+
+4000
+
+50
+20
+
+60
+
+Demon Attack
+
+5000
+
+150
+5
+10
+
+40
+
+6000
+
+4000
+
+2500
+
+500
+
+20
+
+1000
+
+1000
+
+1000
+
+21000
+
+20
+
+1000
+0
+
+4000
+
+1500
+
+0
+
+2000
+0
+
+1500
+
+20000
+500
+
+0
+
+10
+8000
+
+1500
+
+9000
+
+3000
+
+17000
+
+1000
+
+140
+
+2500
+
+3500
+
+16000
+
+1500
+
+120
+
+3000
+
+4000
+
+15000
+
+2000
+
+100
+
+4500
+
+1000
+40
+
+14000
+
+2500
+
+80
+
+5000
+
+3000
+
+20
+
+140
+
+2000
+
+6000
+
+2000
+
+Seaquest
+
+60
+
+Freeway
+
+600
+
+4000
+
+3000
+
+40
+
+5
+
+5000
+
+0
+
+120
+
+Defender
+
+10000
+
+10
+
+8000
+
+0
+
+100
+
+15
+
+3000
+
+2000
+
+80
+
+2000
+
+4000
+
+140
+
+60
+
+2000
+
+6000
+
+120
+
+40
+
+0
+
+20
+
+140
+
+0
+20
+
+3000
+
+0
+
+120
+
+10
+
+0
+
+3000
+
+7000
+
+100
+
+Crazy Climber
+
+15
+
+4000
+
+5000
+
+80
+
+140
+
+10000
+
+6000
+
+60
+
+120
+
+100
+
+20
+
+20000
+
+8000
+
+40
+
+100
+
+80
+
+Boxing
+
+30
+
+4000
+
+10000
+
+20
+
+80
+
+60
+
+40
+
+5000
+
+12000
+
+0
+
+60
+
+40
+
+50
+
+5000
+
+0
+
+25
+
+40
+
+20
+
+60
+
+6000
+
+5
+
+20
+
+20
+
+0
+
+70
+
+6000
+
+10
+
+2000
+
+0
+
+0
+80
+
+7000
+
+8000
+
+15
+
+Bowling
+
+8000
+
+7000
+
+4000
+
+140
+
+70000
+
+14000
+
+6000
+
+120
+
+20
+
+2000
+80
+
+100
+
+25
+
+20
+
+500
+
+60
+
+80
+
+30
+
+25
+
+2500
+
+Private Eye
+
+60
+
+35
+
+30
+
+1000
+
+40
+
+40
+
+40
+
+30000
+
+1500
+
+20
+
+20
+
+45
+
+40000
+
+2000
+
+0
+
+10000
+0
+
+7000
+
+8
+
+0
+
+400
+
+9000
+
+15
+
+5
+
+140
+
+5500
+
+16000
+
+10
+
+120
+
+80000
+
+6
+
+16
+
+100
+
+50000
+
+4
+
+20000
+
+400
+
+100
+
+80
+
+60000
+
+80
+
+60
+
+60
+
+Berzerk
+
+90000
+
+70
+
+40
+
+40
+
+150
+
+60
+
+20
+
+20
+
+20000
+
+200
+
+50
+
+0
+
+0
+
+250
+
+90
+0
+
+500
+
+300
+
+40
+
+100
+
+20
+
+30000
+
+500
+
+350
+
+30
+
+18
+
+40000
+
+700
+
+400
+
+10
+
+400
+
+50000
+
+800
+600
+
+0
+
+60000
+
+900
+
+1000
+
+Atlantis
+
+70000
+
+1000
+
+500
+
+20
+
+14
+
+1100
+
+450
+
+3000
+
+12
+
+0
+
+0
+
+3000
+
+500
+
+10
+
+22
+
+80
+
+1000
+
+2000
+0
+
+60
+
+2000
+
+4000
+
+100
+
+40
+
+5000
+
+12000
+
+200
+
+20
+
+6000
+
+14000
+
+300
+
+0
+
+7000
+
+16000
+400
+
+200
+
+3000
+
+1500
+
+400
+
+400
+
+1200
+
+2000
+
+600
+
+Asteroids
+
+1300
+
+3500
+
+2500
+
+800
+
+800
+
+Asterix
+
+4000
+
+1200
+
+800
+
+1400
+
+Assault
+
+1400
+
+1600
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Figure 15. Training curves of DQN, DQN-CTS and DQN-PixelCNN across all 57 Atari games.
+
+80
+
+100
+
+Count-Based Exploration with Neural Density Models
+Alien
+
+4500
+
+1000
+
+3000
+2500
+
+800
+
+2000
+
+600
+
+1500
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Bank Heist
+
+1400
+
+0
+
+8000
+
+3000
+
+7000
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Battle Zone
+
+70000
+
+0
+
+60000
+
+6000
+
+1000
+
+50000
+
+5000
+
+800
+
+40000
+
+4000
+
+600
+
+30000
+
+3000
+
+400
+
+20000
+
+2000
+
+200
+
+10000
+
+1000
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Breakout
+
+300
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Centipede
+
+5000
+
+3500
+
+2000
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Double Dunk
+
+15
+
+500
+
+0
+
+20
+
+40
+
+80
+
+100
+
+120
+
+140
+
+Enduro
+
+3500
+
+10
+
+60
+
+0
+5
+10
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Berzerk
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Chopper Command
+
+100
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Crazy Climber
+
+140000
+
+10
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+30000
+
+60000
+
+20000
+
+Fishing Derby
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Freeway
+
+35
+
+0
+
+120
+
+140
+
+100
+
+120
+
+140
+
+Kung Fu Master
+
+40000
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Montezuma's Revenge
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Pong
+
+30
+
+0
+
+20
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+MS. Pacman
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Private Eye
+
+2000
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Seaquest
+
+6000
+
+5000
+
+1500
+
+1000
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Tennis
+
+30
+
+0
+
+10
+
+20
+30
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Q*Bert
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Skiing
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Name this Game
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Solaris
+
+5000
+
+15000
+
+4000
+
+20000
+
+3000
+
+25000
+
+2000
+
+30000
+
+1000
+
+35000
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Time Pilot
+
+0
+
+140
+
+Tutankham
+
+250
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Wizard of Wor
+
+10000
+
+0
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Riverraid
+
+0
+
+50000
+
+8000
+
+40000
+
+6000
+
+30000
+
+4000
+
+20000
+
+2000
+
+10000
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Space Invaders
+
+0
+
+200000
+
+150
+
+150000
+
+10000
+
+100
+
+100000
+
+5000
+
+50
+
+50000
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Yar's Revenge
+
+70000
+
+16000
+
+60000
+
+14000
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+0
+
+80
+
+100
+
+120
+
+140
+
+0
+
+100
+
+120
+
+140
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+100
+
+120
+
+140
+
+100
+
+120
+
+140
+
+100
+
+120
+
+140
+
+100
+
+120
+
+140
+
+120
+
+140
+
+Krull
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Phoenix
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+Pitfall!
+
+0
+
+1200
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Road Runner
+
+1400
+
+0
+
+20
+
+40
+
+60
+
+80
+
+Robotank
+
+70
+60
+50
+40
+30
+20
+10
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Star Gunner
+
+30000
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+Surround
+
+0
+2
+
+20000
+
+4
+
+15000
+6
+
+10000
+
+8
+
+5000
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Up'n'down
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Venture
+
+1600
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+10
+
+1400
+
+350000
+
+1200
+
+300000
+
+1000
+
+250000
+
+800
+
+200000
+
+600
+
+150000
+
+400
+
+100000
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+Video Pinball
+
+400000
+
+50000
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+Zaxxon
+
+DQN
+DQN-PixelCNN
+Reactor
+Reactor-PixelCNN
+
+6000
+4000
+
+10000
+20
+
+60
+
+8000
+
+20000
+
+0
+
+40
+
+10000
+
+30000
+
+2000
+
+20
+
+12000
+
+40000
+4000
+
+0
+
+18000
+
+50000
+
+6000
+
+0
+
+80
+
+Gopher
+
+2000
+0
+
+25000
+
+250000
+
+200
+
+0
+
+60
+
+4000
+
+60000
+
+10000
+
+40
+
+6000
+
+1000
+20
+
+20
+
+8000
+
+800
+
+0
+
+140
+
+10000
+
+1000
+
+15000
+
+0
+
+0
+
+2000
+
+0
+
+0
+
+12000
+
+600
+
+20000
+
+80000
+
+8000
+
+0
+
+140
+
+3000
+
+400
+
+120
+
+120
+
+5000
+
+1800
+
+100
+
+100
+
+400
+
+600
+
+80
+
+80
+
+Kangaroo
+
+6000
+
+800
+
+60
+
+60
+
+200
+
+1000
+
+40
+
+40
+
+4000
+
+1200
+
+20
+
+20
+
+7000
+
+1400
+
+0
+
+0
+
+5000
+
+1000
+
+120
+
+5000
+
+6000
+
+12000
+
+2000
+0
+
+0
+
+100
+
+20000
+
+200
+0
+
+0
+25000
+
+2000
+
+0
+10
+
+140
+
+4000
+
+2000
+0
+
+6000
+
+25000
+
+20
+
+120
+
+6000
+
+200
+0
+
+100
+
+8000
+
+3000
+
+3000
+2000
+
+80
+
+10000
+
+1600
+
+4000
+
+60
+
+Frostbite
+
+14000
+
+4000
+
+8000
+
+10000
+
+5000
+
+0
+
+140
+
+7000
+
+12000
+
+0
+
+40
+
+120
+
+8000
+
+4000
+
+20
+
+100
+
+9000
+
+14000
+
+5000
+
+0
+
+40
+
+12000
+
+10000
+
+500
+0
+
+0
+
+30
+
+80
+
+Jamesbond
+
+100
+
+10000
+
+20
+
+60
+
+300
+
+1000
+
+10000
+
+10
+
+40
+
+400
+
+2500
+
+15000
+
+10
+
+20
+
+500
+
+3000
+
+20000
+
+20
+
+0
+
+800
+700
+
+3500
+
+500
+20
+
+140
+
+15
+
+1000
+
+0
+
+120
+
+200
+
+10000
+
+0
+
+100
+
+10
+
+1500
+
+5000
+
+80
+
+Ice Hockey
+
+600
+
+2000
+
+15000
+
+60
+
+5
+
+2500
+
+20000
+
+40
+
+0
+
+30000
+25000
+
+20
+
+5
+
+3000
+
+35000
+
+0
+
+10
+
+5000
+80
+
+20
+
+10000
+
+100
+
+80
+
+2000
+
+0
+
+15000
+
+80
+
+60
+
+Demon Attack
+
+3000
+
+3000
+
+H.E.R.O.
+
+40
+
+4000
+
+15
+
+60
+
+20
+
+5000
+
+40
+
+40
+
+140
+
+6000
+
+1500
+
+20
+
+120
+
+7000
+
+4000
+
+0
+
+0
+
+9000
+
+5000
+
+10000
+
+60
+
+Defender
+
+20
+
+6000
+
+15000
+
+40
+
+140
+
+20
+
+20000
+
+20
+
+120
+
+25
+
+25000
+
+0
+
+100
+
+30
+
+30000
+
+0
+
+80
+
+0
+
+0
+
+500
+
+60
+
+20
+
+0
+
+1000
+
+40
+
+20
+
+100
+
+1500
+
+20
+
+2000
+
+35000
+
+100
+
+0
+0
+
+2500
+
+0
+
+140
+
+80
+
+Boxing
+
+20
+
+7000
+
+25
+
+120
+
+60
+
+1000
+0
+
+1000
+
+100
+
+40
+
+40
+
+10000
+
+2000
+
+80
+
+20
+
+60
+
+40000
+
+80000
+
+20000
+20
+
+0
+
+80
+
+40000
+
+0
+
+0.0
+100
+
+100000
+
+5
+
+Gravitar
+
+140
+
+8000
+
+10
+
+60
+
+120
+
+Bowling
+
+50000
+
+120000
+
+80
+
+40
+
+100
+
+20
+
+60
+
+20
+
+80
+
+30
+
+500
+0
+
+60
+
+40
+
+1000
+
+2000
+
+40
+
+50
+
+20
+
+15
+
+20
+
+60
+
+200
+20
+
+0
+
+70
+
+300
+
+0
+
+0
+80
+
+400
+
+40
+
+3000
+
+5
+
+0
+
+0
+
+500
+
+2000
+
+1000
+
+0
+700
+
+4000
+
+1500
+
+50
+
+140
+
+6000
+
+2500
+
+100
+
+120
+
+8000
+
+3000
+
+150
+
+100
+
+10000
+
+4000
+
+200
+
+0
+
+80
+
+600
+
+12000
+
+4500
+
+250
+
+0
+
+0
+
+60
+
+Beam Rider
+
+7000
+
+1200
+
+0
+
+40
+
+0.2
+
+500
+
+1000
+20
+
+0.4
+
+1000
+
+2000
+
+0
+
+0.6
+
+1500
+
+3000
+
+500
+0
+
+0.8
+
+2000
+
+4000
+
+1000
+
+Atlantis
+
+1.0 1e7
+
+2500
+
+5000
+
+1500
+
+Asteroids
+
+3000
+
+6000
+
+2000
+
+200
+
+500
+
+Asterix
+
+9000
+
+3500
+
+2500
+
+400
+
+1000
+
+Assault
+
+4000
+
+1200
+
+3500
+
+0
+
+Amidar
+
+1400
+
+4000
+
+2000
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Figure 16. Training curves of DQN, DQN-PixelCNN, Reactor and Reactor-PixelCNN across all 57 Atari games.
+
+Count-Based Exploration with Neural Density Models
+Alien
+
+2500
+
+Amidar
+
+1000
+
+2000
+
+800
+
+1500
+
+600
+
+Assault
+
+1400
+
+1000
+800
+
+1000
+
+400
+
+500
+
+200
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Bank Heist
+
+500
+
+0
+
+600
+400
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Battle Zone
+
+25000
+
+200
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Beam Rider
+
+7000
+
+20000
+
+300
+
+15000
+
+4000
+
+200
+
+10000
+
+3000
+
+100
+
+5000
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Breakout
+
+250
+200
+150
+100
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Centipede
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Double Dunk
+
+2000
+
+1500
+
+4
+
+80
+
+100
+
+120
+
+140
+
+Enduro
+
+500
+400
+
+8
+
+14
+18
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Chopper Command
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Gravitar
+
+600
+
+0
+
+40
+
+80
+
+100
+
+120
+
+140
+
+H.E.R.O.
+
+25000
+
+500
+
+60
+
+15000
+
+300
+10000
+
+200
+
+5000
+
+100
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Kung Fu Master
+
+16000
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Fishing Derby
+
+20
+
+1600
+
+12000
+
+1400
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Montezuma's Revenge
+
+1800
+
+14000
+
+40
+
+4000
+
+400
+
+2000
+
+200
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Pong
+
+20
+
+0
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Ice Hockey
+
+0
+
+Private Eye
+
+16000
+
+8
+
+400
+
+10
+
+300
+
+12
+
+200
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+MS. Pacman
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Q*Bert
+
+8000
+
+1000
+
+8000
+
+6000
+
+7000
+
+0
+
+8000
+
+5000
+
+6000
+
+5
+
+6000
+
+4000
+
+5000
+
+10
+
+4000
+
+3000
+
+4000
+
+15
+
+2000
+
+2000
+
+3000
+
+120
+
+140
+
+Seaquest
+
+3000
+
+2000
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Skiing
+
+14000
+
+18000
+
+2000
+
+20000
+
+1500
+
+22000
+
+1000
+
+24000
+
+500
+
+26000
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Tennis
+
+0
+
+28000
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Time Pilot
+
+7000
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Solaris
+
+1000
+
+3000
+
+800
+
+2500
+
+600
+
+2000
+
+400
+
+1500
+
+200
+
+1000
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Tutankham
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Wizard of Wor
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Yar's Revenge
+
+0
+
+14000
+
+2500
+
+12000
+
+2000
+
+10000
+
+6000
+
+1500
+
+8000
+
+4000
+
+1000
+
+6000
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+2000
+
+140
+
+0
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Freeway
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+100
+
+120
+
+140
+
+100
+
+120
+
+140
+
+100
+
+120
+
+140
+
+100
+
+120
+
+140
+
+100
+
+120
+
+140
+
+100
+
+120
+
+140
+
+100
+
+120
+
+140
+
+120
+
+140
+
+Boxing
+
+60
+40
+20
+
+15
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Defender
+
+20
+
+7000
+
+8000
+
+6000
+
+7000
+
+5000
+
+6000
+
+4000
+
+5000
+
+3000
+
+4000
+
+2000
+
+2000
+
+0
+
+20
+
+40
+
+60
+
+80
+
+Demon Attack
+
+8000
+
+9000
+
+1000
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Frostbite
+
+2500
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+Gopher
+
+6000
+5000
+
+2000
+
+4000
+
+1500
+
+3000
+1000
+
+2000
+
+500
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Jamesbond
+
+0
+
+1000
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Kangaroo
+
+9000
+
+6000
+
+3000
+
+100
+
+120
+
+140
+
+Name this Game
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Phoenix
+
+7000
+
+80
+
+100
+
+120
+
+140
+
+200
+250
+
+Riverraid
+
+0
+
+40
+
+60
+
+80
+
+Pitfall!
+
+150
+
+3000
+
+300
+350
+
+1000
+60
+
+20
+
+100
+
+4000
+
+2000
+
+40
+
+0
+
+0
+
+5000
+
+20
+
+2000
+
+50
+
+6000
+
+0
+
+80
+
+Krull
+
+3000
+
+1000
+80
+
+60
+
+4000
+
+2000
+
+60
+
+40
+
+5000
+
+4000
+
+40
+
+20
+
+6000
+
+5000
+
+20
+
+0
+
+7000
+
+7000
+
+0
+
+0
+8000
+
+8000
+
+400
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Road Runner
+
+35000
+
+450
+
+0
+
+20
+
+40
+
+60
+
+80
+
+Robotank
+
+50
+
+30000
+
+40
+
+25000
+20000
+
+30
+
+15000
+
+20
+
+10000
+10
+
+5000
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Space Invaders
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Star Gunner
+
+25000
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+Surround
+
+8.6
+8.8
+
+20000
+
+9.0
+15000
+
+9.2
+
+10000
+
+9.4
+9.6
+
+5000
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Up'n'down
+
+0
+
+9.8
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Venture
+
+1200
+
+10.0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+Video Pinball
+
+200000
+
+1000
+150000
+800
+600
+
+100000
+
+400
+
+2000
+
+0
+
+0
+80
+
+50000
+
+1000
+
+200
+
+0
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+Zaxxon
+
+8000
+
+DQN (w/o MC)
+DQN (with MC)
+DQN-PixelCNN (w/o MC)
+DQN-PixelCNN (with MC)
+
+2000
+
+4000
+20
+
+120
+
+Bowling
+
+10000
+
+3000
+
+10000
+
+3000
+
+0
+
+140
+
+4000
+
+100
+
+16000
+
+500
+
+120
+
+5000
+
+2000
+20
+
+100
+
+6000
+
+50
+
+0
+
+40
+
+7000
+
+3000
+
+3500
+
+1000
+
+3500
+
+200
+
+4000
+
+1000
+
+20
+
+1200
+
+150
+
+20
+
+0
+
+20
+
+5000
+
+15
+
+80
+
+2000
+0
+
+6000
+
+5
+10
+
+25
+
+0
+4000
+
+16000
+
+2500
+
+0
+
+1000
+
+0
+100
+
+0
+
+9000
+
+7000
+
+80
+
+60
+
+Crazy Climber
+
+2000
+
+10000
+
+60
+
+40
+
+3000
+
+12000
+
+40
+
+20
+
+5000
+
+14000
+
+20
+
+0
+
+6000
+
+5
+
+0
+
+100
+
+20
+
+7000
+
+10
+
+25
+
+80
+
+25
+
+100
+
+15
+
+20
+
+60
+
+30
+
+600
+500
+
+0
+
+40
+
+35
+
+5
+
+500
+
+20
+
+20
+
+40
+
+10
+
+1000
+
+0
+
+10000
+0
+
+45
+
+4000
+
+600
+
+400
+
+15
+
+1500
+
+800
+
+6000
+
+140
+
+20
+
+2000
+
+1000
+
+8000
+
+120
+
+25
+
+2500
+
+1200
+
+10000
+
+0
+
+6
+
+16
+
+100
+
+Berzerk
+
+30
+
+14
+0
+
+80
+
+20000
+
+3000
+
+4
+
+20000
+
+400
+
+100
+
+60
+
+20000
+
+80
+
+20
+
+40
+
+40000
+
+70
+
+0
+
+20
+
+60000
+
+90
+0
+
+0
+
+80000
+
+60
+
+100
+
+500
+
+100000
+
+50
+
+20
+
+0
+
+40
+
+40
+
+200
+
+16
+
+0
+
+20
+
+30
+
+300
+
+12
+
+22
+
+0
+
+20
+
+10
+
+500
+
+50000
+
+200
+
+10
+
+6
+
+600
+
+250
+
+500
+60
+
+1000
+
+300
+
+1000
+
+40
+
+30000
+
+700
+
+100
+
+2000
+
+20
+
+800
+
+1500
+
+0
+
+2500
+
+0
+
+40000
+
+2000
+
+150
+
+2500
+
+500
+
+900
+
+1000
+
+3000
+
+1000
+
+1000
+
+2500
+
+350
+
+3000
+
+1500
+
+50
+0
+
+0
+
+3500
+
+3000
+
+60000
+
+400
+
+2000
+
+0
+
+1100
+
+0
+
+Atlantis
+
+70000
+
+1200
+
+3500
+
+450
+
+5000
+
+0
+
+Asteroids
+
+1300
+
+4000
+
+500
+
+6000
+
+400
+
+Asterix
+
+4500
+
+1200
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+0
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+120
+
+140
+
+Figure 17. Training curves of DQN and DQN-PixelCNN, each with and without MMC, across all 57 Atari games.
+
+

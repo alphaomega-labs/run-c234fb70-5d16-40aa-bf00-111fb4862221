@@ -1,0 +1,263 @@
+\begin{thebibliography}{34}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Andrychowicz et~al.(2017)Andrychowicz, Wolski, Ray, Schneider, Fong,
+  and Welinder]{arxiv1707_01495}
+Marcin Andrychowicz, Filip Wolski, Alex Ray, Jonas Schneider, Rachel Fong, and
+  Peter Welinder.
+\newblock Hindsight experience replay, 2017.
+\newblock URL \url{https://doi.org/10.48550/arXiv.1707.01495}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Badia et~al.(2020{\natexlab{a}})Badia, Piot, Kapturowski, Sprechmann,
+  Vitvitskyi, and Guo]{arxiv2003_13350}
+Adrià~Puigdomènech Badia, Bilal Piot, Steven Kapturowski, Pablo Sprechmann,
+  Alex Vitvitskyi, and Daniel Guo.
+\newblock Agent57: Outperforming the atari human benchmark, 2020{\natexlab{a}}.
+\newblock URL \url{https://doi.org/10.48550/arXiv.2003.13350}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Badia et~al.(2020{\natexlab{b}})Badia, Sprechmann, Vitvitskyi, Guo,
+  Piot, and Kapturowski]{arxiv2002_06038}
+Adrià~Puigdomènech Badia, Pablo Sprechmann, Alex Vitvitskyi, Daniel Guo,
+  Bilal Piot, and Steven Kapturowski.
+\newblock Never give up: Learning directed exploration strategies,
+  2020{\natexlab{b}}.
+\newblock URL \url{https://doi.org/10.48550/arXiv.2002.06038}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Bellemare et~al.(2016)Bellemare, Srinivasan, Ostrovski, Schaul,
+  Saxton, and Munos]{arxiv1606_01868}
+Marc~G. Bellemare, Sriram Srinivasan, Georg Ostrovski, Tom Schaul, David
+  Saxton, and Remi Munos.
+\newblock Unifying count-based exploration and intrinsic motivation, 2016.
+\newblock URL \url{https://doi.org/10.48550/arXiv.1606.01868}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Burda et~al.(2018)Burda, Edwards, Storkey, and
+  Klimov]{arxiv1810_12894}
+Yuri Burda, Harrison Edwards, Amos Storkey, and Oleg Klimov.
+\newblock Exploration by random network distillation, 2018.
+\newblock URL \url{https://doi.org/10.48550/arXiv.1810.12894}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Cobbe et~al.(2019)Cobbe, Hesse, Hilton, and Schulman]{arxiv1912_01588}
+Karl Cobbe, Christopher Hesse, Jacob Hilton, and John Schulman.
+\newblock Leveraging procedural generation to benchmark reinforcement learning,
+  2019.
+\newblock URL \url{https://doi.org/10.48550/arXiv.1912.01588}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Diaz-Bone et~al.(2025)Diaz-Bone, Bagatella, Hübotter, and
+  Krause]{arxiv2505_19850}
+Leander Diaz-Bone, Marco Bagatella, Jonas Hübotter, and Andreas Krause.
+\newblock Discover: Automated curricula for sparse-reward reinforcement
+  learning, 2025.
+\newblock URL \url{https://doi.org/10.48550/arXiv.2505.19850}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Ecoffet et~al.(2019)Ecoffet, Huizinga, Lehman, Stanley, and
+  Clune]{arxiv1901_10995}
+Adrien Ecoffet, Joost Huizinga, Joel Lehman, Kenneth~O. Stanley, and Jeff
+  Clune.
+\newblock Go-explore: a new approach for hard-exploration problems, 2019.
+\newblock URL \url{https://doi.org/10.48550/arXiv.1901.10995}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Eysenbach et~al.(2022)Eysenbach, Zhang, Salakhutdinov, and
+  Levine]{arxiv2206_07568}
+Benjamin Eysenbach, Tianjun Zhang, Ruslan Salakhutdinov, and Sergey Levine.
+\newblock Contrastive learning as goal-conditioned reinforcement learning,
+  2022.
+\newblock URL \url{https://doi.org/10.48550/arXiv.2206.07568}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Foundation(2023{\natexlab{a}})]{ref_gymnasium_2023}
+Farama Foundation.
+\newblock Gymnasium, 2023{\natexlab{a}}.
+\newblock URL \url{https://gymnasium.farama.org}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Foundation(2023{\natexlab{b}})]{ref_minigrid_2023}
+Farama Foundation.
+\newblock Minigrid, 2023{\natexlab{b}}.
+\newblock URL \url{https://github.com/Farama-Foundation/Minigrid}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Fu et~al.(2020)Fu, Kumar, Nachum, Tucker, and Levine]{arxiv2004_07219}
+Justin Fu, Aviral Kumar, Ofir Nachum, George Tucker, and Sergey Levine.
+\newblock D4rl: Datasets for deep data-driven reinforcement learning, 2020.
+\newblock URL \url{https://doi.org/10.48550/arXiv.2004.07219}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Fujimoto et~al.(2018)Fujimoto, van Hoof, and Meger]{arxiv1802_09477}
+Scott Fujimoto, Herke van Hoof, and David Meger.
+\newblock Addressing function approximation error in actor-critic methods,
+  2018.
+\newblock URL \url{https://doi.org/10.48550/arXiv.1802.09477}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Ghosh et~al.(2019)Ghosh, Gupta, Reddy, Fu, Devin, and
+  Eysenbach]{arxiv1912_06088}
+Dibya Ghosh, Abhishek Gupta, Ashwin Reddy, Justin Fu, Coline Devin, and
+  Benjamin Eysenbach.
+\newblock Learning to reach goals via iterated supervised learning, 2019.
+\newblock URL \url{https://doi.org/10.48550/arXiv.1912.06088}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Haarnoja et~al.(2018)Haarnoja, Zhou, Abbeel, and
+  Levine]{arxiv1801_01290}
+Tuomas Haarnoja, Aurick Zhou, Pieter Abbeel, and Sergey Levine.
+\newblock Soft actor-critic: Off-policy maximum entropy deep reinforcement
+  learning with a stochastic actor, 2018.
+\newblock URL \url{https://doi.org/10.48550/arXiv.1801.01290}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Hafner et~al.(2023)Hafner, Pasukonis, Ba, and
+  Lillicrap]{arxiv2301_04104}
+Danijar Hafner, Jurgis Pasukonis, Jimmy Ba, and Timothy Lillicrap.
+\newblock Mastering diverse domains through world models, 2023.
+\newblock URL \url{https://doi.org/10.48550/arXiv.2301.04104}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Hansen et~al.(2023)Hansen, Su, and Wang]{arxiv2310_16828}
+Nicklas Hansen, Hao Su, and Xiaolong Wang.
+\newblock Td-mpc2: Scalable, robust world models for continuous control, 2023.
+\newblock URL \url{https://doi.org/10.48550/arXiv.2310.16828}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Hou et~al.(2026)Hou, Liu, and Yin]{arxiv2603_29533}
+Ancheng Hou, Ruijia Liu, and Xiang Yin.
+\newblock Grasp-stl: A graph-based framework for zero-shot signal temporal
+  logic planning via offline goal-conditioned reinforcement learning, 2026.
+\newblock URL \url{https://doi.org/10.48550/arXiv.2603.29533}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Jaderberg et~al.(2016)Jaderberg, Mnih, Czarnecki, Schaul, Leibo, and
+  Silver]{arxiv1611_05397}
+Max Jaderberg, Volodymyr Mnih, Wojciech~Marian Czarnecki, Tom Schaul, Joel~Z
+  Leibo, and David Silver.
+\newblock Reinforcement learning with unsupervised auxiliary tasks, 2016.
+\newblock URL \url{https://doi.org/10.48550/arXiv.1611.05397}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Li et~al.(2024)Li, Yu, Liu, and Principe]{arxiv2412_03800}
+Hongming Li, Shujian Yu, Bin Liu, and Jose~C. Principe.
+\newblock Element: Episodic and lifelong exploration via maximum entropy, 2024.
+\newblock URL \url{https://doi.org/10.48550/arXiv.2412.03800}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Lillicrap et~al.(2015)Lillicrap, Hunt, Pritzel, Heess, Erez, and
+  Tassa]{arxiv1509_02971}
+Timothy~P. Lillicrap, Jonathan~J. Hunt, Alexander Pritzel, Nicolas Heess, Tom
+  Erez, and Yuval Tassa.
+\newblock Continuous control with deep reinforcement learning, 2015.
+\newblock URL \url{https://doi.org/10.48550/arXiv.1509.02971}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Nakamura et~al.(2026)Nakamura, Yamanokuchi, Kadokawa, Qu, Otsub, and
+  Miyamoto]{arxiv2603_14887}
+Issa Nakamura, Tomoya Yamanokuchi, Yuki Kadokawa, Jia Qu, Shun Otsub, and Ken
+  Miyamoto.
+\newblock Visa: Visited-state augmentation for generalized goal-space
+  contrastive reinforcement learning, 2026.
+\newblock URL \url{https://doi.org/10.48550/arXiv.2603.14887}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Nguyen \& Nguyen(2026)Nguyen and Nguyen]{arxiv2602_24081}
+Viet~Bac Nguyen and Phuong~Thai Nguyen.
+\newblock Adaptive correlation-weighted intrinsic rewards for reinforcement
+  learning, 2026.
+\newblock URL \url{https://doi.org/10.48550/arXiv.2602.24081}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Ostrovski et~al.(2017)Ostrovski, Bellemare, van~den Oord, and
+  Munos]{arxiv1703_01310}
+Georg Ostrovski, Marc~G. Bellemare, Aaron van~den Oord, and Remi Munos.
+\newblock Count-based exploration with neural density models, 2017.
+\newblock URL \url{https://doi.org/10.48550/arXiv.1703.01310}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Pathak et~al.(2017)Pathak, Agrawal, Efros, and
+  Darrell]{arxiv1705_05363}
+Deepak Pathak, Pulkit Agrawal, Alexei~A. Efros, and Trevor Darrell.
+\newblock Curiosity-driven exploration by self-supervised prediction, 2017.
+\newblock URL \url{https://doi.org/10.48550/arXiv.1705.05363}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Pong et~al.(2019)Pong, Dalal, Lin, Nair, Bahl, and
+  Levine]{arxiv1903_03698}
+Vitchyr~H. Pong, Murtaza Dalal, Steven Lin, Ashvin Nair, Shikhar Bahl, and
+  Sergey Levine.
+\newblock Skew-fit: State-covering self-supervised reinforcement learning,
+  2019.
+\newblock URL \url{https://doi.org/10.48550/arXiv.1903.03698}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Schaul et~al.(2015{\natexlab{a}})Schaul, Horgan, Gregor, and
+  Silver]{ref_universal_value_function_approximators_2015}
+Tom Schaul, Daniel Horgan, Karol Gregor, and David Silver.
+\newblock Universal value function approximators, 2015{\natexlab{a}}.
+\newblock URL \url{https://proceedings.mlr.press/v37/schaul15.html}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Schaul et~al.(2015{\natexlab{b}})Schaul, Quan, Antonoglou, and
+  Silver]{arxiv1511_05952}
+Tom Schaul, John Quan, Ioannis Antonoglou, and David Silver.
+\newblock Prioritized experience replay, 2015{\natexlab{b}}.
+\newblock URL \url{https://doi.org/10.48550/arXiv.1511.05952}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Schulman et~al.(2017)Schulman, Wolski, Dhariwal, Radford, and
+  Klimov]{arxiv1707_06347}
+John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov.
+\newblock Proximal policy optimization algorithms, 2017.
+\newblock URL \url{https://doi.org/10.48550/arXiv.1707.06347}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Sekar et~al.(2020)Sekar, Rybkin, Daniilidis, Abbeel, Hafner, and
+  Pathak]{arxiv2005_05960}
+Ramanan Sekar, Oleh Rybkin, Kostas Daniilidis, Pieter Abbeel, Danijar Hafner,
+  and Deepak Pathak.
+\newblock Planning to explore via self-supervised world models, 2020.
+\newblock URL \url{https://doi.org/10.48550/arXiv.2005.05960}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Shihab et~al.(2025)Shihab, Akter, and Sharma]{arxiv2509_03790}
+Ibne~Farabi Shihab, Sanjeda Akter, and Anuj Sharma.
+\newblock What fundamental structure in reward functions enables efficient
+  sparse-reward learning?, 2025.
+\newblock URL \url{https://doi.org/10.48550/arXiv.2509.03790}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Tassa et~al.(2020)Tassa, Doron, Muldal, Erez, Li, and
+  de~Las~Casas]{arxiv2006_12983}
+Yuval Tassa, Yotam Doron, Alessandro Muldal, Tom Erez, Yuri Li, and Diego
+  de~Las~Casas.
+\newblock Deepmind control suite, 2020.
+\newblock URL \url{https://doi.org/10.48550/arXiv.2006.12983}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Wang et~al.(2026)Wang, Ren, Dai, Hu, Huang, and
+  Zhang]{arxiv2603_02104}
+Xuerui Wang, Guangyu Ren, Tianhong Dai, Bintao Hu, Shuangyao Huang, and
+  Wenzhang Zhang.
+\newblock Acdc: Adaptive curriculum planning with dynamic contrastive control
+  for goal-conditioned reinforcement learning in robotic manipulation, 2026.
+\newblock URL \url{https://doi.org/10.48550/arXiv.2603.02104}.
+\newblock Accessed 2026-04-05.
+
+\bibitem[Yuan et~al.(2024)Yuan, Castanyer, Li, Jin, Zeng, and
+  Berseth]{arxiv2405_19548}
+Mingqi Yuan, Roger~Creus Castanyer, Bo~Li, Xin Jin, Wenjun Zeng, and Glen
+  Berseth.
+\newblock Rlexplore: Accelerating research in intrinsically-motivated
+  reinforcement learning, 2024.
+\newblock URL \url{https://doi.org/10.48550/arXiv.2405.19548}.
+\newblock Accessed 2026-04-05.
+
+\end{thebibliography}

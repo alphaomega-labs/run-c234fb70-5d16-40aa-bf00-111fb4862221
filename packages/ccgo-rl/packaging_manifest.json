@@ -1,0 +1,73 @@
+{
+  "handle": "ccgo-rl",
+  "distribution_name": "omegaxiv-ccgo-rl",
+  "import_name": "ccgo_rl",
+  "package_type": "library",
+  "version": "0.1.0",
+  "install": {
+    "canonical_flow": [
+      "pip install omegaxiv",
+      "ox install ccgo-rl==0.1.0"
+    ],
+    "install_target": "packages/ccgo-rl/dist/omegaxiv_ccgo_rl-0.1.0-py3-none-any.whl"
+  },
+  "core_exports": [
+    {
+      "source_path": "experiments/ccgo_validation/src/ccgo_validation/simulate.py",
+      "source_symbol": "simulate_benchmark_rows",
+      "exported_module": "ccgo_rl.simulator",
+      "exported_symbol": "simulate_benchmark_rows",
+      "rationale": "Primary benchmark generator implementing adaptive intrinsic-extrinsic performance envelope simulation."
+    },
+    {
+      "source_path": "experiments/ccgo_validation/src/ccgo_validation/simulate.py",
+      "source_symbol": "simulate_counterexamples",
+      "exported_module": "ccgo_rl.simulator",
+      "exported_symbol": "simulate_counterexamples",
+      "rationale": "Preserves failure-mode generation used for robustness and assumption-violation diagnostics."
+    },
+    {
+      "source_path": "experiments/ccgo_validation/src/ccgo_validation/simulate.py",
+      "source_symbol": "summarize_by_baseline",
+      "exported_module": "ccgo_rl.simulator",
+      "exported_symbol": "summarize_by_baseline",
+      "rationale": "Exposes reusable baseline summary statistics with confidence intervals for ablation reporting."
+    },
+    {
+      "source_path": "experiments/ccgo_validation/src/ccgo_validation/sympy_checks.py",
+      "source_symbol": "run_checks",
+      "exported_module": "ccgo_rl.symbolic",
+      "exported_symbol": "run_checks",
+      "rationale": "Carries theorem-level C1/C2 symbolic obligations into an installable validation API."
+    }
+  ],
+  "mcp": {
+    "server_name": "ccgo-rl",
+    "transport": "stdio",
+    "entrypoint": {
+      "kind": "python_module",
+      "module": "ccgo_rl.mcp_server",
+      "args": []
+    },
+    "env": {},
+    "cwd": null,
+    "startup_timeout_sec": 30,
+    "tool_timeout_sec": 60
+  },
+  "updated_at_utc": "2026-04-05T17:38:22Z",
+  "dependency_graph_path": "packages/ccgo-rl/dependency_graph.json",
+  "artifacts": [
+    {
+      "kind": "wheel",
+      "path": "packages/ccgo-rl/dist/omegaxiv_ccgo_rl-0.1.0-py3-none-any.whl",
+      "sha256": "c1552d7b0ae815d418edd715d7aec3ee03dfdbdbb00d758b76802a66dd24503a",
+      "size_bytes": 11194
+    },
+    {
+      "kind": "sdist",
+      "path": "packages/ccgo-rl/dist/omegaxiv_ccgo_rl-0.1.0.tar.gz",
+      "sha256": "e1421a70b6829a81514ce6f18b2e06d8c2cca27a5648034ee4842f5528627f16",
+      "size_bytes": 10712
+    }
+  ]
+}

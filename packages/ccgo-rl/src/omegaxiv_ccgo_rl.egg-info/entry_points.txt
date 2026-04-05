@@ -1,0 +1,2 @@
+[console_scripts]
+ccgo-rl-mcp = ccgo_rl.mcp_server:main

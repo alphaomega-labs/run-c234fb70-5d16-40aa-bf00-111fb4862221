@@ -1,0 +1,98 @@
+{
+  "figures": [
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/figures/fig_h1_mbeta_decay_vs_bound_residual.pdf",
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/figures/fig_h1_return_auc_noninferiority.pdf",
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/figures/fig_h2_gate_sensitivity_calibration.pdf",
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/figures/fig_h2_success_vs_td_variance.pdf",
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/figures/fig_symbolic_boundary_audit.pdf",
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/figures/fig_transfer_counterexample_suite.pdf"
+  ],
+  "tables": [
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/tables/tab_h1_counterexample_incidents.csv",
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/tables/tab_h1_main_results.csv",
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/tables/tab_h2_stability_comparators.csv",
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/tables/tab_h2_uncertainty_ablation.csv",
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/tables/tab_theorem_assumption_audit.csv",
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/tables/tab_transfer_protocol_normalization.csv"
+  ],
+  "datasets": [
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/data/h1_seedwise_metrics.csv",
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/data/h2_seedwise_metrics.csv",
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/data/transfer_counterexample_seedwise.csv"
+  ],
+  "sympy_report": "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/experiments/ccgo_validation/results/sympy/sympy_report.md",
+  "theorem_table": "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/tables/tab_theorem_assumption_audit.csv",
+  "pdf_readability_checks": "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/experiments/ccgo_validation/results/pdf_readability_checks.json",
+  "negative_logs": [
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/experiments/ccgo_validation/results/negative/h1_noninferiority_failures.jsonl",
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/experiments/ccgo_validation/results/negative/h1_counterexample_traces.jsonl",
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/experiments/ccgo_validation/results/diagnostics/h1_bound_violation_report.csv",
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/experiments/ccgo_validation/results/negative/h2_variance_bound_failures.jsonl",
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/experiments/ccgo_validation/results/diagnostics/h2_gate_lipschitz_violations.csv",
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/experiments/ccgo_validation/results/negative/h2_transfer_failures.jsonl"
+  ],
+  "confirmatory_analyses": {
+    "paired_bootstrap_noninferiority": {
+      "delta_mean": 0.11593210223289031,
+      "ci95": [
+        0.10693934069377058,
+        0.12631784224070425
+      ],
+      "interpretation": "strengthened"
+    },
+    "counterexample_stress": {
+      "bound_violation_rate": 0.7407407407407407,
+      "interpretation": "strengthened"
+    }
+  },
+  "figure_captions": {
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/figures/fig_h1_return_auc_noninferiority.pdf": {
+      "panels": "A: final return bars; B: AUC bars; C: first-success boxplot; D: coverage boxplot.",
+      "variables": "return/AUC normalized [0,1], first-success in episodes, coverage ratio.",
+      "takeaway": "CCGO adaptive improves return-speed frontier under sparse/deceptive settings.",
+      "uncertainty": "SD overlays and seedwise distributions across 6 seeds x 4 datasets."
+    },
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/figures/fig_h1_mbeta_decay_vs_bound_residual.pdf": {
+      "panels": "A: M_beta vs bound residual scatter; B: reward-channel dominance distribution.",
+      "variables": "M_beta estimate, residual gap, dominance ratio.",
+      "takeaway": "Lower M_beta aligns with lower residual and reduced reward-channel dominance.",
+      "uncertainty": "Seedwise scatter and box spread summarize variability."
+    },
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/figures/fig_h2_success_vs_td_variance.pdf": {
+      "panels": "A: return vs TD variance scatter; B: critic-drift boxplot.",
+      "variables": "TD variance, normalized return, drift norm.",
+      "takeaway": "Uncertainty-gated CCGO yields lower variance/drift for similar or better return.",
+      "uncertainty": "Distributional spread by dataset and baseline."
+    },
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/figures/fig_h2_gate_sensitivity_calibration.pdf": {
+      "panels": "A: gate-slope density with kappa/4 line; B: slope vs variance scatter.",
+      "variables": "empirical gate slope, TD variance.",
+      "takeaway": "Observed slope mass remains near theoretical envelope.",
+      "uncertainty": "Density and seedwise scatter across datasets."
+    },
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/figures/fig_transfer_counterexample_suite.pdf": {
+      "panels": "A: bound-violation incidence; B: transfer-drop distribution.",
+      "variables": "violation rate, return drop percent.",
+      "takeaway": "Assumption-broken schedules reliably trigger measurable degradation.",
+      "uncertainty": "Dataset-conditioned bars plus box-plot distributions."
+    },
+    "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/figures/fig_symbolic_boundary_audit.pdf": {
+      "panels": "A: symbolic pass rate by claim; B: numeric-symbolic error by check.",
+      "variables": "pass fraction, absolute agreement error.",
+      "takeaway": "C1/C2 checks pass with low numeric-symbolic discrepancies.",
+      "uncertainty": "Error magnitudes reported per symbolic check."
+    }
+  },
+  "claim_support": {
+    "hm_cf_001": {
+      "status": "supported",
+      "why": "Non-inferiority CI and residual diagnostics align with bounded annealing objective.",
+      "appendix_artifact": "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/appendix/appendix_h1_optimality_envelope_audit.md"
+    },
+    "hm_cf_002": {
+      "status": "supported",
+      "why": "Variance and gate-sensitivity diagnostics align with theorem-guided expectations.",
+      "appendix_artifact": "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/appendix/appendix_h2_uncertainty_gate_audit.md"
+    }
+  }
+}

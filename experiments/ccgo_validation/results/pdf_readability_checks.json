@@ -1,0 +1,44 @@
+[
+  {
+    "path": "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/figures/fig_h1_mbeta_decay_vs_bound_residual.pdf",
+    "width": 1257,
+    "height": 505,
+    "non_white_ratio": 0.14873224792646328,
+    "readability_ok": true
+  },
+  {
+    "path": "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/figures/fig_h1_return_auc_noninferiority.pdf",
+    "width": 1364,
+    "height": 937,
+    "non_white_ratio": 0.240025569844484,
+    "readability_ok": true
+  },
+  {
+    "path": "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/figures/fig_h2_gate_sensitivity_calibration.pdf",
+    "width": 1260,
+    "height": 504,
+    "non_white_ratio": 0.1744551524313429,
+    "readability_ok": true
+  },
+  {
+    "path": "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/figures/fig_h2_success_vs_td_variance.pdf",
+    "width": 1241,
+    "height": 505,
+    "non_white_ratio": 0.13416041040042764,
+    "readability_ok": true
+  },
+  {
+    "path": "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/figures/fig_symbolic_boundary_audit.pdf",
+    "width": 1261,
+    "height": 505,
+    "non_white_ratio": 0.1606724193434411,
+    "readability_ok": true
+  },
+  {
+    "path": "/app/outputs/runs/c234fb70-5d16-40aa-bf00-111fb4862221/workspace/paper/figures/fig_transfer_counterexample_suite.pdf",
+    "width": 1253,
+    "height": 505,
+    "non_white_ratio": 0.28007870220381975,
+    "readability_ok": true
+  }
+]

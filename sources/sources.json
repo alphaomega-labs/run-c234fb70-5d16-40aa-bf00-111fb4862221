@@ -1,0 +1,3141 @@
+[
+  {
+    "assumptions": [
+      "Goals are represented explicitly and can condition policy/value updates.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Xiaoming Liu",
+      "Borong Zhang",
+      "Qingbiao Li",
+      "Steven Morad"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Xiaoming Liu, Borong Zhang, Qingbiao Li, Steven Morad (2026). 120 Minutes and a Laptop: Minimalist Image-goal Navigation via Unsupervised Exploration and Offline RL. arXiv. https://doi.org/10.48550/arXiv.2603.26441",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2603.26441"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "The prevailing paradigm for image-goal visual navigation often assumes access to large-scale datasets, substantial pretraining, and significant computational resources. In this work, we challenge this assumption. We show that we can collect a dataset, train an in-domain policy, and deploy it to the real world (1) in less than 120 minutes, (2) on a consumer laptop, (3) without any human intervention. Our method, MI...",
+    "theorem_proof_scaffolds": [],
+    "title": "120 Minutes and a Laptop: Minimalist Image-goal Navigation via Unsupervised Exploration and Offline RL",
+    "url": "https://doi.org/10.48550/arXiv.2603.26441",
+    "year": 2026
+  },
+  {
+    "assumptions": [
+      "Goals are represented explicitly and can condition policy/value updates.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Xuerui Wang",
+      "Guangyu Ren",
+      "Tianhong Dai",
+      "Bintao Hu",
+      "Shuangyao Huang",
+      "Wenzhang Zhang",
+      "Hengyan Liu"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Xuerui Wang, Guangyu Ren, Tianhong Dai, Bintao Hu, Shuangyao Huang, Wenzhang Zhang, Hengyan Liu (2026). ACDC: Adaptive Curriculum Planning with Dynamic Contrastive Control for Goal-Conditioned Reinforcement Learning in Robotic Manipulation. arXiv. https://doi.org/10.48550/arXiv.2603.02104",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2603.02104"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "Goal-conditioned reinforcement learning has shown considerable potential in robotic manipulation; however, existing approaches remain limited by their reliance on prioritizing collected experience, resulting in suboptimal performance across diverse tasks. Inspired by human learning behaviors, we propose a more comprehensive learning paradigm, ACDC, which integrates multidimensional Adaptive Curriculum (AC) Plannin...",
+    "theorem_proof_scaffolds": [],
+    "title": "ACDC: Adaptive Curriculum Planning with Dynamic Contrastive Control for Goal-Conditioned Reinforcement Learning in Robotic Manipulation",
+    "url": "https://doi.org/10.48550/arXiv.2603.02104",
+    "year": 2026
+  },
+  {
+    "assumptions": [
+      "Intrinsic reward provides useful exploration signal without permanently overriding task reward.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Viet Bac Nguyen",
+      "Phuong Thai Nguyen"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Viet Bac Nguyen, Phuong Thai Nguyen (2026). Adaptive Correlation-Weighted Intrinsic Rewards for Reinforcement Learning. arXiv. https://doi.org/10.48550/arXiv.2602.24081",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "equation",
+        "confidence": "medium",
+        "content": "r_t=r_t^e+w_t r_t^i",
+        "locator": "method",
+        "provenance_snippet": "Core optimization/update equation.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2602.24081"
+      },
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2602.24081"
+      }
+    ],
+    "extraction_completeness": "substantial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [
+      "r_t=r_t^e+w_t r_t^i"
+    ],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "We propose ACWI (Adaptive Correlation Weighted Intrinsic), an adaptive intrinsic reward scaling framework designed to dynamically balance intrinsic and extrinsic rewards for improved exploration in sparse reward reinforcement learning. Unlike conventional approaches that rely on manually tuned scalar coefficients, which often result in unstable or suboptimal performance across tasks, ACWI learns a state dependent ...",
+    "theorem_proof_scaffolds": [],
+    "title": "Adaptive Correlation-Weighted Intrinsic Rewards for Reinforcement Learning",
+    "url": "https://doi.org/10.48550/arXiv.2602.24081",
+    "year": 2026
+  },
+  {
+    "assumptions": [
+      "Goals are represented explicitly and can condition policy/value updates.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Ancheng Hou",
+      "Ruijia Liu",
+      "Xiang Yin"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Ancheng Hou, Ruijia Liu, Xiang Yin (2026). GraSP-STL: A Graph-Based Framework for Zero-Shot Signal Temporal Logic Planning via Offline Goal-Conditioned Reinforcement Learning. arXiv. https://doi.org/10.48550/arXiv.2603.29533",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2603.29533"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "This paper studies offline, zero-shot planning under Signal Temporal Logic (STL) specifications. We assume access only to an offline dataset of state-action-state transitions collected by a task-agnostic behavior policy, with no analytical dynamics model, no further environment interaction, and no task-specific retraining. The objective is to synthesize a control strategy whose resulting trajectory satisfies an ar...",
+    "theorem_proof_scaffolds": [],
+    "title": "GraSP-STL: A Graph-Based Framework for Zero-Shot Signal Temporal Logic Planning via Offline Goal-Conditioned Reinforcement Learning",
+    "url": "https://doi.org/10.48550/arXiv.2603.29533",
+    "year": 2026
+  },
+  {
+    "assumptions": [
+      "Goals are represented explicitly and can condition policy/value updates.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Issa Nakamura",
+      "Tomoya Yamanokuchi",
+      "Yuki Kadokawa",
+      "Jia Qu",
+      "Shun Otsub",
+      "Ken Miyamoto",
+      "Shotaro Miwa",
+      "Takamitsu Matsubara"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Issa Nakamura, Tomoya Yamanokuchi, Yuki Kadokawa, Jia Qu, Shun Otsub, Ken Miyamoto, Shotaro Miwa, Takamitsu Matsubara (2026). ViSA: Visited-State Augmentation for Generalized Goal-Space Contrastive Reinforcement Learning. arXiv. https://doi.org/10.48550/arXiv.2603.14887",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2603.14887"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "Goal-Conditioned Reinforcement Learning (GCRL) is a framework for learning a policy that can reach arbitrarily given goals. In particular, Contrastive Reinforcement Learning (CRL) provides a framework for policy updates using an approximation of the value function estimated via contrastive learning, achieving higher sample efficiency compared to conventional methods. However, since CRL treats the visited state as ...",
+    "theorem_proof_scaffolds": [],
+    "title": "ViSA: Visited-State Augmentation for Generalized Goal-Space Contrastive Reinforcement Learning",
+    "url": "https://doi.org/10.48550/arXiv.2603.14887",
+    "year": 2026
+  },
+  {
+    "assumptions": [
+      "Intrinsic reward provides useful exploration signal without permanently overriding task reward.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Leander Diaz-Bone",
+      "Marco Bagatella",
+      "Jonas H\u00fcbotter",
+      "Andreas Krause"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Leander Diaz-Bone, Marco Bagatella, Jonas H\u00fcbotter, Andreas Krause (2025). DISCOVER: Automated Curricula for Sparse-Reward Reinforcement Learning. arXiv. https://doi.org/10.48550/arXiv.2505.19850",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2505.19850"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "Sparse-reward reinforcement learning (RL) can model a wide range of highly complex tasks. Solving sparse-reward tasks is RL's core premise, requiring efficient exploration coupled with long-horizon credit assignment, and overcoming these challenges is key for building self-improving agents with superhuman ability. Prior work commonly explores with the objective of solving many sparse-reward tasks, making explorati...",
+    "theorem_proof_scaffolds": [],
+    "title": "DISCOVER: Automated Curricula for Sparse-Reward Reinforcement Learning",
+    "url": "https://doi.org/10.48550/arXiv.2505.19850",
+    "year": 2025
+  },
+  {
+    "assumptions": [
+      "Intrinsic reward provides useful exploration signal without permanently overriding task reward.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Ibne Farabi Shihab",
+      "Sanjeda Akter",
+      "Anuj Sharma"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Ibne Farabi Shihab, Sanjeda Akter, Anuj Sharma (2025). What Fundamental Structure in Reward Functions Enables Efficient Sparse-Reward Learning?. arXiv. https://doi.org/10.48550/arXiv.2509.03790",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2509.03790"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "Sparse-reward reinforcement learning (RL) remains fundamentally hard: without structure, any agent needs $\u03a9(|\\mathcal{S}||\\mathcal{A}|/p)$ samples to recover rewards. We introduce Policy-Aware Matrix Completion (PAMC) as a first concrete step toward a structural reward learning framework. Our key idea is to exploit approximate low-rank + sparse structure in the reward matrix, under policy-biased (MNAR) sampling. W...",
+    "theorem_proof_scaffolds": [],
+    "title": "What Fundamental Structure in Reward Functions Enables Efficient Sparse-Reward Learning?",
+    "url": "https://doi.org/10.48550/arXiv.2509.03790",
+    "year": 2025
+  },
+  {
+    "assumptions": [
+      "Intrinsic reward provides useful exploration signal without permanently overriding task reward.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Hongming Li",
+      "Shujian Yu",
+      "Bin Liu",
+      "Jose C. Principe"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Hongming Li, Shujian Yu, Bin Liu, Jose C. Principe (2024). ELEMENT: Episodic and Lifelong Exploration via Maximum Entropy. arXiv. https://doi.org/10.48550/arXiv.2412.03800",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2412.03800"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "This paper proposes \\emph{Episodic and Lifelong Exploration via Maximum ENTropy} (ELEMENT), a novel, multiscale, intrinsically motivated reinforcement learning (RL) framework that is able to explore environments without using any extrinsic reward and transfer effectively the learned skills to downstream tasks. We advance the state of the art in three ways. First, we propose a multiscale entropy optimization to tak...",
+    "theorem_proof_scaffolds": [],
+    "title": "ELEMENT: Episodic and Lifelong Exploration via Maximum Entropy",
+    "url": "https://doi.org/10.48550/arXiv.2412.03800",
+    "year": 2024
+  },
+  {
+    "assumptions": [
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Mingqi Yuan",
+      "Roger Creus Castanyer",
+      "Bo Li",
+      "Xin Jin",
+      "Wenjun Zeng",
+      "Glen Berseth"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Mingqi Yuan, Roger Creus Castanyer, Bo Li, Xin Jin, Wenjun Zeng, Glen Berseth (2024). RLeXplore: Accelerating Research in Intrinsically-Motivated Reinforcement Learning. arXiv. https://doi.org/10.48550/arXiv.2405.19548",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2405.19548"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "Extrinsic rewards can effectively guide reinforcement learning (RL) agents in specific tasks. However, extrinsic rewards frequently fall short in complex environments due to the significant human effort needed for their design and annotation. This limitation underscores the necessity for intrinsic rewards, which offer auxiliary and dense signals and can enable agents to learn in an unsupervised manner. Although va...",
+    "theorem_proof_scaffolds": [],
+    "title": "RLeXplore: Accelerating Research in Intrinsically-Motivated Reinforcement Learning",
+    "url": "https://doi.org/10.48550/arXiv.2405.19548",
+    "year": 2024
+  },
+  {
+    "assumptions": [
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Farama Foundation"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Farama Foundation (2023). Gymnasium. RL resource. https://gymnasium.farama.org/",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://gymnasium.farama.org/"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "dataset",
+    "summary": "Standard API and benchmark interface for reproducible reinforcement learning experiments.",
+    "theorem_proof_scaffolds": [],
+    "title": "Gymnasium",
+    "url": "https://gymnasium.farama.org",
+    "year": 2023
+  },
+  {
+    "assumptions": [
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Danijar Hafner",
+      "Jurgis Pasukonis",
+      "Jimmy Ba",
+      "Timothy Lillicrap"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Danijar Hafner, Jurgis Pasukonis, Jimmy Ba, Timothy Lillicrap (2023). Mastering Diverse Domains through World Models. arXiv. https://doi.org/10.48550/arXiv.2301.04104",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "equation",
+        "confidence": "medium",
+        "content": "J=E[\\sum_t \\lambda_t(r_t+\\beta H_t)]",
+        "locator": "method",
+        "provenance_snippet": "Core optimization/update equation.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2301.04104"
+      },
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2301.04104"
+      }
+    ],
+    "extraction_completeness": "substantial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [
+      "J=E[\\sum_t \\lambda_t(r_t+\\beta H_t)]"
+    ],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "Developing a general algorithm that learns to solve tasks across a wide range of applications has been a fundamental challenge in artificial intelligence. Although current reinforcement learning algorithms can be readily applied to tasks similar to what they have been developed for, configuring them for new application domains requires significant human expertise and experimentation. We present DreamerV3, a genera...",
+    "theorem_proof_scaffolds": [],
+    "title": "Mastering Diverse Domains through World Models",
+    "url": "https://doi.org/10.48550/arXiv.2301.04104",
+    "year": 2023
+  },
+  {
+    "assumptions": [
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Farama Foundation"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Farama Foundation (2023). MiniGrid. RL resource. https://github.com/Farama-Foundation/Minigrid",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://github.com/Farama-Foundation/Minigrid"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "dataset",
+    "summary": "Lightweight gridworld benchmark suite for goal and sparse-reward exploration research.",
+    "theorem_proof_scaffolds": [],
+    "title": "MiniGrid",
+    "url": "https://github.com/Farama-Foundation/Minigrid",
+    "year": 2023
+  },
+  {
+    "assumptions": [
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Nicklas Hansen",
+      "Hao Su",
+      "Xiaolong Wang"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Nicklas Hansen, Hao Su, Xiaolong Wang (2023). TD-MPC2: Scalable, Robust World Models for Continuous Control. arXiv. https://doi.org/10.48550/arXiv.2310.16828",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2310.16828"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "TD-MPC is a model-based reinforcement learning (RL) algorithm that performs local trajectory optimization in the latent space of a learned implicit (decoder-free) world model. In this work, we present TD-MPC2: a series of improvements upon the TD-MPC algorithm. We demonstrate that TD-MPC2 improves significantly over baselines across 104 online RL tasks spanning 4 diverse task domains, achieving consistently strong...",
+    "theorem_proof_scaffolds": [],
+    "title": "TD-MPC2: Scalable, Robust World Models for Continuous Control",
+    "url": "https://doi.org/10.48550/arXiv.2310.16828",
+    "year": 2023
+  },
+  {
+    "assumptions": [
+      "Goal states are observable or representable for contrastive pairing.",
+      "Replay trajectories cover positive and negative goal pairs sufficiently."
+    ],
+    "authors": [
+      "Benjamin Eysenbach",
+      "Tianjun Zhang",
+      "Ruslan Salakhutdinov",
+      "Sergey Levine"
+    ],
+    "baseline_details": [
+      "Compared against prior goal-conditioned RL methods including C-learning style approaches with matched replay protocols."
+    ],
+    "citation": "Benjamin Eysenbach, Tianjun Zhang, Ruslan Salakhutdinov, Sergey Levine (2022). Contrastive Learning as Goal-Conditioned Reinforcement Learning. arXiv. https://doi.org/10.48550/arXiv.2206.07568",
+    "claims": [
+      "Contrastive RL can outperform non-contrastive goal-conditioned baselines in sample efficiency and final success."
+    ],
+    "comparator_lineage": [
+      "Builds on C-learning and goal-conditioned Q-learning lines."
+    ],
+    "conclusions": [
+      "Contrastive representation learning can serve as the core RL objective instead of an auxiliary loss."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides a formal bridge between contrastive objectives and goal-conditioned value learning.",
+      "Demonstrates improved success rates on image-based and offline goal-reaching tasks."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "equation",
+        "confidence": "high",
+        "content": "Q(s,a,g) = log p(g|s,a) - log p(g)",
+        "locator": "Sec. 3-4",
+        "provenance_snippet": "goal-conditioned value linked to contrastive scoring",
+        "source_ref": "https://doi.org/10.48550/arXiv.2206.07568"
+      },
+      {
+        "atom_type": "procedure",
+        "confidence": "high",
+        "content": "Jointly optimize goal-conditioned policy and contrastive representation from replay trajectories.",
+        "locator": "Method",
+        "provenance_snippet": "contrastive RL training loop",
+        "source_ref": "https://doi.org/10.48550/arXiv.2206.07568"
+      }
+    ],
+    "extraction_completeness": "substantial",
+    "extraction_confidence": "high",
+    "future_work": [
+      "Extend to harder long-horizon sparse tasks and richer observation modalities."
+    ],
+    "key_equations": [
+      "Q(s,a,g) = log p(g|s,a) - log p(g)",
+      "L_{InfoNCE} = -E[log exp(f(x,x+))/sum_j exp(f(x,x_j))]"
+    ],
+    "limitations": [
+      "Performance depends on negative-sample quality and encoder capacity."
+    ],
+    "notation_seeds": [
+      "g: goal variable",
+      "f_theta: contrastive score function",
+      "Q(s,a,g): goal-conditioned action value"
+    ],
+    "parameters": [
+      "Batch size for contrastive pairs",
+      "Temperature or logit scaling in contrastive loss"
+    ],
+    "procedures": [
+      "Train encoder and policy jointly from replay with contrastive objective derived from goal reachability."
+    ],
+    "provenance_notes": [
+      "Extracted from arXiv abs and PDF text: knowledge/raw/arxiv_meta/2206.07568.abs.html, knowledge/raw/pdfs/2206.07568.txt"
+    ],
+    "reusable_limitations": [
+      "Performance depends on negative-sample quality and encoder capacity."
+    ],
+    "source_type": "paper",
+    "summary": "Recasts goal-conditioned RL as contrastive learning, deriving value-like objectives that improve goal-reaching with strong sample efficiency in online and offline settings.",
+    "theorem_proof_scaffolds": [
+      "Derivation links contrastive objective to optimal goal-conditioned value ordering under sampled goals."
+    ],
+    "title": "Contrastive Learning as Goal-Conditioned Reinforcement Learning",
+    "url": "https://doi.org/10.48550/arXiv.2206.07568",
+    "year": 2022
+  },
+  {
+    "assumptions": [
+      "Intrinsic reward provides useful exploration signal without permanently overriding task reward.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Hao Liu",
+      "Pieter Abbeel"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Hao Liu, Pieter Abbeel (2021). Behavior From the Void: Unsupervised Active Pre-Training. arXiv. https://doi.org/10.48550/arXiv.2103.04551",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2103.04551"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "We introduce a new unsupervised pre-training method for reinforcement learning called APT, which stands for Active Pre-Training. APT learns behaviors and representations by actively searching for novel states in reward-free environments. The key novel idea is to explore the environment by maximizing a non-parametric entropy computed in an abstract representation space, which avoids challenging density modeling and...",
+    "theorem_proof_scaffolds": [],
+    "title": "Behavior From the Void: Unsupervised Active Pre-Training",
+    "url": "https://doi.org/10.48550/arXiv.2103.04551",
+    "year": 2021
+  },
+  {
+    "assumptions": [
+      "Intrinsic reward provides useful exploration signal without permanently overriding task reward.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Younggyo Seo",
+      "Lili Chen",
+      "Jinwoo Shin",
+      "Honglak Lee",
+      "Pieter Abbeel",
+      "Kimin Lee"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Younggyo Seo, Lili Chen, Jinwoo Shin, Honglak Lee, Pieter Abbeel, Kimin Lee (2021). State Entropy Maximization with Random Encoders for Efficient Exploration. arXiv. https://doi.org/10.48550/arXiv.2102.09430",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2102.09430"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "Recent exploration methods have proven to be a recipe for improving sample-efficiency in deep reinforcement learning (RL). However, efficient exploration in high-dimensional observation spaces still remains a challenge. This paper presents Random Encoders for Efficient Exploration (RE3), an exploration method that utilizes state entropy as an intrinsic reward. In order to estimate state entropy in environments wit...",
+    "theorem_proof_scaffolds": [],
+    "title": "State Entropy Maximization with Random Encoders for Efficient Exploration",
+    "url": "https://doi.org/10.48550/arXiv.2102.09430",
+    "year": 2021
+  },
+  {
+    "assumptions": [
+      "Intrinsic reward provides useful exploration signal without permanently overriding task reward.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Adri\u00e0 Puigdom\u00e8nech Badia",
+      "Bilal Piot",
+      "Steven Kapturowski",
+      "Pablo Sprechmann",
+      "Alex Vitvitskyi",
+      "Daniel Guo",
+      "Charles Blundell"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Adri\u00e0 Puigdom\u00e8nech Badia, Bilal Piot, Steven Kapturowski, Pablo Sprechmann, Alex Vitvitskyi, Daniel Guo, Charles Blundell (2020). Agent57: Outperforming the Atari Human Benchmark. arXiv. https://doi.org/10.48550/arXiv.2003.13350",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2003.13350"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "Atari games have been a long-standing benchmark in the reinforcement learning (RL) community for the past decade. This benchmark was proposed to test general competency of RL algorithms. Previous work has achieved good average performance by doing outstandingly well on many games of the set, but very poorly in several of the most challenging games. We propose Agent57, the first deep RL agent that outperforms the s...",
+    "theorem_proof_scaffolds": [],
+    "title": "Agent57: Outperforming the Atari Human Benchmark",
+    "url": "https://doi.org/10.48550/arXiv.2003.13350",
+    "year": 2020
+  },
+  {
+    "assumptions": [
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Justin Fu",
+      "Aviral Kumar",
+      "Ofir Nachum",
+      "George Tucker",
+      "Sergey Levine"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Justin Fu, Aviral Kumar, Ofir Nachum, George Tucker, Sergey Levine (2020). D4RL: Datasets for Deep Data-Driven Reinforcement Learning. arXiv. https://doi.org/10.48550/arXiv.2004.07219",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2004.07219"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "The offline reinforcement learning (RL) setting (also known as full batch RL), where a policy is learned from a static dataset, is compelling as progress enables RL methods to take advantage of large, previously-collected datasets, much like how the rise of large datasets has fueled results in supervised learning. However, existing online RL benchmarks are not tailored towards the offline setting and existing offl...",
+    "theorem_proof_scaffolds": [],
+    "title": "D4RL: Datasets for Deep Data-Driven Reinforcement Learning",
+    "url": "https://doi.org/10.48550/arXiv.2004.07219",
+    "year": 2020
+  },
+  {
+    "assumptions": [
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Yuval Tassa",
+      "Yotam Doron",
+      "Alessandro Muldal",
+      "Tom Erez",
+      "Yuri Li",
+      "Diego de Las Casas",
+      "David Budden",
+      "Abbas Abdolmaleki",
+      "Josh Merel",
+      "Nando de Freitas",
+      "Marta Garnelo",
+      "Benigno Uria",
+      "Stig Petersen",
+      "Gregor Wayne",
+      "Yuval Li",
+      "Nicolas Heess"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Yuval Tassa, Yotam Doron, Alessandro Muldal, Tom Erez, Yuri Li, Diego de Las Casas, David Budden, Abbas Abdolmaleki, Josh Merel, Nando de Freitas, Marta Garnelo, Benigno Uria, Stig Petersen, Gregor Wayne, Yuval Li, Nicolas Heess (2020). DeepMind Control Suite. arXiv. https://doi.org/10.48550/arXiv.2006.12983",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2006.12983"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "dataset",
+    "summary": "Continuous-control benchmark suite with standardized physics tasks for RL algorithm comparison.",
+    "theorem_proof_scaffolds": [],
+    "title": "DeepMind Control Suite",
+    "url": "https://doi.org/10.48550/arXiv.2006.12983",
+    "year": 2020
+  },
+  {
+    "assumptions": [
+      "Intrinsic reward provides useful exploration signal without permanently overriding task reward.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Adri\u00e0 Puigdom\u00e8nech Badia",
+      "Pablo Sprechmann",
+      "Alex Vitvitskyi",
+      "Daniel Guo",
+      "Bilal Piot",
+      "Steven Kapturowski",
+      "Olivier Tieleman",
+      "Mart\u00edn Arjovsky",
+      "Alexander Pritzel",
+      "Andew Bolt",
+      "Charles Blundell"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Adri\u00e0 Puigdom\u00e8nech Badia, Pablo Sprechmann, Alex Vitvitskyi, Daniel Guo, Bilal Piot, Steven Kapturowski, Olivier Tieleman, Mart\u00edn Arjovsky, Alexander Pritzel, Andew Bolt, Charles Blundell (2020). Never Give Up: Learning Directed Exploration Strategies. arXiv. https://doi.org/10.48550/arXiv.2002.06038",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "equation",
+        "confidence": "medium",
+        "content": "Q=Q^e+\\beta Q^i",
+        "locator": "method",
+        "provenance_snippet": "Core optimization/update equation.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2002.06038"
+      },
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2002.06038"
+      }
+    ],
+    "extraction_completeness": "substantial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [
+      "Q=Q^e+\\beta Q^i"
+    ],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "We propose a reinforcement learning agent to solve hard exploration games by learning a range of directed exploratory policies. We construct an episodic memory-based intrinsic reward using k-nearest neighbors over the agent's recent experience to train the directed exploratory policies, thereby encouraging the agent to repeatedly revisit all states in its environment. A self-supervised inverse dynamics model is us...",
+    "theorem_proof_scaffolds": [],
+    "title": "Never Give Up: Learning Directed Exploration Strategies",
+    "url": "https://doi.org/10.48550/arXiv.2002.06038",
+    "year": 2020
+  },
+  {
+    "assumptions": [
+      "Intrinsic reward provides useful exploration signal without permanently overriding task reward.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Ramanan Sekar",
+      "Oleh Rybkin",
+      "Kostas Daniilidis",
+      "Pieter Abbeel",
+      "Danijar Hafner",
+      "Deepak Pathak"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Ramanan Sekar, Oleh Rybkin, Kostas Daniilidis, Pieter Abbeel, Danijar Hafner, Deepak Pathak (2020). Planning to Explore via Self-Supervised World Models. arXiv. https://doi.org/10.48550/arXiv.2005.05960",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.2005.05960"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "Reinforcement learning allows solving complex tasks, however, the learning tends to be task-specific and the sample efficiency remains a challenge. We present Plan2Explore, a self-supervised reinforcement learning agent that tackles both these challenges through a new approach to self-supervised exploration and fast adaptation to new tasks, which need not be known during exploration. During exploration, unlike pri...",
+    "theorem_proof_scaffolds": [],
+    "title": "Planning to Explore via Self-Supervised World Models",
+    "url": "https://doi.org/10.48550/arXiv.2005.05960",
+    "year": 2020
+  },
+  {
+    "assumptions": [
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Adrien Ecoffet",
+      "Joost Huizinga",
+      "Joel Lehman",
+      "Kenneth O. Stanley",
+      "Jeff Clune"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Adrien Ecoffet, Joost Huizinga, Joel Lehman, Kenneth O. Stanley, Jeff Clune (2019). Go-Explore: a New Approach for Hard-Exploration Problems. arXiv. https://doi.org/10.48550/arXiv.1901.10995",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1901.10995"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "A grand challenge in reinforcement learning is intelligent exploration, especially when rewards are sparse or deceptive. Two Atari games serve as benchmarks for such hard-exploration domains: Montezuma's Revenge and Pitfall. On both games, current RL algorithms perform poorly, even those with intrinsic motivation, which is the dominant method to improve performance on hard-exploration domains. To address this shor...",
+    "theorem_proof_scaffolds": [],
+    "title": "Go-Explore: a New Approach for Hard-Exploration Problems",
+    "url": "https://doi.org/10.48550/arXiv.1901.10995",
+    "year": 2019
+  },
+  {
+    "assumptions": [
+      "Goals are represented explicitly and can condition policy/value updates.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Dibya Ghosh",
+      "Abhishek Gupta",
+      "Ashwin Reddy",
+      "Justin Fu",
+      "Coline Devin",
+      "Benjamin Eysenbach",
+      "Sergey Levine"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Dibya Ghosh, Abhishek Gupta, Ashwin Reddy, Justin Fu, Coline Devin, Benjamin Eysenbach, Sergey Levine (2019). Learning to Reach Goals via Iterated Supervised Learning. arXiv. https://doi.org/10.48550/arXiv.1912.06088",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1912.06088"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "Current reinforcement learning (RL) algorithms can be brittle and difficult to use, especially when learning goal-reaching behaviors from sparse rewards. Although supervised imitation learning provides a simple and stable alternative, it requires access to demonstrations from a human supervisor. In this paper, we study RL algorithms that use imitation learning to acquire goal reaching policies from scratch, withou...",
+    "theorem_proof_scaffolds": [],
+    "title": "Learning to Reach Goals via Iterated Supervised Learning",
+    "url": "https://doi.org/10.48550/arXiv.1912.06088",
+    "year": 2019
+  },
+  {
+    "assumptions": [
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Karl Cobbe",
+      "Christopher Hesse",
+      "Jacob Hilton",
+      "John Schulman"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Karl Cobbe, Christopher Hesse, Jacob Hilton, John Schulman (2019). Leveraging Procedural Generation to Benchmark Reinforcement Learning. arXiv. https://doi.org/10.48550/arXiv.1912.01588",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1912.01588"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "We introduce Procgen Benchmark, a suite of 16 procedurally generated game-like environments designed to benchmark both sample efficiency and generalization in reinforcement learning. We believe that the community will benefit from increased access to high quality training environments, and we provide detailed experimental protocols for using this benchmark. We empirically demonstrate that diverse environment distr...",
+    "theorem_proof_scaffolds": [],
+    "title": "Leveraging Procedural Generation to Benchmark Reinforcement Learning",
+    "url": "https://doi.org/10.48550/arXiv.1912.01588",
+    "year": 2019
+  },
+  {
+    "assumptions": [
+      "Goals are represented explicitly and can condition policy/value updates.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Vitchyr H. Pong",
+      "Murtaza Dalal",
+      "Steven Lin",
+      "Ashvin Nair",
+      "Shikhar Bahl",
+      "Sergey Levine"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Vitchyr H. Pong, Murtaza Dalal, Steven Lin, Ashvin Nair, Shikhar Bahl, Sergey Levine (2019). Skew-Fit: State-Covering Self-Supervised Reinforcement Learning. arXiv. https://doi.org/10.48550/arXiv.1903.03698",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1903.03698"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "Autonomous agents that must exhibit flexible and broad capabilities will need to be equipped with large repertoires of skills. Defining each skill with a manually-designed reward function limits this repertoire and imposes a manual engineering burden. Self-supervised agents that set their own goals can automate this process, but designing appropriate goal setting objectives can be difficult, and often involves heu...",
+    "theorem_proof_scaffolds": [],
+    "title": "Skew-Fit: State-Covering Self-Supervised Reinforcement Learning",
+    "url": "https://doi.org/10.48550/arXiv.1903.03698",
+    "year": 2019
+  },
+  {
+    "assumptions": [
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Scott Fujimoto",
+      "Herke van Hoof",
+      "David Meger"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Scott Fujimoto, Herke van Hoof, David Meger (2018). Addressing Function Approximation Error in Actor-Critic Methods. arXiv. https://doi.org/10.48550/arXiv.1802.09477",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "equation",
+        "confidence": "medium",
+        "content": "y=r+\\gamma min_i Q_i(s',a')",
+        "locator": "method",
+        "provenance_snippet": "Core optimization/update equation.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1802.09477"
+      },
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1802.09477"
+      }
+    ],
+    "extraction_completeness": "substantial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [
+      "y=r+\\gamma min_i Q_i(s',a')"
+    ],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "In value-based reinforcement learning methods such as deep Q-learning, function approximation errors are known to lead to overestimated value estimates and suboptimal policies. We show that this problem persists in an actor-critic setting and propose novel mechanisms to minimize its effects on both the actor and the critic. Our algorithm builds on Double Q-learning, by taking the minimum value between a pair of cr...",
+    "theorem_proof_scaffolds": [],
+    "title": "Addressing Function Approximation Error in Actor-Critic Methods",
+    "url": "https://doi.org/10.48550/arXiv.1802.09477",
+    "year": 2018
+  },
+  {
+    "assumptions": [
+      "Goals are represented explicitly and can condition policy/value updates.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Ofir Nachum",
+      "Shixiang Gu",
+      "Honglak Lee",
+      "Sergey Levine"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Ofir Nachum, Shixiang Gu, Honglak Lee, Sergey Levine (2018). Data-Efficient Hierarchical Reinforcement Learning. arXiv. https://doi.org/10.48550/arXiv.1805.08296",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1805.08296"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "Hierarchical reinforcement learning (HRL) is a promising approach to extend traditional reinforcement learning (RL) methods to solve more complex tasks. Yet, the majority of current HRL methods require careful task-specific design and on-policy training, making them difficult to apply in real-world scenarios. In this paper, we study how we can develop HRL algorithms that are general, in that they do not make onero...",
+    "theorem_proof_scaffolds": [],
+    "title": "Data-Efficient Hierarchical Reinforcement Learning",
+    "url": "https://doi.org/10.48550/arXiv.1805.08296",
+    "year": 2018
+  },
+  {
+    "assumptions": [
+      "Latent skill variable z can induce distinguishable state occupancy distributions.",
+      "Discriminator q_phi(z|s) can be trained stably from off-policy data."
+    ],
+    "authors": [
+      "Benjamin Eysenbach",
+      "Abhishek Gupta",
+      "Julian Ibarz",
+      "Sergey Levine"
+    ],
+    "baseline_details": [
+      "Compared against variational option-discovery and entropy-only exploration baselines."
+    ],
+    "citation": "Benjamin Eysenbach, Abhishek Gupta, Julian Ibarz, Sergey Levine (2018). Diversity is All You Need: Learning Skills without a Reward Function. arXiv. https://doi.org/10.48550/arXiv.1802.06070",
+    "claims": [
+      "Reward-free skill pretraining improves exploration and transfer relative to random pretraining."
+    ],
+    "comparator_lineage": [
+      "Related to VIC and option-discovery methods"
+    ],
+    "conclusions": [
+      "Mutual-information-based skill diversity provides reusable exploratory behaviors."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Defines an unsupervised skill-learning objective grounded in mutual information maximization.",
+      "Shows learned skills accelerate downstream sparse-reward learning."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "equation",
+        "confidence": "high",
+        "content": "r_z(s,a)=log q_phi(z|s)-log p(z)",
+        "locator": "Objective",
+        "provenance_snippet": "DIAYN intrinsic reward definition",
+        "source_ref": "https://doi.org/10.48550/arXiv.1802.06070"
+      },
+      {
+        "atom_type": "claim",
+        "confidence": "high",
+        "content": "Unsupervised skills improve downstream task learning speed.",
+        "locator": "Experiments",
+        "provenance_snippet": "transfer learning improvements reported",
+        "source_ref": "https://doi.org/10.48550/arXiv.1802.06070"
+      }
+    ],
+    "extraction_completeness": "substantial",
+    "extraction_confidence": "high",
+    "future_work": [
+      "Integrate discovered skills with explicit goal-conditioned control and hierarchical planning."
+    ],
+    "key_equations": [
+      "r_z(s,a) = log q_phi(z|s) - log p(z)",
+      "J(\\pi,q) = E_{z,s,a}[log q_phi(z|s) - log p(z)] + alpha H(\\pi(\\cdot|s,z))"
+    ],
+    "limitations": [
+      "Skill usefulness depends on latent cardinality and discriminator quality."
+    ],
+    "notation_seeds": [
+      "z: latent skill",
+      "q_phi(z|s): discriminator",
+      "alpha: entropy weight"
+    ],
+    "parameters": [
+      "Skill prior p(z)",
+      "Entropy temperature alpha",
+      "Discriminator architecture"
+    ],
+    "procedures": [
+      "Alternate updates for policy and skill discriminator over latent-conditioned trajectories."
+    ],
+    "provenance_notes": [
+      "Extracted from arXiv abs and PDF text: knowledge/raw/arxiv_meta/1802.06070.abs.html, knowledge/raw/pdfs/1802.06070.txt"
+    ],
+    "reusable_limitations": [
+      "Skill usefulness depends on latent cardinality and discriminator quality."
+    ],
+    "source_type": "paper",
+    "summary": "Introduces DIAYN, a reward-free objective for diverse skill discovery that maximizes skill discriminability and policy entropy, enabling transferable exploration priors.",
+    "theorem_proof_scaffolds": [
+      "Objective decomposes into mutual information maximization with entropy regularization."
+    ],
+    "title": "Diversity is All You Need: Learning Skills without a Reward Function",
+    "url": "https://doi.org/10.48550/arXiv.1802.06070",
+    "year": 2018
+  },
+  {
+    "assumptions": [
+      "Intrinsic reward provides useful exploration signal without permanently overriding task reward.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Yuri Burda",
+      "Harrison Edwards",
+      "Amos Storkey",
+      "Oleg Klimov"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Yuri Burda, Harrison Edwards, Amos Storkey, Oleg Klimov (2018). Exploration by Random Network Distillation. arXiv. https://doi.org/10.48550/arXiv.1810.12894",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "equation",
+        "confidence": "medium",
+        "content": "r_t^i=||f_\\theta(s_t)-\\hat f_{\\bar\\theta}(s_t)||_2^2",
+        "locator": "method",
+        "provenance_snippet": "Core optimization/update equation.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1810.12894"
+      },
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1810.12894"
+      }
+    ],
+    "extraction_completeness": "substantial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [
+      "r_t^i=||f_\\theta(s_t)-\\hat f_{\\bar\\theta}(s_t)||_2^2"
+    ],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "We introduce an exploration bonus for deep reinforcement learning methods that is easy to implement and adds minimal overhead to the computation performed. The bonus is the error of a neural network predicting features of the observations given by a fixed randomly initialized neural network. We also introduce a method to flexibly combine intrinsic and extrinsic rewards. We find that the random network distillation...",
+    "theorem_proof_scaffolds": [],
+    "title": "Exploration by Random Network Distillation",
+    "url": "https://doi.org/10.48550/arXiv.1810.12894",
+    "year": 2018
+  },
+  {
+    "assumptions": [
+      "Goals are represented explicitly and can condition policy/value updates.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Matthias Plappert",
+      "Marcin Andrychowicz",
+      "Alex Ray",
+      "Bob McGrew",
+      "Bowen Baker",
+      "Glenn Powell",
+      "Jonas Schneider",
+      "Josh Tobin",
+      "Maciek Chociej",
+      "Peter Welinder",
+      "Vikash Kumar",
+      "Wojciech Zaremba"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Matthias Plappert, Marcin Andrychowicz, Alex Ray, Bob McGrew, Bowen Baker, Glenn Powell, Jonas Schneider, Josh Tobin, Maciek Chociej, Peter Welinder, Vikash Kumar, Wojciech Zaremba (2018). Multi-Goal Reinforcement Learning: Challenging Robotics Environments and Request for Research. arXiv. https://doi.org/10.48550/arXiv.1802.09464",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1802.09464"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "The purpose of this technical report is two-fold. First of all, it introduces a suite of challenging continuous control tasks (integrated with OpenAI Gym) based on currently existing robotics hardware. The tasks include pushing, sliding and pick &amp; place with a Fetch robotic arm as well as in-hand object manipulation with a Shadow Dexterous Hand. All tasks have sparse binary rewards and follow a Multi-Goal Rein...",
+    "theorem_proof_scaffolds": [],
+    "title": "Multi-Goal Reinforcement Learning: Challenging Robotics Environments and Request for Research",
+    "url": "https://doi.org/10.48550/arXiv.1802.09464",
+    "year": 2018
+  },
+  {
+    "assumptions": [
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Tuomas Haarnoja",
+      "Aurick Zhou",
+      "Pieter Abbeel",
+      "Sergey Levine"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Tuomas Haarnoja, Aurick Zhou, Pieter Abbeel, Sergey Levine (2018). Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning with a Stochastic Actor. arXiv. https://doi.org/10.48550/arXiv.1801.01290",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "equation",
+        "confidence": "medium",
+        "content": "J_\\pi=E[\\alpha log\\pi(a|s)-Q(s,a)]",
+        "locator": "method",
+        "provenance_snippet": "Core optimization/update equation.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1801.01290"
+      },
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1801.01290"
+      }
+    ],
+    "extraction_completeness": "substantial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [
+      "J_\\pi=E[\\alpha log\\pi(a|s)-Q(s,a)]"
+    ],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "Model-free deep reinforcement learning (RL) algorithms have been demonstrated on a range of challenging decision making and control tasks. However, these methods typically suffer from two major challenges: very high sample complexity and brittle convergence properties, which necessitate meticulous hyperparameter tuning. Both of these challenges severely limit the applicability of such methods to complex, real-worl...",
+    "theorem_proof_scaffolds": [],
+    "title": "Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning with a Stochastic Actor",
+    "url": "https://doi.org/10.48550/arXiv.1801.01290",
+    "year": 2018
+  },
+  {
+    "assumptions": [],
+    "authors": [
+      "Georg Ostrovski",
+      "Marc G. Bellemare",
+      "Aaron van den Oord",
+      "Remi Munos"
+    ],
+    "baseline_details": [],
+    "bibtex": "",
+    "citation": "Georg Ostrovski; Marc G. Bellemare; Aaron van den Oord; Remi Munos (2017). Count-Based Exploration with Neural Density Models. https://doi.org/10.48550/arXiv.1703.01310",
+    "claims": [
+      "Bellemare et al. (2016) introduced the notion of a pseudo-count, derived from a density model, to generalize count-based exploration to non-tabular reinforcement learning. This pseudo-count was used to generate an exploration bonus for a DQ"
+    ],
+    "comparator_lineage": [],
+    "conclusions": [],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Introduces method in Count-Based Exploration with Neural Density Models."
+    ],
+    "evidence": [
+      "Full text downloaded at knowledge/raw/pdfs/1703.01310.pdf"
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Bellemare et al. (2016) introduced the notion of a pseudo-count, derived from a density model, to generalize count-based exploration to non-tabular reinforcement learning. This pseudo-count was used to generate an exploration bonus for a DQ",
+        "locator": "Abstract",
+        "provenance_snippet": "Bellemare et al. (2016) introduced the notion of a pseudo-count, derived from a density model, to generalize count-based exploration to non-tabular reinforcemen",
+        "source_ref": "https://doi.org/10.48550/arXiv.1703.01310"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [],
+    "id": "src_86c3ce67f8",
+    "key_equations": [],
+    "limitations": [],
+    "notation_seeds": [],
+    "parameters": [],
+    "procedures": [],
+    "provenance_notes": [
+      "knowledge/raw/pdftxt/1703.01310.txt"
+    ],
+    "source_type": "paper",
+    "summary": "Bellemare et al. (2016) introduced the notion of a pseudo-count, derived from a density model, to generalize count-based exploration to non-tabular reinforcement learning. This pseudo-count was used to generate an exploration bonus for a DQN agent and combined with a mixed Monte Carlo update was sufficient to achieve state of the art on the Atari 2600 game Montezuma's Revenge. We consider two questions left open by t",
+    "theorem_proof_scaffolds": [],
+    "title": "Count-Based Exploration with Neural Density Models",
+    "url": "https://doi.org/10.48550/arXiv.1703.01310",
+    "venue": "arXiv",
+    "year": 2017
+  },
+  {
+    "assumptions": [
+      "Intrinsic reward provides useful exploration signal without permanently overriding task reward.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Deepak Pathak",
+      "Pulkit Agrawal",
+      "Alexei A. Efros",
+      "Trevor Darrell"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Deepak Pathak, Pulkit Agrawal, Alexei A. Efros, Trevor Darrell (2017). Curiosity-driven Exploration by Self-supervised Prediction. arXiv. https://doi.org/10.48550/arXiv.1705.05363",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "equation",
+        "confidence": "medium",
+        "content": "r_t=r_t^e+\\beta r_t^i",
+        "locator": "method",
+        "provenance_snippet": "Core optimization/update equation.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1705.05363"
+      },
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1705.05363"
+      }
+    ],
+    "extraction_completeness": "substantial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [
+      "r_t=r_t^e+\\beta r_t^i"
+    ],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "In many real-world scenarios, rewards extrinsic to the agent are extremely sparse, or absent altogether. In such cases, curiosity can serve as an intrinsic reward signal to enable the agent to explore its environment and learn skills that might be useful later in its life. We formulate curiosity as the error in an agent's ability to predict the consequence of its own actions in a visual feature space learned by a ...",
+    "theorem_proof_scaffolds": [],
+    "title": "Curiosity-driven Exploration by Self-supervised Prediction",
+    "url": "https://doi.org/10.48550/arXiv.1705.05363",
+    "year": 2017
+  },
+  {
+    "assumptions": [
+      "Goals are represented explicitly and can condition policy/value updates.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Marcin Andrychowicz",
+      "Filip Wolski",
+      "Alex Ray",
+      "Jonas Schneider",
+      "Rachel Fong",
+      "Peter Welinder",
+      "Bob McGrew",
+      "Josh Tobin",
+      "Pieter Abbeel",
+      "Wojciech Zaremba"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Marcin Andrychowicz, Filip Wolski, Alex Ray, Jonas Schneider, Rachel Fong, Peter Welinder, Bob McGrew, Josh Tobin, Pieter Abbeel, Wojciech Zaremba (2017). Hindsight Experience Replay. arXiv. https://doi.org/10.48550/arXiv.1707.01495",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "equation",
+        "confidence": "medium",
+        "content": "r_t^g=1[f_g(s_{t+1})=1]",
+        "locator": "method",
+        "provenance_snippet": "Core optimization/update equation.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1707.01495"
+      },
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1707.01495"
+      }
+    ],
+    "extraction_completeness": "substantial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [
+      "r_t^g=1[f_g(s_{t+1})=1]",
+      "y_t=r_t^g+\\gamma max_a Q(s_{t+1},a,g)"
+    ],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "Dealing with sparse rewards is one of the biggest challenges in Reinforcement Learning (RL). We present a novel technique called Hindsight Experience Replay which allows sample-efficient learning from rewards which are sparse and binary and therefore avoid the need for complicated reward engineering. It can be combined with an arbitrary off-policy RL algorithm and may be seen as a form of implicit curriculum. We d...",
+    "theorem_proof_scaffolds": [],
+    "title": "Hindsight Experience Replay",
+    "url": "https://doi.org/10.48550/arXiv.1707.01495",
+    "year": 2017
+  },
+  {
+    "assumptions": [
+      "Goals are represented explicitly and can condition policy/value updates.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Andrew Levy",
+      "George Konidaris",
+      "Robert Platt",
+      "Kate Saenko"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Andrew Levy, George Konidaris, Robert Platt, Kate Saenko (2017). Learning Multi-Level Hierarchies with Hindsight. arXiv. https://doi.org/10.48550/arXiv.1712.00948",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1712.00948"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "Hierarchical agents have the potential to solve sequential decision making tasks with greater sample efficiency than their non-hierarchical counterparts because hierarchical agents can break down tasks into sets of subtasks that only require short sequences of decisions. In order to realize this potential of faster learning, hierarchical agents need to be able to learn their multiple levels of policies in parallel...",
+    "theorem_proof_scaffolds": [],
+    "title": "Learning Multi-Level Hierarchies with Hindsight",
+    "url": "https://doi.org/10.48550/arXiv.1712.00948",
+    "year": 2017
+  },
+  {
+    "assumptions": [
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "John Schulman",
+      "Filip Wolski",
+      "Prafulla Dhariwal",
+      "Alec Radford",
+      "Oleg Klimov"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, Oleg Klimov (2017). Proximal Policy Optimization Algorithms. arXiv. https://doi.org/10.48550/arXiv.1707.06347",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "equation",
+        "confidence": "medium",
+        "content": "L^{CLIP}=E[min(r_t(\\theta)\\hat A_t,clip(r_t,1-\\epsilon,1+\\epsilon)\\hat A_t)]",
+        "locator": "method",
+        "provenance_snippet": "Core optimization/update equation.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1707.06347"
+      },
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1707.06347"
+      }
+    ],
+    "extraction_completeness": "substantial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [
+      "L^{CLIP}=E[min(r_t(\\theta)\\hat A_t,clip(r_t,1-\\epsilon,1+\\epsilon)\\hat A_t)]"
+    ],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "We propose a new family of policy gradient methods for reinforcement learning, which alternate between sampling data through interaction with the environment, and optimizing a \"surrogate\" objective function using stochastic gradient ascent. Whereas standard policy gradient methods perform one gradient update per data sample, we propose a novel objective function that enables multiple epochs of minibatch updates. T...",
+    "theorem_proof_scaffolds": [],
+    "title": "Proximal Policy Optimization Algorithms",
+    "url": "https://doi.org/10.48550/arXiv.1707.06347",
+    "year": 2017
+  },
+  {
+    "assumptions": [
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Greg Brockman",
+      "Vicki Cheung",
+      "Ludwig Pettersson",
+      "Jonas Schneider",
+      "John Schulman",
+      "Jie Tang",
+      "Wojciech Zaremba"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Greg Brockman, Vicki Cheung, Ludwig Pettersson, Jonas Schneider, John Schulman, Jie Tang, Wojciech Zaremba (2016). OpenAI Gym. arXiv. https://doi.org/10.48550/arXiv.1606.01540",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1606.01540"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "OpenAI Gym is a toolkit for reinforcement learning research. It includes a growing collection of benchmark problems that expose a common interface, and a website where people can share their results and compare the performance of algorithms. This whitepaper discusses the components of OpenAI Gym and the design decisions that went into the software.",
+    "theorem_proof_scaffolds": [],
+    "title": "OpenAI Gym",
+    "url": "https://doi.org/10.48550/arXiv.1606.01540",
+    "year": 2016
+  },
+  {
+    "assumptions": [
+      "Auxiliary pseudo-reward tasks shape representations helpful for extrinsic return optimization.",
+      "Shared encoder can optimize multiple losses without destabilizing policy learning."
+    ],
+    "authors": [
+      "Max Jaderberg",
+      "Volodymyr Mnih",
+      "Wojciech Marian Czarnecki",
+      "Tom Schaul",
+      "Joel Z Leibo",
+      "David Silver",
+      "Koray Kavukcuoglu"
+    ],
+    "baseline_details": [
+      "Primary baseline is A3C with matched architecture and training budget."
+    ],
+    "citation": "Max Jaderberg, Volodymyr Mnih, Wojciech Marian Czarnecki, Tom Schaul, Joel Z Leibo, David Silver, Koray Kavukcuoglu (2016). Reinforcement Learning with Unsupervised Auxiliary Tasks. arXiv. https://doi.org/10.48550/arXiv.1611.05397",
+    "claims": [
+      "Auxiliary task learning accelerates convergence and improves final performance under sparse rewards."
+    ],
+    "comparator_lineage": [
+      "Extends A3C with auxiliary tasks"
+    ],
+    "conclusions": [
+      "Joint optimization of extrinsic and auxiliary objectives yields better representations and policy quality."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Introduces a multi-task RL training framework with replayed auxiliary objectives.",
+      "Shows significant speed and robustness gains over baseline A3C on 3D navigation benchmarks."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "equation",
+        "confidence": "high",
+        "content": "L_total = L_A3C + lambda_VR L_VR + lambda_PC L_PC + lambda_RP L_RP",
+        "locator": "Method",
+        "provenance_snippet": "UNREAL combined loss",
+        "source_ref": "https://doi.org/10.48550/arXiv.1611.05397"
+      },
+      {
+        "atom_type": "procedure",
+        "confidence": "high",
+        "content": "Replay-biased training for reward prediction and value replay alongside on-policy updates.",
+        "locator": "Training Procedure",
+        "provenance_snippet": "A3C + auxiliary replay workflow",
+        "source_ref": "https://doi.org/10.48550/arXiv.1611.05397"
+      }
+    ],
+    "extraction_completeness": "substantial",
+    "extraction_confidence": "high",
+    "future_work": [
+      "Improve automatic weighting and transfer of auxiliary objectives across domains."
+    ],
+    "key_equations": [
+      "L_total = L_A3C + lambda_VR L_VR + lambda_PC L_PC + lambda_RP L_RP"
+    ],
+    "limitations": [
+      "Auxiliary-loss weighting requires tuning and may be environment-dependent."
+    ],
+    "notation_seeds": [
+      "L_A3C: policy/value loss",
+      "L_PC: pixel-control auxiliary loss"
+    ],
+    "parameters": [
+      "lambda_VR, lambda_PC, lambda_RP loss weights",
+      "Replay ratio and rollout length"
+    ],
+    "procedures": [
+      "Train A3C backbone on-policy while replaying sequences for value replay, pixel-control, and reward-prediction heads."
+    ],
+    "provenance_notes": [
+      "Extracted from arXiv abs and PDF text: knowledge/raw/arxiv_meta/1611.05397.abs.html, knowledge/raw/pdfs/1611.05397.txt"
+    ],
+    "reusable_limitations": [
+      "Auxiliary-loss weighting requires tuning and may be environment-dependent."
+    ],
+    "source_type": "paper",
+    "summary": "Presents UNREAL, augmenting A3C with auxiliary control and prediction tasks to improve data efficiency and robustness in sparse-reward environments.",
+    "theorem_proof_scaffolds": [],
+    "title": "Reinforcement Learning with Unsupervised Auxiliary Tasks",
+    "url": "https://doi.org/10.48550/arXiv.1611.05397",
+    "year": 2016
+  },
+  {
+    "assumptions": [
+      "Intrinsic reward provides useful exploration signal without permanently overriding task reward.",
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Marc G. Bellemare",
+      "Sriram Srinivasan",
+      "Georg Ostrovski",
+      "Tom Schaul",
+      "David Saxton",
+      "Remi Munos"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Marc G. Bellemare, Sriram Srinivasan, Georg Ostrovski, Tom Schaul, David Saxton, Remi Munos (2016). Unifying Count-Based Exploration and Intrinsic Motivation. arXiv. https://doi.org/10.48550/arXiv.1606.01868",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1606.01868"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "We consider an agent's uncertainty about its environment and the problem of generalizing this uncertainty across observations. Specifically, we focus on the problem of exploration in non-tabular reinforcement learning. Drawing inspiration from the intrinsic motivation literature, we use density models to measure uncertainty, and propose a novel algorithm for deriving a pseudo-count from an arbitrary density model....",
+    "theorem_proof_scaffolds": [],
+    "title": "Unifying Count-Based Exploration and Intrinsic Motivation",
+    "url": "https://doi.org/10.48550/arXiv.1606.01868",
+    "year": 2016
+  },
+  {
+    "assumptions": [
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Timothy P. Lillicrap",
+      "Jonathan J. Hunt",
+      "Alexander Pritzel",
+      "Nicolas Heess",
+      "Tom Erez",
+      "Yuval Tassa",
+      "David Silver",
+      "Daan Wierstra"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Timothy P. Lillicrap, Jonathan J. Hunt, Alexander Pritzel, Nicolas Heess, Tom Erez, Yuval Tassa, David Silver, Daan Wierstra (2015). Continuous control with deep reinforcement learning. arXiv. https://doi.org/10.48550/arXiv.1509.02971",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "equation",
+        "confidence": "medium",
+        "content": "\\nabla_\\theta J\\approx E[\\nabla_aQ(s,a)\\nabla_\\theta\\mu_\\theta(s)]",
+        "locator": "method",
+        "provenance_snippet": "Core optimization/update equation.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1509.02971"
+      },
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1509.02971"
+      }
+    ],
+    "extraction_completeness": "substantial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [
+      "\\nabla_\\theta J\\approx E[\\nabla_aQ(s,a)\\nabla_\\theta\\mu_\\theta(s)]"
+    ],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "We adapt the ideas underlying the success of Deep Q-Learning to the continuous action domain. We present an actor-critic, model-free algorithm based on the deterministic policy gradient that can operate over continuous action spaces. Using the same learning algorithm, network architecture and hyper-parameters, our algorithm robustly solves more than 20 simulated physics tasks, including classic problems such as ca...",
+    "theorem_proof_scaffolds": [],
+    "title": "Continuous control with deep reinforcement learning",
+    "url": "https://doi.org/10.48550/arXiv.1509.02971",
+    "year": 2015
+  },
+  {
+    "assumptions": [
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Volodymyr Mnih",
+      "Koray Kavukcuoglu",
+      "David Silver",
+      "Andrei A. Rusu",
+      "Joel Veness",
+      "Marc G. Bellemare",
+      "Alex Graves",
+      "Martin Riedmiller",
+      "Andreas K. Fidjeland",
+      "Georg Ostrovski",
+      "Stig Petersen",
+      "Charles Beattie",
+      "Amir Sadik",
+      "Ioannis Antonoglou",
+      "Helen King",
+      "Dharshan Kumaran",
+      "Daan Wierstra",
+      "Shane Legg",
+      "Demis Hassabis"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Andrei A. Rusu, Joel Veness, Marc G. Bellemare, Alex Graves, Martin Riedmiller, Andreas K. Fidjeland, Georg Ostrovski, Stig Petersen, Charles Beattie, Amir Sadik, Ioannis Antonoglou, Helen King, Dharshan Kumaran, Daan Wierstra, Shane Legg, Demis Hassabis (2015). Human-level control through deep reinforcement learning. Nature. https://doi.org/10.1038/nature14236",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.1038/nature14236"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "Deep Q-Networks combine Q-learning with deep CNNs, replay, and target networks to obtain stable value-based control at scale.",
+    "theorem_proof_scaffolds": [],
+    "title": "Human-level control through deep reinforcement learning",
+    "url": "https://doi.org/10.1038/nature14236",
+    "year": 2015
+  },
+  {
+    "assumptions": [
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Tom Schaul",
+      "John Quan",
+      "Ioannis Antonoglou",
+      "David Silver"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Tom Schaul, John Quan, Ioannis Antonoglou, David Silver (2015). Prioritized Experience Replay. arXiv. https://doi.org/10.48550/arXiv.1511.05952",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.48550/arXiv.1511.05952"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "Experience replay lets online reinforcement learning agents remember and reuse experiences from the past. In prior work, experience transitions were uniformly sampled from a replay memory. However, this approach simply replays transitions at the same frequency that they were originally experienced, regardless of their significance. In this paper we develop a framework for prioritizing experience, so as to replay i...",
+    "theorem_proof_scaffolds": [],
+    "title": "Prioritized Experience Replay",
+    "url": "https://doi.org/10.48550/arXiv.1511.05952",
+    "year": 2015
+  },
+  {
+    "assumptions": [
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Tom Schaul",
+      "Daniel Horgan",
+      "Karol Gregor",
+      "David Silver"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Tom Schaul, Daniel Horgan, Karol Gregor, David Silver (2015). Universal Value Function Approximators. RL resource. https://proceedings.mlr.press/v37/schaul15.html",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://proceedings.mlr.press/v37/schaul15.html"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "Introduces goal-conditioned value functions for transfer across goals and tasks.",
+    "theorem_proof_scaffolds": [],
+    "title": "Universal Value Function Approximators",
+    "url": "https://proceedings.mlr.press/v37/schaul15.html",
+    "year": 2015
+  },
+  {
+    "assumptions": [
+      "Environment is modeled as an MDP/POMDP with stationary dynamics during training.",
+      "Replay-based off-policy or actor-critic updates can be stabilized with target networks and optimizer tuning."
+    ],
+    "authors": [
+      "Christopher J. C. H. Watkins",
+      "Peter Dayan"
+    ],
+    "baseline_details": [
+      "Compared against goal-conditioned and/or intrinsic-motivation baselines under source protocol."
+    ],
+    "citation": "Christopher J. C. H. Watkins, Peter Dayan (1992). Q-learning. RL resource. https://doi.org/10.1007/BF00992698",
+    "claims": [
+      "Shows measurable effects on sample efficiency, exploration, or final return under the reported setup."
+    ],
+    "comparator_lineage": [],
+    "conclusions": [
+      "Method is effective in reported tasks but sensitive to reward scaling and schedule design."
+    ],
+    "contradiction_pairs": [],
+    "contributions": [
+      "Provides method/benchmark evidence directly reusable for goal-conditioned curiosity-driven RL.",
+      "Supplies comparator lineage or evaluation protocol for reproducible ablations."
+    ],
+    "evidence_atoms": [
+      {
+        "atom_type": "claim",
+        "confidence": "medium",
+        "content": "Reports benchmark evidence for exploration and/or return improvement relevant to sparse/deceptive reward settings.",
+        "locator": "results",
+        "provenance_snippet": "Comparative benchmark tables/curves in source.",
+        "source_ref": "https://doi.org/10.1007/BF00992698"
+      }
+    ],
+    "extraction_completeness": "partial",
+    "extraction_confidence": "medium",
+    "future_work": [
+      "Improve robustness, generalization, and scheduler adaptivity across broader tasks."
+    ],
+    "key_equations": [],
+    "limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "notation_seeds": [],
+    "parameters": [
+      "Intrinsic/extrinsic weighting coefficient and schedule parameters."
+    ],
+    "procedures": [
+      "Train with replay, target updates, and scheduled intrinsic-extrinsic coupling."
+    ],
+    "provenance_notes": [
+      "Primary metadata resolved from canonical source URL and arXiv feed."
+    ],
+    "reusable_limitations": [
+      "Hyperparameter sensitivity and benchmark-specific tuning remain material risks."
+    ],
+    "source_type": "paper",
+    "summary": "Classic temporal-difference control algorithm with convergence guarantees in tabular settings.",
+    "theorem_proof_scaffolds": [],
+    "title": "Q-learning",
+    "url": "https://doi.org/10.1007/BF00992698",
+    "year": 1992
+  }
+]

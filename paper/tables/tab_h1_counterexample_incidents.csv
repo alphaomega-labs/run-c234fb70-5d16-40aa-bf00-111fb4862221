@@ -1,0 +1,4 @@
+counterexample_schedule,bound_violation,return_drop_pct
+oscillatory_beta,0.6666666666666666,12.08694152443875
+saturated_gate,0.7222222222222222,13.120417264322121
+slow_decay_beta,0.8333333333333334,14.638496776544502

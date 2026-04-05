@@ -1,0 +1,75 @@
+# Literature Overview: Curiosity-Conditioned Goal-Optimal RL
+
+## Scope and synthesis frame
+
+This distillation covers 44 curated sources spanning foundational reinforcement learning (Q-learning, DQN-era deep value learning), goal-conditioned RL (UVFA, HER, contrastive goal learning), intrinsic-motivation mechanisms (count-based bonuses, curiosity prediction error, random-network novelty, entropy/state-coverage objectives), hybrid directed-exploration systems (NGU, Agent57), and modern world-model/planning overlays (Plan2Explore, Dreamer-style objectives, TD-MPC2, recent 2025-2026 adaptive curriculum and reward-coupling preprints). The core downstream question is whether one can combine explicit goal optimization with intrinsic novelty in a way that improves early exploration while preserving asymptotic task return and policy stability.
+
+The corpus supports this question strongly at a conceptual level: multiple lineages already combine an extrinsic objective with exploratory regularizers or auxiliary value signals. However, the corpus also shows that positive results are often regime-dependent, strongly sensitive to reward scaling and scheduler design, and benchmark-specific. That means the contribution space is likely not a brand-new objective class, but a principled coupling and control mechanism over known ingredients.
+
+## Taxonomic structure of the field
+
+The first axis is control/optimization substrate. Q-learning [https://doi.org/10.1007/BF00992698], DDPG [https://doi.org/10.48550/arXiv.1509.02971], PPO [https://doi.org/10.48550/arXiv.1707.06347], SAC [https://doi.org/10.48550/arXiv.1801.01290], TD3 [https://doi.org/10.48550/arXiv.1802.09477], and prioritized replay [https://doi.org/10.48550/arXiv.1511.05952] define stable optimization backbones for off-policy or actor-critic learning. In this lineage, novelty modules are add-ons whose gradient and target interactions can destabilize learning if not normalized.
+
+The second axis is goal conditioning and relabeling. UVFA [https://proceedings.mlr.press/v37/schaul15.html] provides the parametric form Q(s,a,g), HER [https://doi.org/10.48550/arXiv.1707.01495] makes sparse-goal replay practical through relabeling achieved goals, and later goal-space methods including contrastive RL [https://doi.org/10.48550/arXiv.2206.07568], Skew-Fit [https://doi.org/10.48550/arXiv.1903.03698], GCSL [https://doi.org/10.48550/arXiv.1912.06088], and recent 2026 variants (ACDC [https://doi.org/10.48550/arXiv.2603.02104], ViSA [https://doi.org/10.48550/arXiv.2603.14887], GraSP-STL [https://doi.org/10.48550/arXiv.2603.29533]) differ mainly in representation and curriculum/planning overlays, not in abandoning goal-conditioned value learning.
+
+The third axis is intrinsic signal definition. Count/pseudo-count methods [https://doi.org/10.48550/arXiv.1606.01868, https://doi.org/10.48550/arXiv.1703.01310] model novelty via uncertainty density. Prediction-error curiosity (ICM-style) [https://doi.org/10.48550/arXiv.1705.05363] and random-network distillation [https://doi.org/10.48550/arXiv.1810.12894] define novelty by model disagreement or prediction residual. Entropy/state-coverage and unsupervised skill-discovery methods [https://doi.org/10.48550/arXiv.2102.09430, https://doi.org/10.48550/arXiv.1802.06070, https://doi.org/10.48550/arXiv.2103.04551, https://doi.org/10.48550/arXiv.2412.03800] emphasize broad visitation and latent-behavior diversity.
+
+The fourth axis is hybrid directed exploration and hierarchical control. NGU [https://doi.org/10.48550/arXiv.2002.06038] and Agent57 [https://doi.org/10.48550/arXiv.2003.13350] combine episodic and lifelong novelty channels with external return. Go-Explore [https://doi.org/10.48550/arXiv.1901.10995] emphasizes return-to-state and robustification for deceptive tasks. Hierarchical exploration papers [https://doi.org/10.48550/arXiv.1805.08296, https://doi.org/10.48550/arXiv.1712.00948] motivate policy decomposition where intrinsic objectives operate at subgoal levels.
+
+The fifth axis is model-based/planning integration and evaluation ecosystem. Plan2Explore [https://doi.org/10.48550/arXiv.2005.05960], DreamerV3-like entropy-regularized world-model optimization [https://doi.org/10.48550/arXiv.2301.04104], and TD-MPC2 [https://doi.org/10.48550/arXiv.2310.16828] show planning-centric alternatives. Gym/OpenAI Gym, MiniGrid, Procgen, D4RL, and DeepMind Control [https://doi.org/10.48550/arXiv.1606.01540, https://gymnasium.farama.org, https://github.com/Farama-Foundation/Minigrid, https://doi.org/10.48550/arXiv.1912.01588, https://doi.org/10.48550/arXiv.2004.07219, https://doi.org/10.48550/arXiv.2006.12983] provide benchmark substrates where reported gains may or may not transfer across sparse/deceptive regimes.
+
+## Equation-level comparison and methodological consequences
+
+The equation seeds in the corpus already frame dual-objective coupling: r_t=r_t^e+beta_t r_t^i appears directly in curiosity lineages [https://doi.org/10.48550/arXiv.1705.05363, https://doi.org/10.48550/arXiv.2602.24081], and value-level decomposition Q=Q^e+beta Q^i is explicit in directed exploration systems [https://doi.org/10.48550/arXiv.2002.06038]. This agreement implies that a dual-stream value architecture is established rather than novel by itself.
+
+Where methods diverge is novelty estimator geometry and control law over beta_t. RND-like novelty uses fixed target prediction error [https://doi.org/10.48550/arXiv.1810.12894], pseudo-count methods use density-model uncertainty [https://doi.org/10.48550/arXiv.1703.01310], DIAYN-style skill objectives use latent mutual-information rewards r_z(s,a)=log q_phi(z|s)-log p(z) [https://doi.org/10.48550/arXiv.1802.06070], and contrastive goal conditioning casts value as log-density ratio Q(s,a,g)=log p(g|s,a)-log p(g) [https://doi.org/10.48550/arXiv.2206.07568]. These objectives induce different failure modes: prediction-error collapse under stochastic distractors, density-model misspecification in high-dimensional observations, representation bottlenecks in contrastive setups, and latent-policy mismatch in skill discovery.
+
+Another key contrast is stability handling. PPO clipping [https://doi.org/10.48550/arXiv.1707.06347], TD3 double critics [https://doi.org/10.48550/arXiv.1802.09477], SAC entropy-tempered objective [https://doi.org/10.48550/arXiv.1801.01290], and UNREAL auxiliary-loss composition [https://doi.org/10.48550/arXiv.1611.05397] represent different stabilization templates that can host intrinsic bonuses. This implies downstream CCGO-RL should define not only novelty and scheduler forms, but also which stability scaffold is assumed, because conclusions about exploration quality are conditional on optimizer dynamics.
+
+## Consensus regions
+
+There is strong multi-lineage consensus that sparse and deceptive rewards require non-myopic exploration support. This is reported from count/pseudo-count and curiosity papers through NGU/Agent57 and contemporary preprints [https://doi.org/10.48550/arXiv.1606.01868, https://doi.org/10.48550/arXiv.1705.05363, https://doi.org/10.48550/arXiv.2002.06038, https://doi.org/10.48550/arXiv.2003.13350, https://doi.org/10.48550/arXiv.2602.24081].
+
+There is also consensus that replay-centric off-policy training remains a practical backbone when combining intrinsic and extrinsic learning signals. HER, UVFA descendants, contrastive GC-RL, and many 2025-2026 sources rely on this assumption [https://proceedings.mlr.press/v37/schaul15.html, https://doi.org/10.48550/arXiv.1707.01495, https://doi.org/10.48550/arXiv.2206.07568, https://doi.org/10.48550/arXiv.2603.02104, https://doi.org/10.48550/arXiv.2603.14887].
+
+A further consensus is that evaluation must separate final return from learning dynamics (AUC, first-success time, coverage proxies), because improvements in one metric can hide regressions in another. Benchmark-suite sources and methodology papers repeatedly motivate this [https://doi.org/10.48550/arXiv.1912.01588, https://doi.org/10.48550/arXiv.2004.07219, https://doi.org/10.48550/arXiv.2405.19548].
+
+## Contradictions and unresolved tensions
+
+The primary contradiction is not whether intrinsic reward helps initially, but whether it can be annealed without harming asymptotic objective optimality. Curiosity and RND lineages show faster exploration, yet papers and notes also report sensitivity to weighting/schedules and potential exploitation of novelty artifacts [https://doi.org/10.48550/arXiv.1705.05363, https://doi.org/10.48550/arXiv.1810.12894, https://doi.org/10.48550/arXiv.2602.24081]. This is a blocking contradiction for the proposed method because preserving final return is a hard project constraint.
+
+A second contradiction concerns representation dependence. Contrastive GC-RL reports strong sample efficiency under suitable negative sampling and encoder quality [https://doi.org/10.48550/arXiv.2206.07568], but classic HER-style binary relabeling is robust and simple [https://doi.org/10.48550/arXiv.1707.01495]. It remains unclear when representation-heavy methods dominate once compute is constrained and benchmarks become heterogeneous. This is extendable, not blocking, but requires explicit ablation design.
+
+A third contradiction concerns benchmark transfer and ecological validity. Systems like Agent57 and Go-Explore achieve striking hard-exploration gains in selected settings [https://doi.org/10.48550/arXiv.2003.13350, https://doi.org/10.48550/arXiv.1901.10995], while modern lightweight approaches claim broad practicality under reduced compute [https://doi.org/10.48550/arXiv.2603.26441]. Without normalized runtime and seed protocols across suites, these claims are difficult to compare directly. This tension is partly operational, but it becomes scientifically central when formulating sample-efficiency claims.
+
+## Methodological gaps shaping contribution boundaries
+
+The corpus suggests that the open space is a principled coupling law with explicit safety/stability invariants, not simply adding intrinsic reward to goal-conditioned control. Three gaps define this contribution space.
+
+First, confidence-calibrated scheduler design remains under-specified. Multiple papers use fixed or heuristic schedules, and only recent preprints propose adaptive correlation-like weights [https://doi.org/10.48550/arXiv.2602.24081]. A defensible contribution would formalize a confidence statistic tied to goal-value uncertainty and prove or empirically verify monotone shift from exploration to exploitation.
+
+Second, failure-region diagnostics are underdeveloped. Existing methods often report aggregate returns without explicit novelty-hacking tests, reward-channel dominance checks, or critic-overestimation diagnostics under mixed rewards. Bridging this gap requires acceptance checks beyond mean return, including channel attribution and annealing stress tests.
+
+Third, cross-regime consistency remains weak. Sparse navigation, deceptive mazes, continuous control with goal variants, and offline/online blends are often evaluated separately. The project can contribute by specifying a unified evaluation matrix with consistent metrics and ablations to test whether coupling laws transfer across regimes rather than overfit one benchmark family.
+
+## Defensible bridge opportunities (not settled conclusions)
+
+A first bridge candidate links contrastive goal-value estimation to dual-stream value decomposition. Since CRL gives a log-density-ratio interpretation of Q(s,a,g) [https://doi.org/10.48550/arXiv.2206.07568], one may treat intrinsic novelty as a controlled regularizer over representation geometry, yielding a decomposition where extrinsic value and information-seeking terms share embeddings but not control coefficients. This is plausible but not proven in the corpus.
+
+A second bridge candidate links maximum-entropy control (SAC, Dreamer-style entropy terms) with curiosity annealing [https://doi.org/10.48550/arXiv.1801.01290, https://doi.org/10.48550/arXiv.2301.04104, https://doi.org/10.48550/arXiv.2412.03800]. One could reinterpret intrinsic weighting schedules as state or action-conditional temperature control. This connection may offer theoretical tools for stability analysis, but no source in the current corpus fully closes this equivalence.
+
+A third bridge candidate links asymptotic-optimality guarantees from classical control/value-iteration assumptions to practical mixed-reward training [https://doi.org/10.1007/BF00992698, https://doi.org/10.48550/arXiv.1707.01495]. If intrinsic weighting decays under a confidence criterion, limiting behavior may recover pure extrinsic optimization. This is mathematically attractive but requires explicit assumptions and proof obligations in derive-math phases.
+
+## Open-problem synthesis for downstream phases
+
+For hypothesis and derivation phases, the most important unresolved issue is to define an adaptive coupling variable beta_t that is: high under epistemic uncertainty and low goal confidence, monotone decaying when confidence improves, and bounded to prevent critic or policy drift. Evidence supports each component separately but not their joint sufficiency.
+
+For experiment design, the key unresolved issue is comparator lineage clarity. At minimum, comparisons should include HER or UVFA-style goal baselines, CRL-style representation-rich baselines, and intrinsic baselines (RND, ICM/prediction-error, pseudo-count) on shared suites with fixed seed budgets and unified metrics. Without this, gains could be artifacts of baseline mismatch.
+
+For validation, the key unresolved issue is distinguishing true exploration gains from reward-channel leakage. Required checks should include first-success time, state-action coverage, final return, policy stability, and explicit channel-attribution diagnostics during annealing. A method that only improves early metrics but degrades final return should be treated as failing the project’s core objective.
+
+For writing and revision, preprint maturity remains a citation-management issue for 2025-2026 sources. Claims that rely on those papers should be marked as provisional until venue-version verification is completed, while foundational conclusions should anchor to mature references whenever possible.
+
+## Distilled conclusion
+
+The literature does not support a claim that dual-stream curiosity plus goal conditioning is itself new. It does support a strong claim that sparse or deceptive regimes benefit from principled exploration support and that modern goal-conditioned frameworks are good hosts for such support. The defensible novelty boundary therefore lies in a rigorously specified and tested coupling mechanism that preserves asymptotic task return, remains stable under annealing, and generalizes across benchmark regimes. If downstream phases enforce this boundary with formal assumptions, targeted ablations, and failure-region diagnostics, the project has a credible scientific contribution. If they do not, the work risks becoming another benchmark-specific scheduler variant.

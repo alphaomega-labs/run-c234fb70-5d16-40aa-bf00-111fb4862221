@@ -1,0 +1,2443 @@
+Contrastive Learning as Goal-Conditioned
+Reinforcement Learning
+
+arXiv:2206.07568v2 [cs.LG] 17 Feb 2023
+
+Benjamin Eysenbachα,β Tianjun Zhangγ Sergey Levineβ,γ Ruslan Salakhutdinovα
+α
+β
+γ
+CMU
+Google Research
+UC Berkeley
+
+Abstract
+In reinforcement learning (RL), it is easier to solve a task if given a good representation. While deep RL should automatically acquire such good representations,
+prior work often finds that learning representations in an end-to-end fashion is
+unstable and instead equip RL algorithms with additional representation learning
+parts (e.g., auxiliary losses, data augmentation). How can we design RL algorithms that directly acquire good representations? In this paper, instead of adding
+representation learning parts to an existing RL algorithm, we show (contrastive)
+representation learning methods can be cast as RL algorithms in their own right.
+To do this, we build upon prior work and apply contrastive representation learning
+to action-labeled trajectories, in such a way that the (inner product of) learned
+representations exactly corresponds to a goal-conditioned value function. We
+use this idea to reinterpret a prior RL method as performing contrastive learning,
+and then use the idea to propose a much simpler method that achieves similar
+performance. Across a range of goal-conditioned RL tasks, we demonstrate that
+contrastive RL methods achieve higher success rates than prior non-contrastive
+methods, including in the offline RL setting. We also show that contrastive RL
+outperforms prior methods on image-based tasks, without using data augmentation
+or auxiliary objectives. 1
+
+1
+
+Introduction
+
+Representation learning is an integral part of reinforcement learning (RL2 ) algorithms. While such
+representations might emerge from end-to-end training [7, 79, 118, 125], prior work has found it
+necessary to equip RL algorithms with perception-specific loss functions [31, 43, 70, 74, 89, 91, 101,
+140] or data augmentations [72, 74, 117, 136], effectively decoupling the representation learning
+problem from the reinforcement learning problem. Given what prior work has shown about RL
+in the presence of function approximation and state aliasing [2, 134, 138], it is not surprising that
+end-to-end learning of representations is fragile [72, 136]: an algorithm needs good representations
+to drive the learning of the RL algorithm, but the RL algorithm needs to drive the learning of good
+representations. So, can we design RL algorithms that do learn good representations without the
+need for auxiliary perception losses?
+Rather than using a reinforcement learning algorithm also to solve a representation learning problem,
+we will use a representation learning algorithm to also solve certain types of reinforcement learning
+problems, namely goal-conditioned RL. Goal-conditioned RL is widely studied [6, 14, 21, 62,
+80, 119], and intriguing from a representation learning perspective because it can be done in an
+entirely self-supervised manner, without manually-specified reward functions. We will focus on
+contrastive (representation) learning methods, using observations from the same trajectory (as done
+1
+2
+
+Project website with videos and code: https://ben-eysenbach.github.io/contrastive_rl
+RL = reinforcement learning, not representation learning.
+
+36th Conference on Neural Information Processing Systems (NeurIPS 2022).
+
+: "Is this a future state or random state?"
+state-action
+encoder,
+.
+
+state,
+
+goal encoder,
+
+action,
+
+future state,
+
+random state,
+
+trajectory 1
+
+trajectory 2
+
+Figure 1: Reinforcement learning via contrastive learning. Our method uses contrastive learning to acquire
+representations of state-action pairs (φ(s, a)) and future states (ψ(sf )), so that the representations of future
+states are closer than the representations of random states. We prove that learned representation corresponds to a
+value function for a certain reward function. To select actions for reaching goal sg , the policy chooses the action
+where φ(s, a) is closest to ψ(sg ).
+
+in prior work [95, 109]) while also including actions as an additional input (See Fig. 1). Intuitively,
+contrastive learning then resembles a goal-conditioned value function: nearby states have similar
+representations and unreachable states have different representations. We make this connection
+precise, showing that sampling positive pairs using the discounted state occupancy measure results in
+learning representations whose inner product exactly corresponds to a value function.
+In this paper, we show how contrastive representation learning can be used to perform goalconditioned RL. We formally relate the learned representations to reward maximization, showing
+that the inner product between representations corresponds to a value function. This framework of
+contrastive RL generalizes prior methods, such as C-learning [28], and suggests new goal-conditioned
+RL algorithms. One new method achieves performance similar to prior methods but is simpler;
+another method consistently outperforms the prior methods. On goal-conditioned RL tasks with
+image observations, contrastive RL methods outperform prior methods that employ data augmentation
+and auxiliary objectives, and do so without data augmentation or auxiliary objectives. In the offline
+setting, contrastive RL can outperform prior methods on benchmark goal-reaching tasks, sometimes
+by a wide margin.
+
+2
+
+Related Work
+
+This paper will draw a connection between RL and contrastive representation learning, building
+upon a long line of contrastive learning methods in NLP and computer vision, and deep metric
+learning [16, 52, 53, 53, 55, 77, 84, 86, 87, 94, 95, 108, 109, 113, 121, 128, 131]. Contrastive learning
+methods learn representations such that similar (“positive”) examples have similar representations
+and dissimilar (“negative”) examples have dissimilar representations.3 While most methods generate
+the “positive” examples via data augmentation, some methods generate similar examples using
+different camera viewpoints of the same scene [109, 121], or by sampling examples that occur close
+in time within time series data [4, 95, 109, 117]. Our analysis will focus on this latter strategy, as the
+dependence on time will allow us to draw a precise relationship with the time dependence in RL.
+Deep RL algorithms promise to automatically learn good representations, in an end-to-end fashion.
+However, prior work has found it challenging to uphold this promise [7, 79, 118, 125], prompting
+many prior methods to employ separate objectives for representation learning and RL [31, 43,
+70, 74, 89, 91, 100, 101, 117, 140, 143]. Many prior methods choose a representation learning
+objectives that reconstruct the input state [31, 46, 48, 49, 70, 91, 93, 141] while others use contrastive
+representation learning methods [74, 89, 95, 111, 117]. Unlike these prior methods, we will not use a
+separate representation learning objective, but instead use the same objective for both representation
+learning and reinforcement learning. Some prior RL methods have also used contrastive learning
+to acquire reward functions [13, 19, 32, 37, 63, 67, 92, 132, 133, 146], often in imitation learning
+3
+
+Our focus will not be on recent methods that learn representations without negative samples [17, 42].
+
+2
+
+settings [36, 54]. In contrast, we will use contrastive learning to directly acquire a value function,
+which (unlike a reward function) can be used directly to take actions, without any additional RL.
+This paper will focus on goal-conditioned RL problems, a problem prior work has approached using
+temporal difference learning [6, 28, 62, 80, 103, 106], conditional imitation learning [21, 40, 83, 105,
+119], model-based methods [22, 107], hierarchical RL [90], and planning-based methods [29, 93,
+105, 115]. The problems of automatically sampling goals and exploration [23, 34, 85, 98, 144] are
+orthogonal to this work. Like prior work, we will parametrize the value function as an inner product
+between learned representations [33, 57, 106]. Unlike these prior methods, we will learn a value
+function directly via contrastive learning, without using reward functions or TD learning.
+Our analysis will be most similar to prior methods [10, 14, 28, 103] that view goal-conditioned RL
+as a data-driven problem, rather than as a reward-maximization problem. Many of these methods
+employ hindsight relabeling [6, 25, 62, 78], wherein experience is relabeled with an outcome that
+occurred in the future. Whereas hindsight relabeling is typically viewed as a trick to add on top of
+an RL algorithm, this paper can roughly be interpreted as showing that the hindsight relabeling is a
+standalone RL algorithm. Many goal-conditioned methods learn a value function that captures the
+similarity between two states [28, 62, 91, 124]. Such distance functions are structurally similar to the
+critic function learned for contrastive learning, a connection we make precisely in Sec. 4. In fact, our
+analysis shows that C-learning [28] is already performing contrastive learning, and our experiments
+show that alternative contrastive RL methods can be much simpler and achieve higher performance.
+Prior work has studied how representations related to reward functions using the framework of
+universal value functions [11, 106] and successor features [8, 51, 81]. While these methods typically
+require additional supervision to drive representation learning (manually-specified reward functions
+or features), our method is more similar to prior work that estimates the discounted state occupancy
+measure as an inner product between learned representations [10, 130]. While these methods use
+temporal difference learning, ours is akin to Monte Carlo learning. While Monte Carlo learning is
+often (but not always [22]) perceived as less sampling efficient, our experiments find that our approach
+can be as sample efficient as TD methods. Other prior work has focused on learning representations
+that can be used for planning [58, 82, 104, 105, 127]. Our method will learn representations using
+an objective similar to prior work [105, 109], but makes the key observation that the representation
+already encodes a value function: no additional planning or RL is necessary to choose actions.
+Please see Appendix A for a discussion of how our work relates to unsupervised skill learning.
+
+3
+
+Preliminaries
+
+Goal-conditioned reinforcement learning. The goal-conditioned RL problem is defined by states
+st ∈ S, actions at , an initial state distribution p0 (s), the dynamics p(st+1 | st , at ), a distribution
+over goals pg (sg ), and a reward function rg (s, a) for each goal. This problem is equivalent to a
+multi-task RL [5, 44, 120, 129, 139], where tasks correspond to reaching goals states. Following
+prior work [10, 14, 28, 103], we define the reward as the probability (density) of reaching the goal at
+the next time step:4
+rg (st , at ) , (1 − γ)p(st+1 = sg | st , at ).
+
+(1)
+
+This reward function is appealing because it avoids the need for a human user to specify a distance
+metric (unlike, e.g., [6]). Even though our method will not estimate the reward function, we will still
+use the reward function for analysis. For a goal-conditioned policy π(a | s, sg ), we use π(τ | sg ) to
+denote the probability of sampling an infinite-length trajectory τ = (s0 , a0 , s1 , a1 , · · · ). We defined
+the expected reward objective and Q-function as
+max Epg (sg ),π(τ |sg )
+π
+
+"∞
+X
+
+#
+t
+
+γ rg (st , at ) ,
+
+Qπsg (s, a) , Eπ(τ |sg )
+
+"∞
+X
+
+γ
+
+t0 −t
+
+#
+rg (st0 , at0 ) | satt=s,
+=a
+
+.
+
+(2)
+
+t0 =t
+
+t=0
+
+Intuitively, this objective corresponds to sampling a goal sg and then optimizing the policy to go to
+that goal and stay there. Finally, we define the discounted state occupancy measure as [54, 142]
+pπ(·|·,sg ) (st+ = s) , (1 − γ)
+
+∞
+X
+
+π(·|·,sg )
+
+γ t pt
+
+(st = s),
+
+(3)
+
+t=0
+4
+
+At the initial state, this reward also includes the probability that the agent started at the goal: rg (s0 , a0 ) =
+(1 − γ)(p(s1 = sg | s0 , a0 ) + p0 (s0 = sg ))
+
+3
+
+where pπt (s) is the probability density over states that policy π visits after t steps. Sampling from
+the discounted state occupancy measure is easy: the first sample a time offset from a geometric
+distribution (t ∼ G EOM(1 − γ)), and then look at what state the policy visits after exactly t steps.
+We will use st+ to denote states sampled from the discounted state occupancy measure. Because
+our method will combine experience collected from multiple
+policies, we also define the average
+R
+stationary distribution as pπ(·|·) (st+ = s | s, a) , pπ(·|·,sg ) (st+ = s | s, a)pπ (sg | s, a)dsg ,
+where pπ (sg | s, a) is the probability of the commanded goal givenRthe current state-action pair. This
+stationary distribution is equivalent to that of the policy π(a | s) , π(a | s, sg )pπ (sg | s)dsg [145].
+Contrastive representation learning. Contrastive representation learning methods [16, 45, 52, 53,
+61, 77, 84, 86, 87, 121, 123, 128] take as input pairs of positive and negative examples, and learn
+representations so that positive pairs have similar representations and negative pairs have dissimilar
+representations. We use (u, v) to denote an input pair (e.g., u is an image, and v is an augmented
+version of that image). Positive examples are sampled from a joint distribution p(u, v), while negative
+examples are sampled from the product of marginal distributions, p(u)p(v). We will use an objective
+based on binary classification [77, 86, 87, 94]. Let f (u, v) = φ(u)T ψ(v) be the similarity between
+the representations of u and v. We will call f the critic function5 and note that its range is (−∞, ∞).
+We will use NCE-binary [84] objective (also known as InfoMAX [53]):
+
+
+max E(u,v+ )∼p(u,v) log σ( f (u, v + ) ) + log(1 − σ( f (u, v − ) )) .
+f (u,v)
+| {z }
+| {z }
+−
+v
+
+4
+
+∼p(u)
+
+φ(u)T ψ(v + )
+
+(4)
+
+φ(u)T ψ(v − )
+
+Contrastive Learning as an RL Algorithm
+
+This section shows how to use contrastive representation to directly perform goal-conditioned RL.
+The key idea (Lemma 4.1) is that contrastive learning estimates the Q-function for a certain policy
+and reward function. To prove this result, we relate the Q-function to the state occupancy measure
+(Sec. 4.1) and then relate the optimal critic function to the state occupancy measure (Sec. 4.2).
+This result allows us to propose a new algorithm for goal-conditioned RL based on contrastive
+learning. Unlike prior work, this algorithm is not adding contrastive learning on top of an existing RL
+algorithm. This framework generalizes C-learning [28], offering a cogent explanation for its good
+performance while also suggesting new methods that are simpler and can achieve higher performance.
+4.1
+
+Relating the Q-function to probabilities
+
+This section sets the stage for the main results of this section by providing a probabilistic perspective
+goal-conditioned RL. The expected reward objective and associated Q-function in (Eq. 2) can
+equivalently be expressed as the probability (density) of reaching a goal in the future:
+Proposition 1 (rewards → probabilities). The Q-function for the goal-conditioned reward function
+rg (Eq. 1) is equivalent to the probability of state sg under the discounted state occupancy measure:
+Qπsg (s, a) = pπ(·|·,sg ) (st+ = sg | s, a).
+
+(5)
+
+The proof is in Appendix B. Translating rewards into probabilities not only makes it easier to analyze
+the goal-conditioned problem, but also means that any method for estimating probabilities (e.g.,
+contrastive learning) can be turned into a method for estimating this Q-function.
+4.2
+
+Contrastive Learning Estimates a Q-Function
+
+We will use contrastive learning to learn a value function by carefully choosing the inputs u and v.
+The first input, u, will correspond to a state-action pair, u = (st , at ) ∼ p(s, a). In practice, these
+pairs are sampled from the replay buffer. Including the actions in the input is important because it will
+allow us to determine which actions to take to reach a desired future state. The second variable, v, is a
+future state, v = sf . For the “positive” training pairs, the future state is sampled from the discounted
+5
+In contrastive learning, the critic function indicates the similarity between a pair of inputs [99]; in RL, the
+critic function indicates the future expected returns [66]. Our method combines contrastive learning and RL in a
+way that these meanings become one and the same.
+
+4
+
+state occupancy measure, sf ∼ pπ(·|·) (st+ | st , at ). For the “negative”
+training pairs, we sample a
+R
+future state from a random state-action pair: sf ∼ p(st+ ) , pπ(·|·) (st+ | s, a)p(s, a)dsda. With
+these inputs, the contrastive learning objective (Eq. 4) can be written as
+
+− 
+max E(s,a)∼p(s,a),s− ∼p(s ) L(s, a, s+
+f , sf ) ,
+f
+
+f
+
+f
+
+s+
+∼pπ(·|·) (st+ |st ,at )
+f
+−
++
+−
+where L(s, a, s+
+f , sf ) , log σ( f (s, a, sf ) ) + log(1 − σ( f (s, a, sf ) )).
+| {z }
+| {z }
+
+(6)
+
+φ(s,a)T ψ(s−
+)
+f
+
+φ(s,a)T ψ(s+
+)
+f
+
+Intuitively, the critic function f (u = (st , at ), v = sf ) now tells us the correlation between the current
+state-action pair and future outcomes, analogous to a Q-function. We therefore can use the critic
+function in the same way as actor-critic RL algorithms [66], figuring out which actions lead to the
+desired outcome. Because the Bayes-optimal
+critic function is a function of the state occupancy
+ π(·|·)
+p
+(st+ =sg |s,a)
+∗
+, it can be used to express the Q-function:
+measure [84], f (s, a, sg ) = log
+p(sg )
+Lemma 4.1. The critic function that optimizes Eq. 6 is a Q-function for the goal-conditioned reward
+π(·|·)
+function (Eq. 1), up to a multiplicative constant p(s1f ) : exp(f ∗ (s, a, sf )) = p(s1f ) · Qsf (s, a).
+The critic function can be viewed as an unnormalized density model, where p(sg ) is the partition
+function. Much of the appeal of contrastive learning is it avoids estimating the partition function [45],
+which can be challenging; in the RL setting, it will turn out that this constant can be ignored when
+selecting actions. Our experiments show that learning a normalized density model works well when
+sg is low-dimensional, but struggles to solve higher-dimensional tasks.
+π(·|·,s )
+
+π(·|·)
+
+This lemma relates the critic function to Qsf (s, a), not Qsf f (s, a). The underlying reason is
+that the critic function combines together experience collected when commanding different goals.
+Prior goal-conditioned behavioral cloning methods [21, 40, 83, 119] perform similar sharing, but do
+not analyze the relationship between the learned policies and Q functions. Sec. 4.5 shows that this
+critic function can be used as the basis for a convergent RL algorithm under some assumptions.
+4.3
+
+Learning the Goal-Conditioned Policy
+
+The learned critic function not only tells us the likelihood of future states, but also tells us how
+different actions change the likelihood of a state occurring in the future. Thus, to learn a policy for
+reaching a goal state, we choose the actions that make that state most likely to occur in the future:
+h
+i
+max Eπ(a|s,sg )p(s)p(sg ) [f (s, a, sf = sg )] ≈ Eπ(a|s,sg )p(s)p(sg ) log Qπ(·|·)
+(s, a) − log p(sg ) .
+sg
+
+π(a|s,sg )
+
+(7)
+
+The approximation above reflects errors in learning the optimal critic, and will allow us to prove that
+this policy loss corresponds to policy improvement in Sec. 4.5, under some assumptions.
+In practice, we parametrize the goal-conditioned policy as a neural network that takes as input the
+state and goal and outputs a distribution over actions. The actor loss (Eq. 7) is computed by sampling
+states and random goals from the replay buffer, sampling actions from the policy, and then taking
+gradients on the policy using a reparametrization gradient. On tasks with image observations, we add
+an action entropy term to the policy objective.
+4.4
+
+A Complete Goal-Conditioned RL Algorithm
+
+The complete algorithm alternates between fitting the critic function using contrastive learning,
+updating the policy using Eq. 7, and collecting more data. Alg. 1 provides a JAX [12] implementation
+of the actor and critic losses. Note that the critic is parameterized as an inner product between a representation of the state-action pair, and a representation of the goal state: f (s, a, sg ) = φ(s, a)T ψ(sg ).
+This parameterization allows for efficient computation, as we can compute the goal representations
+just once, and use them both in the positive pairs and the negative pairs. While this is common
+practice in representation learning, it is not exploited by most goal-conditioned RL algorithms. We
+refer to this method as contrastive RL (NCE). In Appendix C, we derive a variant of this method
+(contrastive RL (CPC)) that uses the infoNCE bound on mutual information.
+5
+
+Algorithm 1 Contrastive RL (NCE): the actor and critic losses for our method.
+from jax.numpy import einsum, eye
+from optax import sigmoid_binary_cross_entropy
+def critic_loss(states, actions, future_states):
+sa_repr = sa_encoder(states, actions) # (batch_dim, repr_dim)
+g_repr = g_encoder(future_states)
+# (batch_dim, repr_dim)
+logits = einsum('ik,jk->ij', sa_repr, g_repr) # <sa_repr[i], g_repr[j]> for all i,j
+return sigmoid_binary_cross_entropy(logits=logits, labels=eye(batch_size))
+def actor_loss(states, goals):
+actions = policy.sample(states, goal=goals) # (batch_size, action_dim)
+sa_repr = sa_encoder(states, actions)
+# (batch_dim, repr_dim)
+g_repr = g_encoder(goals)
+# (batch_dim, repr_dim)
+logits = einsum('ik,ik->i', sa_repr, g_repr) # <sa_repr[i], g_repr[i]>
+return -1.0 * logits
+
+Contrastive RL (NCE) is an on-policy algorithm because it only estimates the Q-function for the
+policy that collected the data. However, in practice, we take as many gradient steps on each transition
+as standard off-policy RL algorithms [39, 47]. Please see Appendix E for full implementation details.
+We will also release an efficient implementation based on ACME [56] and JAX [12]. On a single
+batches
+TPUv2, training proceeds at 1100 batches
+sec for state-based tasks and 105 sec for image-based tasks; for
+6
+comparison, our implementation of DrQ on the same hardware setup runs at 28 batches
+sec (3.9× slower).
+7
+Architectures and hyperparameters are described in Appendix E.
+4.5
+
+Convergence Guarantees
+
+In general, providing convergence guarantees for methods that perform relabeling is challenging. Most
+prior work offers no guarantees [6, 21, 22] or guarantees under only restrictive assumptions [40, 119].
+To prove that contrastive RL converges, we will introduce an additional filtering step into the method,
+throwing away some training examples. Precisely, we exclude training examples (s, a, sf ) if the
+probability of the corresponding trajectory τi:j = (si , ai , si+1 , ai+1 , · · · , sj , aj ) sampled from
+π(τ | sg ) under the commanded goal sg is very different from the trajectory’s probability under the
+actually-reached goal sj :
+
+E XCLUDE T RAJ(τi:j ) = δ
+
+
+π(τi:j | sg )
+−1 > .
+π(τi:j | sj )
+
+While this modification is necessary to prove convergence, ablation experiments in Appendix Fig. 13
+show that the filtering step can actually hurt performance in practice, so we do not include this
+filtering step in the experiments in the main text. We can now prove that contrastive RL performs
+approximate policy improvement.
+Lemma 4.2 (Approximate policy improvement). Assume that states and actions are tabular and
+assume that the critic is Bayes-optimal. Let π 0 (a | s, sg ) be the goal-conditioned policy obtained
+after one iteration of contrastive RL with a filtering parameter of . Then this policy achieves higher
+rewards than the initial goal-conditioned policy:
+Eπ0 (τ |sg )
+
+"∞
+X
+t=0
+
+#
+t
+
+γ rsg (st , at ) ≥ Eπ(τ |sg )
+
+"∞
+X
+
+#
+t
+
+γ rsg (st , at ) −
+
+t=0
+
+2γ
+1−γ
+
+for all goals sg ∈ {sg | pg (sg ) > 0}.
+
+The proof is in Appendix B. This result shows that performing contrastive RL on static dataset results
+in one step of approximate policy improvement. Re-collecting data and then applying contrastive RL
+over and over again corresponds to approximate policy improvement (see [9, Lemma 6.2]).
+In summary, we have shown that applying contrastive learning to a particular choice of inputs
+results in an RL algorithm, one that learns a Q-function and (under some assumptions) converges
+to the reward-maximizing policy. Contrastive RL (NCE) is simple: it does not require multiple
+Q-values [39], target Q networks [88], data augmentation [72, 136], or auxiliary objectives [74, 137].
+6
+
+The more recent DrQ-v2 [135] uses on 1 NVIDIA V100 GPU to achieve a training speed of 96/4 = 24 batches
+.
+sec
+The factor of 4 comes from an action repeat of 2 and an update interval of 2.
+7
+Code and more results are available: https://ben-eysenbach.github.io/contrastive_rl
+
+6
+
+fetch_reach
+
+sawyer_push
+success rate
+
+1
+
+2 0
+
+1
+
+ant_umaze 1e5
+
+1.0
+
+2
+
+3 0
+
+sawyer_bin 1e6
+
+2
+
+3
+1e6
+
+0.0
+
+0.5
+
+1.0 0
+
+environment steps1e7
+
+1
+
+2
+
+0
+
+1.0
+
+contrastive RL (NCE)
+TD3 + HER
+GCBC
+model-based
+
+0.5
+0.0
+
+1
+
+sawyer push
+
+1
+
+2 0.0
+1e5
+
+point Spiral11x11
+
+0.5
+
+1.0 0
+1e6
+
+sawyer bin
+
+1
+
+2
+
+3
+1e6
+
+contrastive RL (NCE)
+TD3 + HER
+GCBC
+model-based
+
+0.5
+0.0
+
+3
+
+environment steps1e6
+
+fetch push
+
+0.5
+0.0
+
+0
+
+fetch reach
+
+1.0
+
+0.5
+0.0
+
+success rate
+
+fetch_push
+
+success rate
+
+success rate
+
+1.0
+
+0
+
+2
+
+4
+
+environment steps1e5
+
+(a) State-based tasks
+
+0
+
+2
+
+4
+
+environment steps1e6
+
+(b) Image-based tasks
+
+Figure 2: Goal-conditioned RL. Contrastive RL (NCE) outperforms prior methods on most tasks. Baselines: HER [80] is a prototypical actor-critic method that uses hindsight relabeling [6]; Goal-conditioned
+behavioral cloning (GCBC) [21, 40, 83, 116] performs behavior cloning on relabeled experience;
+model-based fits a density model to the discounted state occupancy measure, similar on [20, 22, 60].
+
+4.6
+
+C-learning as Contrastive Learning
+
+C-learning [28] is a special case of contrastive RL: it learns a critic function to distinguish future
+goals from random goals. Compared with contrastive RL (NCE), C-learning learns the classifier
+using temporal difference learning.8 Viewing C-learning as a special case of contrastive RL suggests
+that contrastive RL algorithms might be implemented in a variety of different ways, each with relative
+merits. For example, contrastive RL (NCE) is much simpler than C-learning and tends to perform
+a bit better. Appendix D introduces another member of the contrastive RL family (contrastive RL
+(NCE + C-learning)) that tends to yield the best performance .
+
+5
+
+Experiments
+
+Our experiments use goal-conditioned RL problems to compare contrastive RL algorithms to prior
+non-contrastive methods, including those that use data augmentation and auxiliary objectives. We
+then compare different members of the contrastive RL family, and show how contrastive RL can
+be effectively applied to the offline RL setting. Appendices E, F, and G contain experiments,
+visualizations, and failed experiments.
+5.1
+
+Comparing to prior goal-conditioned RL methods
+
+Baselines. We compare three baselines.
+“HER” [80] is a goal-conditioned RL method
+that uses hindsight relabeling [6] with a
+high-performance
+actor-critic
+algorithm
+(TD3). This baseline is representative of a
+large class of prior work that uses hindsight
+relabeling [6, 76, 102, 106]. Like contrastive Figure 3: Environments. We show a subset of the
+RL, this baseline does not assume access to goal-conditioned environments used in our experiments.
+a reward function. The second baseline is
+goal-conditioned behavioral cloning (“GCBC”) [15, 21, 24, 40, 83, 96, 116, 119], which trains a
+policy to reach goal sg by performing behavioral cloning on trajectories that reach state sg . GCBC
+is a simple method that achieves excellent results [15, 24] and has the same inputs as our method
+((s, a, sf ) triplets). A third baseline is a model-based approach that fits a density model to the
+future state distribution pπ(·|·) (st+ | s, a) and trains a goal-conditioned policy to maximize the
+probability of the commanded goal. This baseline is similar to successor representations [20] and
+prior multi-step models [22, 60]. Both contrastive RL (Alg. 1) and this model-based approach encode
+the future state distribution, but the output dimension of this model-based method depends on the
+state dimension. We, therefore, expect this approach to excel in low-dimensional settings but struggle
+with image-based tasks. Where possible, we use the same hyperparameters for all methods. We will
+8
+The objectives are subtly different: C-learning estimates the probability that policy π(· | ·, sg ) visits state
+sf = sg , whereas contrastive RL (NCE) estimates the probability that any of the goal conditioned policies visit
+state sf .
+
+7
+
+fetch reach
+
+success rate
+
+1.0
+
+sawyer push
+
+fetch push
+
+sawyer bin
+contrastive RL (NCE)
+TD3+HER
+TD3+HER + DrQ
+TD3+HER + AE
+TD3+HER + CURL
+
+0.5
+
+0.0
+
+0
+
+1
+
+2 0
+1e5
+
+1
+
+2
+
+3 0.0
+
+0.5
+
+1.0 0
+1e6
+
+1e6
+environment
+steps
+
+2
+
+4
+
+1e6
+
+Figure 4: Representation learning for image-based tasks. While adding data augmentation and auxiliary
+
+representation objectives can boost the performance of the TD3+HER baseline, replacing the underlying goalconditioned RL algorithm with one that resembles contrastive representation learning (i.e., ours) yields a
+larger increase in success rates. Baselines: DrQ [136] augments images and averages the Q-values across 4
+augmentations; auto encoder (AE) adds an auxiliary reconstruction loss [31, 91, 93, 137]; CURL [74] applies
+RL on top of representations learned via augmentation-based contrastive learning.
+
+include additional representation learning baselines when studying representations in the subsequent
+section.
+Tasks. We compare it to a suite of goal-conditioned tasks, mostly taken from prior work. Four
+standard manipulation tasks include fetch reach and fetch push from Plappert et al. [97] and
+sawyer push and sawyer bin from Yu et al. [139]. We evaluate these tasks both with state-based
+observations and (unlike most prior work) image-based observations. The sawyer bin task poses
+an exploration challenge, as the agent must learn to pick up an object from one bin and place it at a
+goal location in another bin; the agent does not receive any reward shaping or demonstrations. We
+include two navigation tasks: point Spiral11x11 is a 2D maze task with image observations and
+ant umaze [35] is a 111-dimensional locomotion task that presents a challenging low-level control
+problem. Where possible, we use the same initial state distribution, goal distribution, observations,
+and definition of success as prior work. Goals have the same dimension as the states, with one
+exception: on the ant umaze task, we used the global XY position as the goal. We illustrate three
+of the tasks to the right. The agent does not have access to any ground truth reward function.
+We report results in Fig. 2, using five random seeds for each experiment and plotting the mean and
+standard deviation across those random seeds. On the state-based tasks (Fig. 2a), most methods solve
+the easiest task (fetch reach) while only our method solves the most challenging task (sawyer
+bin). Our method also outperforms all prior methods on the two pushing tasks. The model-based
+baseline performs best on the ant umaze task, likely because learning a model is relatively easy
+when the goal is lower-dimensional (just the XY location). On the image-based tasks (Fig. 2b),
+most methods make progress on the two easiest tasks (fetch reach and point Spiral11x11);
+our method outperforms the baselines on the three more challenging tasks. Of particular note is the
+success on sawyer push and sawyer bin: while the success rate of our method remains below
+50%, no baselines make any progress on learning these tasks. These results suggest that contrastive
+RL (NCE) is a competitive goal-conditioned RL algorithm.
+5.2
+
+Comparing to prior representation learning methods
+
+We hypothesize that contrastive RL may automatically learn good representations. To test this
+hypothesis, we compare contrastive RL (NCE) to techniques proposed by prior work for representation
+learning. These include data augmentation [72, 135, 136] (“DrQ”) and auxiliary objectives based on
+an autoencoder [31, 91, 93, 137] (“AE”) and a contrastive learning objective (“CURL”) that generates
+positive examples using data augmentation, similar to prior work [74, 89, 117]. Because prior work
+has demonstrated these techniques in combination with actor-critic RL algorithms, we will use these
+techniques in combination with the actor-critic baseline from the previous section (“TD3 + HER”).
+While contrastive RL (NCE) resembles a contrastive representation learning method, it does not
+include any data augmentation or auxiliary representation learning objectives.
+We show results in Fig. 4, with error bars again showing the mean and standard deviation across
+5 random seeds. While adding the autoencoder improves the baseline on the fetch reach and
+adding DrQ improves the baseline on the sawyer push, contrastive RL (NCE) outperforms the
+prior methods on all tasks. Unlike these methods, contrastive RL does not use auxiliary objectives
+or additional domain knowledge in the form of image-appropriate data augmentations. These
+experiments do not show that representation learning is never useful, and do not show that contrastive
+8
+
+fetch_reach
+
+sawyer_push
+success rate
+
+1
+
+2 0
+
+ant_umaze 1e5
+
+1.0
+
+1
+
+2
+
+3 0
+
+2
+
+3
+1e6
+
+contrastive RL (NCE)
+contrastive RL (CPC)
+C-learning
+contrastive RL
+(NCE + C-learning)
+
+0.5
+0.0
+
+1
+
+sawyer_bin 1e6
+
+0.0
+
+0.5
+
+1.0 0
+
+environment steps1e7
+
+1
+
+2
+
+0
+
+1.0
+
+(a) state-based observations
+
+sawyer push
+
+1
+
+2 0.0
+1e5
+
+point Spiral11x11
+
+0.5
+
+1.0 0
+1e6
+
+sawyer bin
+
+1
+
+2
+
+3
+1e6
+
+contrastive RL (NCE)
+contrastive RL (CPC)
+C-learning
+contrastive RL
+(NCE + C-learning)
+
+0.5
+0.0
+
+3
+
+environment steps1e6
+
+fetch push
+
+0.5
+0.0
+
+0
+
+fetch reach
+
+1.0
+
+0.5
+0.0
+
+success rate
+
+fetch_push
+
+success rate
+
+success rate
+
+1.0
+
+0
+
+2
+
+4
+
+environment steps1e5
+
+0
+
+2
+
+4
+
+environment steps1e6
+
+(b) image-based observations
+
+Figure 5: Contrastive RL design decisions. Generalizing C-learning to a family of contrastive RL algorithms
+allowed us to identify algorithms that are much simpler (contrastive RL (NCE)) and that consistently achieve
+higher performance (contrastive RL (NCE + C-learning)).
+
+RL cannot be improved with additional representation learning machinery. Rather, they show that
+designing RL algorithms that structurally resemble contrastive representation learning yields bigger
+improvements than simply adding representation learning tricks on top of existing RL algorithms.
+5.3
+
+Probing the dimensions of contrastive RL
+
+Up to now, we have focused on the specific instantiation of contrastive RL spelled out in Alg. 1.
+However, there is a whole family of RL algorithms with contrastive characteristics. C-learning is a
+contrastive RL algorithm that uses temporal difference learning (Sec. 4.6). Contrastive RL (CPC) is
+a variant of Alg. 1 based on the infoNCE objective [95] that we derive in Appendix C Contrastive
+RL (NCE + C-learning) is a variant that combines C-learning with Alg. D (see Appendix D.). The
+aim of these experiments are to study whether generalizing C-learning to a family of contrastive RL
+algorithms was useful: do the simpler methods achieve similar performance, and do other methods
+achieve better performance?
+We present results in Fig. 5, again plotting the mean and standard deviation across five random
+seeds. Contrastive RL (CPC) outperforms contrastive RL (NCE) on three, suggesting that swapping
+one mutual information estimator for another can sometimes improve performance, though both
+estimators can be effective. C-learning outperforms contrastive RL (NCE) on three tasks but performs
+worse on other tasks. Contrastive RL (NCE + C-learning) consistently ranks among the best methods.
+These experiments demonstrate that the prior contrastive RL method, C-learning [28], achieves good
+results on most tasks; generalizing C-learning to a family of contrastive RL algorithms resulting in
+new algorithms that achieve higher performance and can be much simpler.
+5.4
+
+Partial Observability and Moving Cameras
+
+return
+
+0.4
+Many realistic robotics tasks exhibit partial observability,
+0.3
+and have cameras that are not fixed but rather attached
+to moving robot parts. Our next experiment tests if con0.2
+trastive RL can cope with these sorts of challenges. To
+0.1
+study this question, we modified the sawyer push task
+0.0
+so that the camera tracks the hand at a fixed distance, as if
+0
+1
+2
+3
+4
+5
+it were rigidly mounted to the arm. This means that, at the
+1e6
+environment steps
+start of the episode, the scene is occluded by the wall at Figure 6: Partial observability and movthe edge of the table, so the agent cannot see the location ing cameras. Contrastive RL can solve parof the puck (see Fig. 6 (left)). Nonetheless, contrastive RL tially observed tasks.
+(NCE) successfully handles this partial observability, achieving a success rate of around 35%. Fig. 6
+(left) shows an example rollout and Fig. 6 (right) shows the learning curve. For comparison, the
+success rate when using the fixed static camera was 75%. Taken together, these results suggest that
+contrastive RL can cope with moving cameras and partial observability, while also suggesting that
+improved strategies (e.g., non-Markovian architectures) might achieve even better results.
+
+9
+
+Table 1: Offline RL on D4RL AntMaze [35]. Contrastive RL outperforms all baselines in 5 out of 6 tasks.
+no TD
+
+umaze-v2
+umaze-diverse-v2
+medium-play-v2
+medium-diverse-v2
+large-play-v2
+large-diverse-v2
+∗
+
+5.5
+
+uses TD
+
+BC
+
+DT
+
+GCBC
+
+Contrastive RL + BC
+2 nets
+5 nets
+
+54.6
+45.6
+0.0
+0.0
+0.0
+0.0
+
+65.6
+51.2
+1.0
+0.6
+0.0
+0.2
+
+65.4
+60.9
+58.1
+67.3
+32.4
+36.9
+
+81.9 (±1.7)
+75.4 (±3.5)
+71.5 (±5.2)
+72.5 (±2.8)
+41.6 (±6.0)
+49.3 (±6.3)
+
+79.8 (±1.4)
+77.6 (±2.8)
+72.6 (±2.9)
+71.5 (±1.3)
+48.6 (±4.4)
+54.1 (±5.5)
+
+TD3+BC∗
+
+IQL∗
+
+78.6
+71.4
+10.6
+3.0
+0.2
+0.0
+
+87.5
+62.2
+71.2
+70.0
+39.6
+47.5
+
+While TD3+BC and IQL report results on the -v0 tasks, the change to -v2 has a negligible effect on TD methods [59].
+
+Contrastive RL for Offline RL
+
+Our final experiment studies whether the benefits from contrastive RL (NCE) transfer to the offline RL
+setting, where the agent is prohibited from interacting with the environment. We use the benchmark
+AntMaze tasks from the D4RL benchmark [35], as these are goal-conditioned tasks commonly
+studied in the offline setting.
+We adapt contrastive RL (NCE) to the offline setting by adding an additional (goal-conditioned)
+behavioral cloning term to the policy objective (Eq. 7), using a coefficient of λ:
+max Eπ(a|s,sg )p(s,aorig ,sg ) [(1 − λ) · f (s, a, sf = sg ) + λ · log π(aorig | s, sg )] .
+
+π(a|s,sg )
+
+Note that setting λ = 1 corresponds to GCBC [15, 21, 24, 40, 83, 96, 116, 119], which we will include
+as a baseline. Following TD3+BC [38], we learn multiple critic functions (2 and 5) and take the
+minimum when computing the actor update. We also compare to prior offline RL methods that eschew
+TD learning: (unconditional) behavioral cloning (BC), the implementation of GCBC from [24] (which
+refers to GCBC as RvS-G), and a recent method based on the transformer architecture (DT [15]).
+Lastly, we compare with two more complex methods that use TD learning: TD3+BC [38] and
+IQL [68]. Unlike contrastive RL and GCBC, these TD learning methods do not perform goal
+relabeling. We use the numbers reported for these baselines in prior work [24, 68].
+As shown in Table 1, contrastive RL (NCE) outperforms all baselines on five of the six benchmark
+tasks. Of particular note are the most challenging “-large” tasks, where contrastive RL achieves a
+7% to 9% absolute improvement over IQL. We note that IQL does not use goal relabeling, which is
+the bedrock of contrastive RL. Compared to baselines that do not use TD learning, the benefits are
+more pronounced, with a median (absolute) improvement over GCBC of 15%. The performance of
+contrastive RL improves when increasing the number of critics from 2 to 5, suggesting that the key to
+solving more challenging offline RL tasks may be increased capacity, rather than TD learning. Taken
+together, these results show the value of contrastive RL for offline goal-conditioned tasks.
+
+6
+
+Conclusion
+
+In this paper, we showed how contrastive representation learning can be used for goal-conditioned RL.
+This connection not only lets us re-interpret a prior RL method as performing contrastive learning,
+but also suggests a family of contrastive RL methods, which includes simpler algorithms, as well
+as algorithms that attain better overall performance. While this paper might be construed to imply
+that RL is more or less important than representation learning [71, 75, 112, 114], we have a different
+takeaway: that it may be enough to build RL algorithms that look like representation learning.
+One limitation of this work is that it looks only at the goal-conditioned RL problems. How these
+methods might be applied to arbitrary RL problems remains an open problem, though we note that
+recent algorithms for this setting [27] already bear a resemblance to contrastive RL. Whether the rich
+set of ideas from contrastive learning might be used to construct even better RL algorithms likewise
+remains an open question.
+Acknowledgements. Thanks to Hubert Tsai, Martin Ma, and Simon Kornblith for discussions about contrastive learning. Thanks to Kamyar Ghasemipour, Suraj Nair, and anonymous reviewers for feedback on the
+paper. Thanks to Ofir Nachum, Daniel Zheng, and the JAX and Acme teams for helping to release and debug the
+code. This material is supported by the Fannie and John Hertz Foundation and the NSF GRFP (DGE1745016).
+UC Berkeley research is also supported by gifts from Alibaba, Amazon Web Services, Ant Financial, CapitalOne,
+Ericsson, Facebook, Futurewei, Google, Intel, Microsoft, Nvidia, Scotiabank, Splunk and VMware.
+
+10
+
+References
+[1] Achiam, J., Edwards, H., Amodei, D., and Abbeel, P. (2018). Variational option discovery algorithms. arXiv
+preprint arXiv:1807.10299.
+[2] Achiam, J., Knight, E., and Abbeel, P. (2019). Towards characterizing divergence in deep Q-learning. arXiv
+preprint arXiv:1903.08894.
+[3] Alain, G. and Bengio, Y. (2016). Understanding intermediate layers using linear classifier probes. arXiv
+preprint arXiv:1610.01644.
+[4] Anand, A., Racah, E., Ozair, S., Bengio, Y., Côté, M.-A., and Hjelm, R. D. (2019). Unsupervised state
+representation learning in Atari. Advances in Neural Information Processing Systems, 32.
+[5] Andreas, J., Klein, D., and Levine, S. (2017). Modular multitask reinforcement learning with policy sketches.
+In International Conference on Machine Learning, pages 166–175. PMLR.
+[6] Andrychowicz, M., Crow, D., Ray, A., Schneider, J., Fong, R., Welinder, P., McGrew, B., Tobin, J., Abbeel,
+P., and Zaremba, W. (2017). Hindsight experience replay. In NeurIPS.
+[7] Annasamy, R. M. and Sycara, K. (2019). Towards better interpretability in deep Q-networks. In Proceedings
+of the AAAI Conference on Artificial Intelligence, volume 33, pages 4561–4569.
+[8] Barreto, A., Dabney, W., Munos, R., Hunt, J. J., Schaul, T., van Hasselt, H. P., and Silver, D. (2017).
+Successor features for transfer in reinforcement learning. Advances in neural information processing systems,
+30.
+[9] Bertsekas, D. P. and Tsitsiklis, J. N. (1996). Neuro-dynamic programming. Athena Scientific.
+[10] Blier, L., Tallec, C., and Ollivier, Y. (2021). Learning successor states and goal-dependent values: A
+mathematical viewpoint. arXiv preprint arXiv:2101.07123.
+[11] Borsa, D., Barreto, A., Quan, J., Mankowitz, D., Munos, R., Van Hasselt, H., Silver, D., and Schaul, T.
+(2018). Universal successor features approximators. arXiv preprint arXiv:1812.07626.
+[12] Bradbury, J., Frostig, R., Hawkins, P., Johnson, M. J., Leary, C., Maclaurin, D., Necula, G., Paszke,
+A., VanderPlas, J., Wanderman-Milne, S., and Zhang, Q. (2018). JAX: composable transformations of
+Python+NumPy programs.
+[13] Brown, D., Goo, W., Nagarajan, P., and Niekum, S. (2019). Extrapolating beyond suboptimal demonstrations via inverse reinforcement learning from observations. In International conference on machine learning,
+pages 783–792. PMLR.
+[14] Chane-Sane, E., Schmid, C., and Laptev, I. (2021). Goal-conditioned reinforcement learning with imagined
+subgoals. In International Conference on Machine Learning, pages 1430–1440. PMLR.
+[15] Chen, L., Lu, K., Rajeswaran, A., Lee, K., Grover, A., Laskin, M., Abbeel, P., Srinivas, A., and Mordatch,
+I. (2021). Decision transformer: Reinforcement learning via sequence modeling. Advances in neural
+information processing systems, 34.
+[16] Chen, T., Kornblith, S., Norouzi, M., and Hinton, G. E. (2020). A simple framework for contrastive
+learning of visual representations. ArXiv, abs/2002.05709.
+[17] Chen, X. and He, K. (2021). Exploring simple siamese representation learning. 2021 IEEE/CVF Conference
+on Computer Vision and Pattern Recognition (CVPR), pages 15745–15753.
+[18] Choi, J., Sharma, A., Lee, H., Levine, S., and Gu, S. S. (2021). Variational empowerment as representation
+learning for goal-conditioned reinforcement learning. In International Conference on Machine Learning,
+pages 1953–1963. PMLR.
+[19] Christiano, P., Leike, J., Brown, T. B., Martic, M., Legg, S., and Amodei, D. (2017). Deep reinforcement
+learning from human preferences. arXiv preprint arXiv:1706.03741.
+[20] Dayan, P. (1993). Improving generalization for temporal difference learning: The successor representation.
+Neural Computation, 5(4):613–624.
+[21] Ding, Y., Florensa, C., Abbeel, P., and Phielipp, M. (2019). Goal-conditioned imitation learning. Advances
+in Neural Information Processing Systems, 32:15324–15335.
+
+11
+
+[22] Dosovitskiy, A. and Koltun, V. (2016). Learning to act by predicting the future. arXiv preprint
+arXiv:1611.01779.
+[23] Du, Y., Gan, C., and Isola, P. (2021). Curious representation learning for embodied intelligence. In
+Proceedings of the IEEE/CVF International Conference on Computer Vision, pages 10408–10417.
+[24] Emmons, S., Eysenbach, B., Kostrikov, I., and Levine, S. (2021). Rvs: What is essential for offline rl via
+supervised learning? arXiv preprint arXiv:2112.10751.
+[25] Eysenbach, B., Geng, X., Levine, S., and Salakhutdinov, R. (2020). Rewriting history with inverse RL:
+Hindsight inference for policy improvement. ArXiv, abs/2002.11089.
+[26] Eysenbach, B., Gupta, A., Ibarz, J., and Levine, S. (2018). Diversity is all you need: Learning skills
+without a reward function. In International Conference on Learning Representations.
+[27] Eysenbach, B., Levine, S., and Salakhutdinov, R. R. (2021a). Replacing rewards with examples: Examplebased policy search via recursive classification. Advances in Neural Information Processing Systems, 34.
+[28] Eysenbach, B., Salakhutdinov, R., and Levine, S. (2021b). C-learning: Learning to achieve goals via
+recursive classification. ArXiv, abs/2011.08909.
+[29] Eysenbach, B., Salakhutdinov, R. R., and Levine, S. (2019). Search on the replay buffer: Bridging planning
+and reinforcement learning. Advances in Neural Information Processing Systems, 32.
+[30] Eysenbach, B., Udatha, S., Levine, S., and Salakhutdinov, R. (2022). Imitating past successes can be very
+suboptimal. arXiv preprint arXiv:2206.03378.
+[31] Finn, C., Tan, X. Y., Duan, Y., Darrell, T., Levine, S., and Abbeel, P. (2016). Deep spatial autoencoders for
+visuomotor learning. In 2016 IEEE International Conference on Robotics and Automation (ICRA), pages
+512–519. IEEE.
+[32] Fischinger, D., Vincze, M., and Jiang, Y. (2013). Learning grasps for unknown objects in cluttered scenes.
+In 2013 IEEE international conference on robotics and automation, pages 609–616. IEEE.
+[33] Florensa, C., Degrave, J., Heess, N., Springenberg, J. T., and Riedmiller, M. (2019). Self-supervised
+learning of image embedding for continuous control. arXiv preprint arXiv:1901.00943.
+[34] Florensa, C., Held, D., Geng, X., and Abbeel, P. (2018). Automatic goal generation for reinforcement
+learning agents. In International conference on machine learning, pages 1515–1528. PMLR.
+[35] Fu, J., Kumar, A., Nachum, O., Tucker, G., and Levine, S. (2020). D4RL: Datasets for deep data-driven
+reinforcement learning. arXiv preprint arXiv:2004.07219.
+[36] Fu, J., Luo, K., and Levine, S. (2017). Learning robust rewards with adversarial inverse reinforcement
+learning. arXiv preprint arXiv:1710.11248.
+[37] Fu, J., Singh, A., Ghosh, D., Yang, L., and Levine, S. (2018). Variational inverse control with events: A
+general framework for data-driven reward definition. In NeurIPS.
+[38] Fujimoto, S. and Gu, S. S. (2021). A minimalist approach to offline reinforcement learning. Advances in
+Neural Information Processing Systems, 34.
+[39] Fujimoto, S., Hoof, H., and Meger, D. (2018). Addressing function approximation error in actor-critic
+methods. In International conference on machine learning, pages 1587–1596. PMLR.
+[40] Ghosh, D., Gupta, A., Reddy, A., Fu, J., Devin, C. M., Eysenbach, B., and Levine, S. (2020). Learning to
+reach goals via iterated supervised learning. In International Conference on Learning Representations.
+[41] Gregor, K., Rezende, D. J., and Wierstra, D. (2016). Variational intrinsic control. arXiv preprint
+arXiv:1611.07507.
+[42] Grill, J.-B., Strub, F., Altch’e, F., Tallec, C., Richemond, P. H., Buchatskaya, E., Doersch, C., Pires, B. Á.,
+Guo, Z. D., Azar, M. G., Piot, B., Kavukcuoglu, K., Munos, R., and Valko, M. (2020). Bootstrap your own
+latent: A new approach to self-supervised learning. ArXiv, abs/2006.07733.
+[43] Guo, Z. D., Azar, M. G., Piot, B., Pires, B. A., and Munos, R. (2018). Neural predictive belief representations. arXiv preprint arXiv:1811.06407.
+
+12
+
+[44] Guo, Z. D., Pires, B. A., Piot, B., Grill, J.-B., Altché, F., Munos, R., and Azar, M. G. (2020). Bootstrap
+latent-predictive representations for multitask reinforcement learning. In International Conference on Machine
+Learning, pages 3875–3886. PMLR.
+[45] Gutmann, M. U. and Hyvärinen, A. (2012). Noise-contrastive estimation of unnormalized statistical
+models, with applications to natural image statistics. Journal of machine learning research, 13(2).
+[46] Ha, D. and Schmidhuber, J. (2018). World models. arXiv preprint arXiv:1803.10122.
+[47] Haarnoja, T., Zhou, A., Abbeel, P., and Levine, S. (2018). Soft actor-critic: Off-policy maximum entropy
+deep reinforcement learning with a stochastic actor. In International conference on machine learning, pages
+1861–1870. PMLR.
+[48] Hafner, D., Lillicrap, T., Ba, J., and Norouzi, M. (2019a). Dream to control: Learning behaviors by latent
+imagination. arXiv preprint arXiv:1912.01603.
+[49] Hafner, D., Lillicrap, T., Fischer, I., Villegas, R., Ha, D., Lee, H., and Davidson, J. (2019b). Learning
+latent dynamics for planning from pixels. In International conference on machine learning, pages 2555–2565.
+PMLR.
+[50] Han, T., Xie, W., and Zisserman, A. (2020). Self-supervised co-training for video representation learning.
+Advances in Neural Information Processing Systems, 33:5679–5690.
+[51] Hansen, S., Dabney, W., Barreto, A., Van de Wiele, T., Warde-Farley, D., and Mnih, V. (2019). Fast task
+inference with variational intrinsic successor features. arXiv preprint arXiv:1906.05030.
+[52] He, K., Fan, H., Wu, Y., Xie, S., and Girshick, R. (2020). Momentum contrast for unsupervised visual
+representation learning. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern
+Recognition, pages 9729–9738.
+[53] Hjelm, R. D., Fedorov, A., Lavoie-Marchildon, S., Grewal, K., Bachman, P., Trischler, A., and Bengio, Y.
+(2018). Learning deep representations by mutual information estimation and maximization. arXiv preprint
+arXiv:1808.06670.
+[54] Ho, J. and Ermon, S. (2016). Generative adversarial imitation learning. Advances in neural information
+processing systems, 29:4565–4573.
+[55] Hoffer, E. and Ailon, N. (2015). Deep metric learning using triplet network. In International workshop on
+similarity-based pattern recognition, pages 84–92. Springer.
+[56] Hoffman, M., Shahriari, B., Aslanides, J., Barth-Maron, G., Behbahani, F., Norman, T., Abdolmaleki, A.,
+Cassirer, A., Yang, F., Baumli, K., Henderson, S., Novikov, A., Colmenarejo, S. G., Cabi, S., Gulcehre, C.,
+Paine, T. L., Cowie, A., Wang, Z., Piot, B., and de Freitas, N. (2020). Acme: A research framework for
+distributed reinforcement learning. arXiv preprint arXiv:2006.00979.
+[57] Hong, Z.-W., Yang, G., and Agrawal, P. (2022). Bilinear value networks. arXiv preprint arXiv:2204.13695.
+[58] Ichter, B., Sermanet, P., and Lynch, C. (2020). Broadly-exploring, local-policy trees for long-horizon task
+planning. arXiv preprint arXiv:2010.06491.
+[59] IQL Authors (2022). Private Communication.
+[60] Janner, M., Mordatch, I., and Levine, S. (2020). gamma-models: Generative temporal difference learning
+for infinite-horizon prediction. Advances in Neural Information Processing Systems, 33:1724–1735.
+[61] Jozefowicz, R., Vinyals, O., Schuster, M., Shazeer, N., and Wu, Y. (2016). Exploring the limits of language
+modeling. arXiv preprint arXiv:1602.02410.
+[62] Kaelbling, L. P. (1993). Learning to achieve goals. In IJCAI, pages 1094–1099. Citeseer.
+[63] Kalashnikov, D., Varley, J., Chebotar, Y., Swanson, B., Jonschkowski, R., Finn, C., Levine, S., and
+Hausman, K. (2021). Mt-opt: Continuous multi-task robotic reinforcement learning at scale. ArXiv,
+abs/2104.08212.
+[64] Kish, L. (1965). Survey sampling. John Wiley & Sons.
+[65] Klingemann, M. (2016). Raster fairy. https://github.com/bmcfee/RasterFairy.
+[66] Konda, V. and Tsitsiklis, J. (1999). Actor-critic algorithms. Advances in neural information processing
+systems, 12.
+
+13
+
+[67] Konyushkova, K., Zolna, K., Aytar, Y., Novikov, A., Reed, S., Cabi, S., and de Freitas, N. (2020).
+Semi-supervised reward learning for offline reinforcement learning. arXiv preprint arXiv:2012.06899.
+[68] Kostrikov, I., Nair, A., and Levine, S. (2021). Offline reinforcement learning with implicit q-learning. In
+International Conference on Learning Representations.
+[69] Kumar, A., Agarwal, R., Ghosh, D., and Levine, S. (2020). Implicit under-parameterization inhibits
+data-efficient deep reinforcement learning. arXiv preprint arXiv:2010.14498.
+[70] Lange, S. and Riedmiller, M. (2010). Deep auto-encoder neural networks in reinforcement learning. In
+The 2010 International Joint Conference on Neural Networks (IJCNN), pages 1–8. IEEE.
+[71] Langford, J. (2010). Specializations of the master problem.
+[72] Laskin, M., Lee, K., Stooke, A., Pinto, L., Abbeel, P., and Srinivas, A. (2020a). Reinforcement learning
+with augmented data. Advances in Neural Information Processing Systems, 33:19884–19895.
+[73] Laskin, M., Liu, H., Peng, X. B., Yarats, D., Rajeswaran, A., and Abbeel, P. (2021). CIC: Contrastive
+intrinsic control for unsupervised skill discovery. In Deep RL Workshop NeurIPS 2021.
+[74] Laskin, M., Srinivas, A., and Abbeel, P. (2020b). Curl: Contrastive unsupervised representations for
+reinforcement learning. In International Conference on Machine Learning, pages 5639–5650. PMLR.
+[75] LeCun, Y. (2016). Predictive learning. https://www.youtube.com/watch?v=Ount2Y4qxQo. Keynote
+Talk.
+[76] Levy, A., Konidaris, G., Platt, R., and Saenko, K. (2017). Learning multi-level hierarchies with hindsight.
+arXiv preprint arXiv:1712.00948.
+[77] Levy, O. and Goldberg, Y. (2014). Neural word embedding as implicit matrix factorization. Advances in
+neural information processing systems, 27.
+[78] Li, A., Pinto, L., and Abbeel, P. (2020). Generalized hindsight for reinforcement learning. Advances in
+neural information processing systems, 33:7754–7767.
+[79] Liang, Y., Machado, M. C., Talvitie, E., and Bowling, M. (2015). State of the art control of Atari games
+using shallow reinforcement learning. arXiv preprint arXiv:1512.01563.
+[80] Lin, X., Baweja, H. S., and Held, D. (2019). Reinforcement learning without ground-truth state. ArXiv,
+abs/1905.07866.
+[81] Liu, H. and Abbeel, P. (2021). Aps: Active pretraining with successor features. In International Conference
+on Machine Learning, pages 6736–6747. PMLR.
+[82] Liu, K., Kurutach, T., Tung, C., Abbeel, P., and Tamar, A. (2020). Hallucinative topological memory for
+zero-shot visual planning. In International Conference on Machine Learning, pages 6259–6270. PMLR.
+[83] Lynch, C., Khansari, M., Xiao, T., Kumar, V., Tompson, J., Levine, S., and Sermanet, P. (2020). Learning
+latent plans from play. In Conference on Robot Learning, pages 1113–1132. PMLR.
+[84] Ma, Z. and Collins, M. (2018). Noise contrastive estimation and negative sampling for conditional models:
+Consistency and statistical efficiency. In EMNLP.
+[85] Mendonca, R., Rybkin, O., Daniilidis, K., Hafner, D., and Pathak, D. (2021). Discovering and achieving
+goals via world models. Advances in Neural Information Processing Systems, 34.
+[86] Mikolov, T., Sutskever, I., Chen, K., Corrado, G. S., and Dean, J. (2013). Distributed representations of
+words and phrases and their compositionality. Advances in neural information processing systems, 26.
+[87] Mnih, A. and Teh, Y. W. (2012). A fast and simple algorithm for training neural probabilistic language
+models. In ICML.
+[88] Mnih, V., Kavukcuoglu, K., Silver, D., Graves, A., Antonoglou, I., Wierstra, D., and Riedmiller, M. (2013).
+Playing atari with deep reinforcement learning. arXiv preprint arXiv:1312.5602.
+[89] Nachum, O., Gu, S., Lee, H., and Levine, S. (2018a). Near-optimal representation learning for hierarchical
+reinforcement learning. In International Conference on Learning Representations.
+[90] Nachum, O., Gu, S. S., Lee, H., and Levine, S. (2018b). Data-efficient hierarchical reinforcement learning.
+Advances in neural information processing systems, 31.
+
+14
+
+[91] Nair, A. V., Pong, V., Dalal, M., Bahl, S., Lin, S., and Levine, S. (2018). Visual reinforcement learning
+with imagined goals. Advances in Neural Information Processing Systems, 31:9191–9200.
+[92] Nair, S., Mitchell, E., Chen, K., Savarese, S., Finn, C., et al. (2022). Learning language-conditioned
+robot behavior from offline data and crowd-sourced annotation. In Conference on Robot Learning, pages
+1303–1315. PMLR.
+[93] Nasiriany, S., Pong, V. H., Lin, S., and Levine, S. (2019). Planning with goal-conditioned policies. In
+NeurIPS.
+[94] Nowozin, S., Cseke, B., and Tomioka, R. (2016). f-GAN: Training generative neural samplers using
+variational divergence minimization. Advances in neural information processing systems, 29.
+[95] Oord, A. v. d., Li, Y., and Vinyals, O. (2018). Representation learning with contrastive predictive coding.
+arXiv preprint arXiv:1807.03748.
+[96] Paster, K., McIlraith, S. A., and Ba, J. (2020). Planning from pixels using inverse dynamics models. arXiv
+preprint arXiv:2012.02419.
+[97] Plappert, M., Andrychowicz, M., Ray, A., McGrew, B., Baker, B., Powell, G., Schneider, J., Tobin, J.,
+Chociej, M., Welinder, P., et al. (2018). Multi-goal reinforcement learning: Challenging robotics environments
+and request for research. arXiv preprint arXiv:1802.09464.
+[98] Pong, V. H., Dalal, M., Lin, S., Nair, A., Bahl, S., and Levine, S. (2019). Skew-fit: State-covering
+self-supervised reinforcement learning. arXiv preprint arXiv:1903.03698.
+[99] Poole, B., Ozair, S., Van Den Oord, A., Alemi, A., and Tucker, G. (2019). On variational bounds of mutual
+information. In International Conference on Machine Learning, pages 5171–5180. PMLR.
+[100] Qiu, S., Wang, L., Bai, C., Yang, Z., and Wang, Z. (2022). Contrastive ucb: Provably efficient contrastive
+self-supervised learning in online reinforcement learning. In International Conference on Machine Learning,
+pages 18168–18210. PMLR.
+[101] Rakelly, K., Gupta, A., Florensa, C., and Levine, S. (2021). Which mutual-information representation
+learning objectives are sufficient for control? ArXiv, abs/2106.07278.
+[102] Riedmiller, M., Hafner, R., Lampe, T., Neunert, M., Degrave, J., Wiele, T., Mnih, V., Heess, N., and
+Springenberg, J. T. (2018). Learning by playing solving sparse reward tasks from scratch. In International
+conference on machine learning, pages 4344–4353. PMLR.
+[103] Rudner, T. G., Pong, V., McAllister, R., Gal, Y., and Levine, S. (2021). Outcome-driven reinforcement
+learning via variational inference. Advances in Neural Information Processing Systems, 34.
+[104] Rybkin, O., Zhu, C., Nagabandi, A., Daniilidis, K., Mordatch, I., and Levine, S. (2021). Model-based
+reinforcement learning via latent-space collocation. In International Conference on Machine Learning, pages
+9190–9201. PMLR.
+[105] Savinov, N., Dosovitskiy, A., and Koltun, V. (2018). Semi-parametric topological memory for navigation.
+In International Conference on Learning Representations.
+[106] Schaul, T., Horgan, D., Gregor, K., and Silver, D. (2015). Universal value function approximators. In
+International conference on machine learning, pages 1312–1320. PMLR.
+[107] Schmeckpeper, K., Xie, A., Rybkin, O., Tian, S., Daniilidis, K., Levine, S., and Finn, C. (2020). Learning
+predictive models from observation and interaction. In European Conference on Computer Vision, pages
+708–725. Springer.
+[108] Schroff, F., Kalenichenko, D., and Philbin, J. (2015). Facenet: A unified embedding for face recognition
+and clustering. 2015 IEEE Conference on Computer Vision and Pattern Recognition (CVPR), pages 815–823.
+[109] Sermanet, P., Lynch, C., Chebotar, Y., Hsu, J., Jang, E., Schaal, S., Levine, S., and Brain, G. (2018).
+Time-contrastive networks: Self-supervised learning from video. In 2018 IEEE international conference on
+robotics and automation (ICRA), pages 1134–1141. IEEE.
+[110] Sharma, A., Gu, S., Levine, S., Kumar, V., and Hausman, K. (2019). Dynamics-aware unsupervised
+discovery of skills. In International Conference on Learning Representations.
+[111] Shu, R., Nguyen, T., Chow, Y., Pham, T., Than, K., Ghavamzadeh, M., Ermon, S., and Bui, H. (2020).
+Predictive coding for locally-linear control. In International Conference on Machine Learning, pages
+8862–8871. PMLR.
+
+15
+
+[112] Silver, D., Singh, S., Precup, D., and Sutton, R. S. (2021). Reward is enough. Artificial Intelligence,
+299:103535.
+[113] Sohn, K. (2016). Improved deep metric learning with multi-class n-pair loss objective. In NeurIPS.
+[114] Srinivas, A. and Abbeel, P. (2021). Unsupervised learning for reinforcement learning. Tutorial.
+[115] Srinivas, A., Jabri, A., Abbeel, P., Levine, S., and Finn, C. (2018). Universal planning networks. ArXiv,
+abs/1804.00645.
+[116] Srivastava, R. K., Shyam, P., Mutz, F., Jaśkowski, W., and Schmidhuber, J. (2019). Training agents using
+upside-down reinforcement learning. arXiv preprint arXiv:1912.02877.
+[117] Stooke, A., Lee, K., Abbeel, P., and Laskin, M. (2021). Decoupling representation learning from
+reinforcement learning. In International Conference on Machine Learning, pages 9870–9879. PMLR.
+[118] Such, F. P., Madhavan, V., Liu, R., Wang, R., Castro, P. S., Li, Y., Zhi, J., Schubert, L., Bellemare, M. G.,
+Clune, J., et al. (2018). An atari model zoo for analyzing, visualizing, and comparing deep reinforcement
+learning agents. arXiv preprint arXiv:1812.07069.
+[119] Sun, H., Li, Z., Liu, X., Zhou, B., and Lin, D. (2019). Policy continuation with hindsight inverse dynamics.
+Advances in Neural Information Processing Systems, 32:10265–10275.
+[120] Teh, Y., Bapst, V., Czarnecki, W. M., Quan, J., Kirkpatrick, J., Hadsell, R., Heess, N., and Pascanu, R.
+(2017). Distral: Robust multitask reinforcement learning. Advances in neural information processing systems,
+30.
+[121] Tian, Y., Krishnan, D., and Isola, P. (2020). Contrastive multiview coding. In Computer Vision–ECCV
+2020: 16th European Conference, Glasgow, UK, August 23–28, 2020, Proceedings, Part XI 16, pages
+776–794. Springer.
+[122] Tsai, Y.-H., Zhao, H., Yamada, M., Morency, L.-P., and Salakhutdinov, R. (2020). Neural methods for
+point-wise dependency estimation. In Proceedings of the Neural Information Processing Systems Conference
+(Neurips).
+[123] Tschannen, M., Djolonga, J., Rubenstein, P. K., Gelly, S., and Lucic, M. (2019). On mutual information
+maximization for representation learning. arXiv preprint arXiv:1907.13625.
+[124] Venkattaramanujam, S., Crawford, E., Doan, T. V., and Precup, D. (2019). Self-supervised learning of
+distance functions for goal-conditioned reinforcement learning. ArXiv, abs/1907.02998.
+[125] Wang, H., Miahi, E., White, M., Machado, M. C., Abbas, Z., Kumaraswamy, R., Liu, V., and White,
+A. (2022). Investigating the properties of neural network representations in reinforcement learning. arXiv
+preprint arXiv:2203.15955.
+[126] Warde-Farley, D., Van de Wiele, T., Kulkarni, T., Ionescu, C., Hansen, S., and Mnih, V. (2018). Unsupervised control through non-parametric discriminative rewards. arXiv preprint arXiv:1811.11359.
+[127] Watter, M., Springenberg, J., Boedecker, J., and Riedmiller, M. (2015). Embed to control: A locally linear
+latent dynamics model for control from raw images. Advances in neural information processing systems, 28.
+[128] Weinberger, K. Q. and Saul, L. K. (2005). Distance metric learning for large margin nearest neighbor
+classification. In NIPS.
+[129] Wilson, A., Fern, A., Ray, S., and Tadepalli, P. (2007). Multi-task reinforcement learning: a hierarchical
+bayesian approach. In Proceedings of the 24th international conference on Machine learning, pages 1015–
+1022.
+[130] Wu, Y., Tucker, G., and Nachum, O. (2018a). The Laplacian in RL: Learning representations with
+efficient approximations. arXiv preprint arXiv:1810.04586.
+[131] Wu, Z., Xiong, Y., Yu, S. X., and Lin, D. (2018b). Unsupervised feature learning via non-parametric
+instance discrimination. 2018 IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages
+3733–3742.
+[132] Xie, A., Singh, A., Levine, S., and Finn, C. (2018). Few-shot goal inference for visuomotor learning and
+planning. In Conference on Robot Learning, pages 40–52. PMLR.
+[133] Xu, D. and Denil, M. (2019). Positive-unlabeled reward learning. arXiv preprint arXiv:1911.00459.
+
+16
+
+[134] Yang, G., Ajay, A., and Agrawal, P. (2021). Overcoming the spectral bias of neural value approximation.
+In International Conference on Learning Representations.
+[135] Yarats, D., Fergus, R., Lazaric, A., and Pinto, L. (2021a). Mastering visual continuous control: Improved
+data-augmented reinforcement learning. arXiv preprint arXiv:2107.09645.
+[136] Yarats, D., Kostrikov, I., and Fergus, R. (2020). Image augmentation is all you need: Regularizing deep
+reinforcement learning from pixels. In International Conference on Learning Representations.
+[137] Yarats, D., Zhang, A., Kostrikov, I., Amos, B., Pineau, J., and Fergus, R. (2021b). Improving sample
+efficiency in model-free reinforcement learning from images. In AAAI.
+[138] Yu, T., Kumar, S., Gupta, A., Levine, S., Hausman, K., and Finn, C. (2020a). Gradient surgery for
+multi-task learning. Advances in Neural Information Processing Systems, 33:5824–5836.
+[139] Yu, T., Quillen, D., He, Z., Julian, R., Hausman, K., Finn, C., and Levine, S. (2020b). Meta-world: A
+benchmark and evaluation for multi-task and meta reinforcement learning. In Conference on Robot Learning,
+pages 1094–1100. PMLR.
+[140] Zhang, A., McAllister, R. T., Calandra, R., Gal, Y., and Levine, S. (2020a). Learning invariant representations for reinforcement learning without reconstruction. In International Conference on Learning
+Representations.
+[141] Zhang, M., Vikram, S., Smith, L., Abbeel, P., Johnson, M., and Levine, S. (2019). Solar: Deep structured
+representations for model-based reinforcement learning. In International Conference on Machine Learning,
+pages 7444–7453. PMLR.
+[142] Zhang, S., Liu, B., and Whiteson, S. (2020b). Gradientdice: Rethinking generalized offline estimation of
+stationary values. In International Conference on Machine Learning, pages 11194–11203. PMLR.
+[143] Zhang, T., Ren, T., Yang, M., Gonzalez, J., Schuurmans, D., and Dai, B. (2022). Making linear mdps
+practical via contrastive representation learning. In International Conference on Machine Learning, pages
+26447–26466. PMLR.
+[144] Zhao, R., Sun, X., and Tresp, V. (2019). Maximum entropy-regularized multi-goal reinforcement learning.
+In International Conference on Machine Learning, pages 7553–7562. PMLR.
+[145] Ziebart, B. D. (2010). Modeling purposeful adaptive behavior with the principle of maximum causal
+entropy. Carnegie Mellon University.
+[146] Zolna, K., Reed, S., Novikov, A., Colmenarejo, S. G., Budden, D., Cabi, S., Denil, M., de Freitas, N., and
+Wang, Z. (2019). Task-relevant adversarial imitation learning. arXiv preprint arXiv:1910.01077.
+
+17
+
+A
+
+Additional Related Work
+
+Our work is also related to unsupervised skill
+discovery [1, 18, 26, 41, 51, 73, 110], in that the
+algorithm learns multiple policies by interacting
+in the environment without a reward function.
+Both these skill learning algorithms and our contrastive algorithm optimize a lower bound on
+mutual information. Indeed, prior work has discussed the close connection between mutual information and goal-conditioned RL [18, 126]. Figure 7: Connecting related work. This work helps
+The key challenge in making this connection draw connections between prior work, filling in a missis grounding the skills, so that each skill cor- ing link.
+responds to a specific goal-conditioned policy.
+While the skills can be grounded by manually-specifying the critic used for maximizing mutual
+information [18], manually-specifying the critic for high-dimensional tasks (e.g., images) would be
+challenging. Our work takes a different approach to grounding, one based on reasoning directly about
+continuous probabilities. In the end, our method will learn skills that each corresponds to a specific
+goal-conditioned policy and will be scalable to high-dimensional tasks.
+Fig. 7 highlights some of the connections between related work. Prior work has thoroughly explained
+how many representation learning methods correspond to a lower bound on mutual information [84,
+99]. Prior work in RL has proposed unsupervised skill learning algorithms using similar mutual
+information objectives [1, 26, 41], and more recent work has connected these unsupervised skills
+learning algorithms to goal-reaching. The key contribution of this paper is to connect representation
+learning to goal-conditioned RL.
+
+B
+
+Proofs
+
+B.1
+
+Q-function are equivalent to the discounted state occupancy measure
+
+This section proves Proposition 1. We start by recalling the definition of the discounted state
+occupancy measure (Eq. 3):
+p(st+ = sg ) = (1 − γ)
+
+∞
+X
+
+π(·|·,sg )
+
+γ t pt
+
+(st = sg ).
+
+(8)
+
+t=0
+
+We first analyze the term for t = 0, and then analyze the term for t > 0. The probability of visiting a
+state at time t = 0 is just the initial state distribution:
+π(·|·,sg )
+
+p0
+
+(st = sg ) = p0 (s0 = sg ).
+
+We can now rewrite Eq. 8 as
+p(st+ = sg ) = (1 − γ)p0 (s0 = sg ) + (1 − γ)
+
+∞
+X
+
+π(·|·,sg )
+
+γ t pt
+
+(st = sg ).
+
+(9)
+
+t=1
+
+For t > 1, we can write the term as follows:
+π(·|·,sg )
+
+pt
+
+(st = sg ) = Epπ(·|·,sg ) (s
+
+[pt (st = sg | st−1 , at−1 )]
+
+= Epπ(·|·,sg ) (s
+
+[p(st = sg | st−1 , at−1 )]
+
+t−1
+
+t−1
+
+t−1 )π(at−1 |st−1 ,sg )
+
+t−1 ),π(at−1 |st−1 ,sg )
+
+= Eτ ∼π(τ |st ) [p(st = sg | st−1 , at−1 )] .
+In the second line, we have used the Markov property to say that the probability of visiting sg at time
+t depends only on dynamics, p(st+1 | st , at ). In the third line, we have rewritten the expectation over
+trajectories, using st−1 and at−1 and the t − 1th state-action pair in the trajectory. Substituting this
+18
+
+into Eq. 9, we get
+p(st+ = sg ) = (1 − γ)p0 (s0 = sg ) + (1 − γ)
+
+∞
+X
+
+γ t Eτ ∼π(τ |sg ) [p(st = sg | st−1 , at−1 )]
+
+t=1
+
+= (1 − γ)p0 (s0 = sg ) + (1 − γ)
+
+∞
+X
+
+γ t Eτ ∼π(τ |sg ) [p(st+1 = sg | st , at )]
+
+t=0
+
+= (1 − γ)p0 (s0 = sg ) + (1 − γ)Eτ ∼π(τ |sg )
+
+"∞
+X
+
+"
+= Eτ ∼π(τ |sg ) (1 − γ)p0 (s0 = sg ) + (1 − γ)
+
+#
+t
+
+γ p(st+1 = sg | st , at )
+
+t=0
+∞
+X
+
+#
+γ t p(st+1 = sg | st , at )
+
+t=0
+
+= Eτ ∼π(τ |sg )
+
+"∞
+X
+
+#
+γ t rg (st , at ) .
+
+t=0
+
+On the second line, we have changed the bounds of the summation to start at 0, and changed the
+terms inside the summation accordingly. On the third line, we applied linearity of expectation to
+move the summation inside the expectation. On the fourth line, we applied linearity of expectation
+again to move the term for t = 0 inside the expectation. Finally, we substituted the definition of
+rg (s, a) to obtain the desired result.
+B.2
+
+Contrastive RL is Policy Improvement
+
+This section proves the Contrastive RL (NCE) corresponds to policy improvement, yielding policies
+with higher rewards at each iteration (Lemma 4.2).
+Proof. The main idea of the proof is to relate the Q-values for the average policy to the Q-values for
+the goal-conditioned policy. We do this by employing the result from [30, Appendix C.2], where  is
+the parameter for filtered relabeling (Sec. 4.5):
+0
+
+Qβ(·mid·,e) (s, a, e) − Qβ(·|·,e ) (s, a, e) ≤ .
+
+This result means that we are doing policy improvement with approximate Q-values. Then, [9,
+Lemma 6.1] tells that doing policy improvement using approximate Q-values gives us approximate
+policy improvement:
+Eπ0 (τ |sg )
+
+"∞
+X
+
+#
+t
+
+γ rsg (st , at ) ≥ Eπ(τ |sg )
+
+t=0
+
+C
+
+"∞
+X
+
+#
+t
+
+γ rsg (st , at ) −
+
+t=0
+
+2γ
+1−γ
+
+for all goals sg ∈ {sg | pg (sg ) > 0}.
+
+Contrastive RL (CPC)
+
+In this section, we derive a version of contrastive RL based on the infoNCE objective [95]. Compared with the NCE objective used in contrastive RL (NCE), this objective uses a categorical cross
+entropy loss instead of a binary cross entropy loss. We replace Eq. 6 with the following infoNCE
+objective [95]:
+
+
+(1)
+max E(s,a)∼p(s,a),s(1) ∼pπ(·|·) (st+ |s,a) log p
+,
+f
+
+f
+(2:B)
+
+sf
+(1)
+
+where p
+
+∼p(sf )
+
+is the first coordinate of the softmax over the critic:
+(1)
+
+(b)
+
+p = S OFT M AX([f (s, a, sf ), · · · , f (s, a, sf )]).
+The optimal critic for the infoNCE loss satisfies [84, 95, 99]
+ π(·|·)
+
+p
+(st+ = sf | s, a)
+f ∗ (s, a, sf ) = log
+,
+p(sf )c(s, a)
+19
+
+where c(s, a) is an arbitrary function. Thus, there are many optimal critics. Choosing actions
+that maximize the critic f ∗ does not necessarily correspond to choosing actions that maximize the
+probability of the future state. Thus, we need to regularize c(s, a) so that it does not depend on a. We
+do this by introducing a regularizer, based on [122]:
+(1)
+
+(b)
+
+min Es(1:B) ∼p(s ) L OG S UM E XP([f (s, a, sf ), · · · , f (s, a, sf )])2 .
+f
+
+f
+
+f
+
+To provide some intuition for this regularizer, consider applying this regularizer to an optimal critic:
+(1)
+
+(b)
+
+L OG S UM E XP([f ∗ (s, a, sf ), · · · , f ∗ (s, a, sf )])2
+2
+
+X pπ(·|·) (st+ = sf | s, a)
+1
+
+= log
+c(s, a) s
+p(sf )c(s, a)
+f
+
+2
+
+
+
+pπ(·|·) (st+ = sf | s, a)
+
+− log c(s, a)
+p(s
+)
+f
+(1:B)
+
+X
+
+
+= log
+
+sf ∈sf
+
+2
+
+
+X
+
+
+≈ log
+
+p
+
+(2:B)
+
+sf ∈sf
+
+
+≈
+
+log Esf ∼p(sf )
+
+π(·|·)
+
+(st+ = sf | s, a)
+
+− log c(s, a)
+p(sf )
+
+ π(·|·)
+
+2
+p
+(st+ = sf | s, a)
+− log c(s, a)
+p(sf )
+
+2
+
+= (− log c(s, a)) .
+In the third line we ignore the positive term; this is reasonable if the batch size is large enough. In
+the third line we replaced the sum with an expectation; this is biased because log(·) is not a linear
+function. Thus, this regularizer (approximately) regularizes c(s, a) to be close to 1 for all states and
+actions. By reducing the dependency of c(s, a) on the actions a, we can ensure that actions that
+maximize the critic do maximize the probability of reaching the desired goal. In practice, we add this
+regularizer with the infoNCE objective, using a coefficient of 1e-2 on the regularizer.
+
+D
+
+Contrastive RL (NCE + C-learning)
+
+In this section we describe contrastive RL (NCE + C-learning) the combined NCE + Clearning method used in Sec. 5.3 (Fig. 5). Mathematically, the NCE + C-learning objective is a
+simple, unweighted sum of the C-learning objective and the NCE objective:
+L(f ) =(1 − γ)E(s,a)∼p(s,a),s+ ∼p(st+1 |st ,at ) [log σ(f (s, a, s+
+f ))]
+f
+
+
+p(st+ = sg | st , at )
++ γE
+log σ(f (s, a, sf = sg ))
+sg ∼pg (sg ),(st ,at )∼p(s,a),
+p(sf = sg )
+st+1 ∼p(st+1 |st ,at ),at+1 ∼π(at+1 |st+1 ,sg )
+|
+{z
+}
+≈exp(f (st+1 ,at+1 ,sg ))
+
++ Esg ∼pg (sg ),(s,a)∼p(s,a) [log(1 − σ(f (s, a, sg ))]
+−
++ E(s,a)∼p(s,a),s+ ∼p(st+ |st ,at ) [log σ(f (s, a, s+
+f ))] + E(s,a)∼p(s,a),s− ∼p(s ) [log(1 − σ(f (s, a, sf )))].
+f
+
+f
+
+f
+
+While we could use half the batch to compute each of the loss terms, we can increase the effective
+sample size by being careful with how the terms are estimated. First, we note that the first two terms
+of each loss are similar – sample a future state (either the next state or a future state) and label it as a
+positive. We can thus combine these two terms by sampling from a mixture of these two distributions,
+1−γ
+1
+p̃(sf | st , at ) =
+p(st+1 = sf | st , at ) +
+p(st+ = sf | st , at ),
+1+1−γ
+1+1−γ
+and scaling the resulting loss by 1 + 1 − γ = 2 − γ:
++
+L1 (f ) ,(1 − γ)E(s,a)∼p(s,a),s+ ∼p(st+1 |st ,at ) [log σ(f (s, a, s+
+f ))] + +E(s,a)∼p(s,a),s+ ∼p(st+ |st ,at ) [log σ(f (s, a, sf ))]
+f
+
+f
+
+= (2 − γ)E(s,a)∼p(s,a),s+ ∼p̃(s |st ,at ) [log σ(f (s, a, s+
+f ))]
+f
+f
+
+20
+
+This trick increases the effective sample size by 96% (130 → 256, as measured using [64]).
+Both losses also contain terms that are an expectation over random goals. We can likewise combine
+those terms:
+L2 (f ) ,γE
+
+sg ∼pg (sg ),(st ,at )∼p(s,a),
+st+1 ∼p(st+1 |st ,at ),at+1 ∼π(at+1 |st+1 ,sg )
+
+
+
+bexp(f (st+1 , at+1 , sg ))csg log σ(f (s, a, sf = sg ))
+
++ Esg ∼pg (sg ),(s,a)∼p(s,a) [log(1 − σ(f (s, a, sg ))] + E(s,a)∼p(s,a),s− ∼p(s ) [log(1 − σ(f (s, a, s−
+f )))]
+f
+f
+
+
+bexp(f
+(s
+,
+a
+,
+s
+))c
+log
+σ(f
+(s,
+a,
+s
+=
+s
+))
+= γE
+t+1
+t+1
+g
+sg
+g
+f
+sg ∼pg (sg ),(st ,at )∼p(s,a),
+st+1 ∼p(st+1 |st ,at ),at+1 ∼π(at+1 |st+1 ,sg )
+
++ 2Esg ∼pg (sg ),(s,a)∼p(s,a) [log(1 − σ(f (s, a, sg ))] .
+
+Note that estimating the first term in L2 requires sampling an action for each next state and goal
+pair. This prohibits us from using the same outer product trick as in Sec. 4.4 to estimate this term.
+While we could still use that trick to estimate the second term in L2 , we found that doing so hurt
+performance. We hypothesize that the reason is that this creates an imbalance in the gradients – some
+goals are labeled as negatives but are not also labeled as positives. Thus, we do not use the outer
+product trick for this method. The final objective is L(f ) = L1 (f ) + L2 (f ).
+
+21
+
+E
+
+Experimental Details
+
+We implemented contrastive RL and the baselines using the ACME RL library [56] in combination
+with JAX [12]. Precisely, we took the SAC agent9 and made the modifications below. Unless
+otherwise mentioned, we used the same hyperparameters as this implementation.
+1. Implemented environments that returned observations that contained the original observation
+concatenated with the goal. While the goals are resampled when sampling from the replay
+buffer, assuming that observations include the goals means that the Q-function and policy
+networks do not need to include an additional input for the goal.
+2. Modified the replay buffer to use trajectories rather than transitions. This allows us to sample
+(st , at , sf ) triplets.
+3. Modified the critic network to be parametrized as an inner product between state-action
+representations and goal representations.
+4. Modified the critic loss based on Alg. 1. Note that the actor loss does not need to be modified
+(except for removing the entropy term for state-based tasks).
+We summarize the hyperparameters in Table 2. Both the state-action encoder and the goal encoder
+are fully-connected neural networks with 2 layers of size 256 with ReLU activations. We found
+that normalizing the final representation, applying a final activation function, or using a learnable
+temperature hurt performance, so we do not use these tricks. For image-based tasks, observations
+have size (64, 64, 3), and we use a CNN encoder from prior work [88] to encode the observations
+before passing them to the encoders. The policy has a similar architecture: an image-encoder for
+image-based tasks, followed by 2 fully connected layers with size 256 and ReLU activations.
+
+Table 2: Hyperparameters for our method and the baselines.
+hyperparameter
+
+value
+
+batch size
+learning rate
+discount
+actor target entropy
+
+256
+3e-4 for all components
+0.99
+0 for state-based experiments,
+−dim(a) for image-based experiments
+0.005
+Taken from Mnih et al. [88]
+Taken from Ha and Schmidhuber [46]
+
+target EMA term (for TD3 and SAC)
+image encoder architecture
+image decoder architecture (for auto-encoder and modelbased baselines)
+hidden layers sizes (for actor and representations)
+initial random data collection
+replay buffer size
+samples per insert1
+train-collect interval2
+representation dimension (dim(φ(s, a)), dim(ψ(sg )))
+actor minimum std dev
+number of augmentations (for DrQ only)
+logsumexp regularizer coefficient (for CPC only)
+action repeat
+goals for actor loss
+1
+2
+
+(256, 256)
+10,000 transitions
+1,000,000 transitions
+256
+16 for state-based tasks, 64 for image-based
+tasks
+64
+1e-6
+4
+1e-2
+None
+random states (not future states)
+
+How many times is each transition used for training before being discarded.
+We collect N transitions, add them to the buffer, and then do N gradient steps using the experience sampled randomly from the buffer.
+
+9
+
+https://github.com/deepmind/acme/tree/master/acme/agents/jax/sac
+
+22
+
+Table 3: Changes to hyperparameters for offline RL experiments (Fig. 1).
+
+E.1
+
+hyperparameter
+
+value
+
+batch size
+representation dimension
+hidden layers sizes (for actor and representations)
+goals for actor loss
+
+256 → 1024
+64 → 16
+(256, 256) → (1024, 1024), as in [24].
+future states
+
+Environments
+fetch reach (image, state) – This task is taken from Plappert et al. [97]. This task involves
+moving a robotic arm to a goal location in free space. The benchmark specifies success as
+reaching within 5cm of the goal.
+fetch push (image, state) – This task is taken from Plappert et al. [97]. This task involves
+using a robotic arm to push an object across a table to a goal location. The benchmark
+specifies success as reaching within 5cm of the goal.
+sawyer push (image, state) – This task is taken from Yu et al. [139]. This task involves using
+a robotic arm to push an object across table to a goal location. The benchmark specifies
+success as reaching within 5cm of the goal.
+ant umaze (state) – This task is taken from Fu et al. [35]. This task involves controlling an
+ant-like robot towards a goal location, which is sampled randomly in a “U”-shaped maze.
+Unlike all other tasks in this paper, the goal was lower dimensional than the observation: the
+goal was just the XY coordinate of the desired position. Following prior work [14, 115],
+success is defined as reaching within 0.5m of the goal.
+sawyer bin (image, state) – This task is taken from Yu et al. [139]. This task involves using
+a robotic arm to pick up a block from one bin and place it at a goal location in another bin.
+The benchmark specifies success as reaching within 5cm of the goal.
+point Spiral11x11 (image) – This task is an image-based version of the 2D navigation tasks
+in Eysenbach et al. [29]. This task involves directly controlling the XY coordinates of an
+agent to reach a goal in a spiral-shaped maze (see Fig. 16). We define success as reaching
+within 2m of the goal.
+
+23
+
+F
+
+Additional Experiments
+
+F.1
+
+Linear regression with the learned features
+
+To study the learned representations in isolation we take the state-action representations φ(s, a)
+trained on the image-based point NineRooms task, and run a linear probe [3, 50] experiment to
+see whether the representations have learned to encode task-relevant information (the shortest path
+distance to the goal).
+We use the task of nine-room navigation and run Contrastive RL and TD3+HER on it. We visualize
+the environment in Fig. 8a and the agent randomly initialized in one of the nine rooms is commanded
+to go to the goal position. We dump the replay buffer during training as the dataset and run a linear
+regression to predict the shortest distance between the agent and the goal. Note that this shortest
+path distance is not the Euclidean distance since there are walls blocking the way. Fig. 8b shows that
+features learned by contrastive RL can predict this distance better than all baselines.
+As shown in Fig. 8b, contrastive RL (NCE) learns representations that achieve lower test error than
+those learned by TD3+HER and by a random CNN encoder.
+F.2
+
+When is contrastive learning better than learning a foreward model?
+
+minimum distance
+to goal (m)
+
+In Fig. 2a, we observed that the model-based
+0.20
+contrastive RL (NCE)
+baseline performed well on the ant umaze task,
+model based
+but poorly on many of the other tasks. One
+0.15
+explanation is that the model-based approach
+0.10
+will perform well when the goal is relatively
+is better
+low-dimensional, and that contrastive learning
+0.05
+will be more useful in settings with higherdimensional goals. We tested this experiment on
+0.00
+the 7-dimensional sawyer push environment.
+1
+2
+3
+4
+5
+6
+7
+We applied both contrastive RL and the modelgoal dimension
+based baseline to versions of this task where
+the goal was varied from 1-dimensional to 7- Figure 9: Contrasive learning outperforms a forward
+dimensional. Note that changing the goal di- model when the goal is 4-dimensional or larger. Error
+mension changes the task: a 1-dimensional goal bars show the standard deviation across 5 random seeds.
+corresponds to moving the gripper to the correct X position, whereas a 7-dimensional goal corresponds to moving the object and gripper to the correct poses. We measured the Euclidean distance
+to the goal (↓ is better). We show results in Fig. 9. As expected, higher-dimensional goals are a bit
+more challenging to achieve. What we are really interested in is the gap between the model-based
+approach and the contrastive RL, which opens up starting with a 4-dimensional goal. Altogether, this
+
+Linear Regression with Learned Representation
+
+Test Error
+
+0.20
+
+Contrastive RL
+TD3 + HER
+Random
+
+0.15
+0.10
+0.05
+0.00
+
+(a) Nine-Room environment.
+
+Nine-Room Maze Task
+(b) Linear probe experiment.
+
+Figure 8: Linear regression with the learned features. Contrastive RL can produce better features for
+predicting the shortest-path distance, indicating that the learned features have captured highly non-linear
+information about the environment dynamics.
+
+24
+
+experiment provides some evidence that contrastive RL may be preferred over a forward model, even
+for tasks with very low dimensional goals.
+
+sawyer push
+
+success rate
+
+0.8
+
+ant umaze
+
+0.6
+
+0.6
+
+point Spiral11x11 (images)
+0.8
+
+0.4
+
+0.4
+
+0.6
+
+0.2
+
+0.2
+0.0
+0.0
+
+0% random goals
+50% random goals
+100% random goals
+
+0.4
+
+0.0
+0.5 1.0 1.5 2.0 2.5 3.0 0.0
+environment steps 1e6
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+environment steps
+
+1.0
+1e7
+
+0
+
+1
+
+2
+
+3
+
+4
+
+environment steps
+
+5
+1e5
+
+Figure 10: Goals used for the actor loss. Goals are either sampled from the distribution over future states or
+from a distribution of random states. Error bars show the standard deviation across 5 random seeds.
+
+F.3
+
+Goals used in the actor loss
+
+In theory, the distribution of goals for the actor loss (Eq. 7) does not affect the optimal policy, as
+long as the distribution has full support. In our experiments, we sampled these goals randomly, in the
+same way that we sampled negative examples for contrastive learning. We ran an ablation experiment
+to study this decision, and show results in Fig. 10. These results show that sampling future goals
+consistently performs poorly, perhaps because it results in only training the policy on how to reach
+“easy” goals. A mixture of future goals and random goals works much better, but the best results
+seem to come from training on only random goals.
+fetch push
+
+success rate
+
+0.8
+
+sawyer push
+
+sawyer bin
+representation
+initialization:
+None
+sawyer_push
+sawyer_bin
+fetch_push
+
+0.6
+0.4
+0.2
+0.0
+
+0.0
+
+0.5
+
+1.0
+
+1.5
+
+2.0
+
+environment steps
+
+2.5
+
+3.0 0.0
+1e6
+
+0.5
+
+1.0
+
+1.5
+
+2.0
+
+environment steps
+
+2.5
+
+3.0 0.0
+1e6
+
+0.5
+
+1.0
+
+1.5
+
+2.0
+
+environment steps
+
+2.5
+
+3.0
+1e6
+
+Figure 11: Transferring representations to solve new tasks. After training the representations on one task
+for 1M environment steps, we used them to initialize a new agent for solving a new task.
+
+F.4
+
+Transferring representations to solve new tasks
+
+In this experiment, we studied whether the representations learned by contrastive RL (NCE) for
+one task might be useful for solving another task. We started by training contrastive RL (NCE) on
+three image-based tasks: fetch push, sawyer push, and sawyer bin. The observations for all
+tasks look different and the sawyer and fetch tasks have different robots. The two sawyer tasks look
+the most similar because they both come from the metaworld [139] benchmark suite. We used the
+representations learned for each of these tasks to initialize a second contrastive RL agent, which we
+used to solve this same set of tasks. We were primarily interested in transfer – do the representations
+from one task help in learning to solve another task? Intuitively, even if the tasks are different, a good
+representation will capture some structural properties (e.g., identifying the robot arm, and identifying
+objects), which should transfer across the task.
+We show results in Fig. 11. After training on the first task for 1M environment steps, we used the
+learned representation as initialization for solving the new task. On the fetch push task, we see
+little benefit from using pretrained representations, perhaps because the task is relatively easy. On the
+sawyer push, we see the largest benefit from pretraining the representations on the same task as
+the target task. More interestingly, we see a small benefit from taking the representations learned
+on the sawyer bin task and using those to solve the sawyer push. On the most challenging task,
+sawyer bin, using representations pretrained on either fetch push or sawyer bin can accelerate
+25
+
+the solving of this task. Taken together, these results suggest that transferring the representations
+from one task to another is sometimes useful.
+F.5
+
+Robustness to Environment Perturbations
+
+We ran an preliminary experiment to study
+whether the image-based policies learned by
+contrastive RL (NCE) were robust to perturbations in the environment. We took an
+agent trained on the fetch push with imageobservations, and evaluated the agent on four Figure 12: Perturbations to the image-based fetch
+push environment.
+variants of the environment (see Fig. 12):
+• Original environment, without modification;
+• Object color changed from black to red;
+• Table color changed from white to yellow;
+• Initial arm position moved towards the camera.
+In each setting, we evaluate the success rate over 20 trials, and repeated 5 times to compute standard
+deviations (for a total of 100 trials). The learned agent was robust to the object color, with the success
+rate changing from 78 ± 5% to 73 ± 10%. The agent was also robust to the change in initial position
+(87 ± 6%). However, changing the table color caused the agent to fail (0 ± 0%), perhaps because the
+table color consumes a large fraction of the image pixels.
+F.6
+
+Additional figures
+
+fetch push
+
+success rate
+
+1.0
+
+ant umaze
+=
+= 100.0
+= 1.0
+= 0.01
+= 0.0001
+
+0.5
+
+0.0
+
+0
+
+1
+
+2
+
+environment steps
+
+3 0.0
+1e6
+
+0.5
+
+environment steps
+
+1.0
+1e7
+
+Figure 13: Filtered relabeling. We filter the relabeled experience so that the agent only trains on experience
+where the probability under the commanded goal is similar to the probability under the actually-reached goal.
+While such filtering is required to prove convergence, these results suggest that good performance can be
+achieved without this filtering step.
+This section presents additional figures.
+• Fig. 13 compares contrastive RL (NCE) with varying values of the filtering parameter ,
+described in Sec. 4.5.
+• Fig. 14 – This plot shows a TSNE embedding of the state-action representations φ(s, a) for
+one trajectory of the bin picking task. This experiment uses image observations.
+• Fig. 15 – This plot shows a TSNE embedding of the state-action representations from
+the same bin picking task. We sampled states and actions using a trained agent. After
+computing the TSNE embedding, we used RasterFairy [65] to rectify the embeddings to a
+grid.
+• Fig. 16 – A TSNE embedding of image representations from the point Spiral11x11
+task.
+• Fig. 17 – Using the same representations for the point Spiral11x11 task, we measure
+the similarity between the critic gradients when evaluated at the same state but different
+∂f
+0
+goals, h ∂f
+∂s |(s,g) , ∂s |(s,g ) i.
+
+26
+
+Figure 14: Visualizing the learned representations. (Top) We show five observations from the bin picking
+task, as well as the goal image. (Bottom) A TSNE embedding of the image representations φ(s, a) learned by
+Contrastive RL (NCE). Note that different parts of the task (e.g., reaching, picking, placing) are well separated
+in the learned representation space.
+
+Figure 15: Visualizing the image representations learned by our method on the sawyer bin. We
+compute a TSNE embedding of the representations, and then align the embeddings to a grid using
+RasterFairy [65].
+
+27
+
+(a)
+
+(c) untrained encoder
+
+(b)
+
+(d) contrastive RL (NCE)
+
+(e) TD3 + HER
+
+Figure 16: TSNE embedding of representations φ(s, a). (a) Using the point Spiral11x11 task,
+(b) we generated image observations at 270 locations throughout the maze. We computed the stateaction representations of these images, using action = (0, 0). (c, d, e) A TSNE embedding of these
+representations reveals that the untrained encoder does not capture the structure of the environment,
+whereas both our method and the TD3 + HER baseline do capture the maze structure.
+
+(a) Random neural network
+
+(b) C-learning
+
+(c) contrastive RL (NCE)
+
+Figure 17: Analyzing the gradients. We plot the cosine similarity between the (normalized) gradients of the
+critic function with respect to the goal images. An untrained network has high gradient similarity, meaning that
+updates to one state/task affect the networks predictions at many other states/tasks, a phenomenon that prior
+work has identified as being detrimental to learning [2, 69, 134, 138]. Our method converges to a network where
+gradients at one state have a low similarity with gradients at other states. A similar plot showing gradients with
+various state inputs shows a similar effect.
+
+28
+
+G
+
+Failed Experiments
+1. Representation normalization: We experimented with many ways of normalizing the learned
+representations, including L2 normalization, scaling the representations by a learned temperature parameter, and applying an elementwise tanh activation. None of these modifications
+consistently improved performance.
+2. Momentum encoder: Prior contrastive learning methods have found it useful to use a target
+encoder or momentum buffer. We experimented with many similar tricks, including using a
+momentum buffer for goal representations, sampling some fraction of goal representations
+from a fixed random distribution, increasing the learning rate for the state encoder’s final
+layer, and decreasing the learning rate for all layers in the goal encoder. None of these tricks
+consistently improved performance.
+3. Frame stacking – This tended to decrease performance slightly.
+4. Loss scaling – Our contrastive RL (NCE) method uses the negative label much more often
+than the positive label. We tried scaling the loss terms so that the negative and positive
+examples received the same total weight, but found this had no effect on performance.
+
+29
+
+

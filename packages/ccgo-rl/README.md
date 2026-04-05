@@ -1,0 +1,95 @@
+# CCGO-RL Package (ccgo-rl)
+
+## Overview
+
+ccgo-rl packages reusable parts of the Curiosity-Conditioned Goal-Optimal RL (CCGO-RL)
+release outputs as a Python library plus an additive MCP companion interface.
+
+Primary capabilities:
+- Synthetic benchmark simulation for adaptive intrinsic-extrinsic RL comparisons.
+- Baseline-level summary statistics with bootstrap confidence intervals.
+- Theorem-aligned symbolic checks for C1/C2 validation obligations.
+
+## Installation
+
+Canonical omegaXiv user flow:
+
+1. pip install omegaxiv
+2. ox install ccgo-rl==0.1.0
+
+MCP registration (additive, optional):
+- ox install ccgo-rl==0.1.0 --mcp
+- ox install ccgo-rl==0.1.0 --mcp=codex
+- ox install ccgo-rl==0.1.0 --mcp=claude
+- ox install ccgo-rl==0.1.0 --mcp=all
+
+Maintainer/dev-only local source install:
+- python -m pip install ./packages/ccgo-rl
+
+## Configuration
+
+Runtime configuration is explicit and code-level:
+- BenchmarkConfig: seeds, datasets, baselines, claim identifier (h1 / h2).
+- CCGORLSimulator: optional custom baseline offsets.
+- SymbolicVerifier: optional output directory for generated CSV/Markdown reports.
+
+## Usage Examples
+
+### Python API
+
+from ccgo_rl import CCGOService
+
+service = CCGOService()
+rows = service.run_simulation(
+    seeds=[7, 11, 23],
+    datasets=["sparse_goal_nav", "deceptive_maze"],
+    baselines=["CCGO_adaptive", "HER_SAC", "Contrastive_always_on"],
+    claim="h1",
+)
+
+summary = service.summarize(
+    rows=rows,
+    metrics=["final_return", "auc", "bound_residual"],
+)
+
+symbolic = service.run_symbolic_checks(output_dir="./sympy_out")
+
+### MCP Companion Interface
+
+The package ships a stdio MCP companion server:
+- Launch: python -m ccgo_rl.mcp_server
+- Transport: stdio
+- Exposed tools:
+  - simulate_benchmark
+  - summarize_baselines
+  - run_symbolic_checks
+  - run_validation_bundle
+
+Example client launch configuration:
+
+{
+  "mcpServers": {
+    "ccgo-rl": {
+      "command": "python",
+      "args": ["-m", "ccgo_rl.mcp_server"],
+      "transport": "stdio",
+      "env": {}
+    }
+  }
+}
+
+Python API to MCP mapping:
+- CCGOService.run_simulation -> simulate_benchmark
+- CCGOService.summarize -> summarize_baselines
+- CCGOService.run_symbolic_checks -> run_symbolic_checks
+- CCGOService.run_validation_bundle -> run_validation_bundle
+
+## Troubleshooting
+
+- ModuleNotFoundError: ccgo_rl
+  verify installation completed and you are using the same Python environment.
+- Slow symbolic checks:
+  run with smaller ad hoc workloads first and write outputs to a dedicated directory.
+- MCP launch issues:
+  run python -m ccgo_rl.mcp_server --help in the installed environment and confirm
+  the resolved command matches your MCP client configuration.
